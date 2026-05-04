@@ -145,6 +145,9 @@ const SubmissionStatusesToRejectClaimAction = [
 })
 export class EncounterListComponent
   implements AfterViewInit, OnInit, OnDestroy {
+
+  /** Sentinel value used for gridState.take when the user selects "All records" mode. */
+  private readonly ALL_RECORDS_TAKE = 99999;
   @ViewChild(forwardRef(() => ClaimFiltersComponent))
   claimFiltersComponent: ClaimFiltersComponent;
   @ViewChild('claimListingTabGroup') claimListingTabGroup: MatTabGroup;
@@ -414,14 +417,14 @@ export class EncounterListComponent
     });
 
     // Subscribe to failed Claim Submission ID notifications
-    this.subscriptions = this.notifyService.encounterId$.subscribe((id) => {
+    this.subscriptions.add(this.notifyService.encounterId$.subscribe((id) => {
       if (!this.latestEncounterId.includes(id)) {
         this.latestEncounterId.push(id);
       }
-    });
+    }));
 
     // Subscribe to view failed Claim Submission IDs notifications
-    this.subscriptions = this.notifyService.viewFailedIds$.subscribe((ids) => {
+    this.subscriptions.add(this.notifyService.viewFailedIds$.subscribe((ids) => {
       // switch to "Ready to Bill" tab (index 1)
       this.claimListingTabGroup.selectedIndex = 1;
 
@@ -429,19 +432,19 @@ export class EncounterListComponent
       const currentList = this.claimDashboardListSubject.value;
       const updatedList = currentList.filter((x) => ids.includes(x.id));
       this.claimDashboardListSubject.next(updatedList);
-    });
+    }));
 
     // Subscribe to failed Claim Submission ID notifications - Pending Review
-    this.subscriptions = this.notifyService.encounterIdPendingReview$.subscribe(
+    this.subscriptions.add(this.notifyService.encounterIdPendingReview$.subscribe(
       (id) => {
         if (!this.latestEncounterId.includes(id)) {
           this.latestEncounterId.push(id);
         }
       }
-    );
+    ));
 
     //Pending Review Tab Index Subscription and Subscribe to failed Claim Submission ID notifications
-    this.subscriptions = this.notifyService.failureClaimId$.subscribe((ids) => {
+    this.subscriptions.add(this.notifyService.failureClaimId$.subscribe((ids) => {
       // switch to "Pending Review" tab (index 0)
       this.claimListingTabGroup.selectedIndex = 0;
 
@@ -449,10 +452,10 @@ export class EncounterListComponent
       const currentList = this.claimDashboardListSubject.value;
       const updatedList = currentList.filter((x) => ids.includes(x.id));
       this.claimDashboardListSubject.next(updatedList);
-    });
+    }));
 
     // Subscribe to remove the successfully Claim Submission IDs from grid
-    this.subscriptions = this.notifyService.successClaimId$.subscribe((id) => {
+    this.subscriptions.add(this.notifyService.successClaimId$.subscribe((id) => {
       // Filter the claimDashboardListSubject to only include claims with IDs in the received list
       const currentList = this.claimDashboardListSubject.value;
       currentList.any((x) => x.id === id);
@@ -468,7 +471,7 @@ export class EncounterListComponent
         this.detailComponents.loadData();
         this.scrollTimeout = null;
       }, 2000);
-    });
+    }));
   }
 
   get selectedKeysArray(): number[] {
@@ -920,7 +923,7 @@ export class EncounterListComponent
     this.claimDashboardListSubject.clearBuffer();
 
     if (this.oldfilter === true) {
-      this.claimsService.getClaimHeaderFilter().subscribe((storedFilter) => {
+      this.claimsService.getClaimHeaderFilter().pipe(take(1)).subscribe((storedFilter) => {
         if (storedFilter) {
           this.claimDashboardListSubject.getAll(storedFilter, false);
         }
@@ -1066,27 +1069,16 @@ export class EncounterListComponent
     // Calculate global skip position (not DOM length)
     const skipVal = this.windowStart + currentLength;
 
-    // 🧪 DEBUG: Verify skip math (remove after testing)
-    console.log('📊 SCROLL DOWN:', {
-      windowStart: this.windowStart,
-      currentDOMLength: currentLength,
-      calculatedSkip: skipVal,
-      totalCount: totalCount,
-      willLoad: skipVal < totalCount,
-    });
-
     this.lastTotalLoaded = skipVal;
     this.lastTotalCount = totalCount;
 
     // Check if we've reached the end using global position
     if (skipVal >= totalCount) {
-      console.log('✅ Reached end of data');
       return;
     }
 
     // Guard: Prevent duplicate load of same batch during DOM mutation
     if (skipVal === this.lastLoadedSkip) {
-      console.log('⏭️ Skipping duplicate load for skip =', skipVal);
       return;
     }
 
@@ -1098,9 +1090,6 @@ export class EncounterListComponent
       this.isLoadingMoreData = true;
       this.lastLoadedSkip = skipVal; // Mark this batch as loading
 
-      console.log(
-        `🔽 Loading batch: skip=${skipVal}, take=${this.virtualScrollPageSize}`
-      );
       this.loadClaimHeadersForVirtualScroll(
         this.selectedTab,
         false,
@@ -1113,7 +1102,6 @@ export class EncounterListComponent
 
       // Apply sliding window cleanup: remove from TOP when exceeding max window
       if (currentLength >= this.maxWindowSize) {
-        console.log('🧹 Triggering cleanup (down)');
         this.applySlidingWindowCleanup('down');
       }
     }
@@ -1184,15 +1172,6 @@ export class EncounterListComponent
       this.windowStart += recordsToRemove;
       this.claimDashboardListSubject.removeFromTop(recordsToRemove);
 
-      // 🧪 DEBUG: Verify cleanup (remove after testing)
-      console.log('🧹 CLEANUP DOWN:', {
-        removed: recordsToRemove,
-        oldWindowStart: oldWindowStart,
-        newWindowStart: this.windowStart,
-        newDOMLength: this.claimDashboardListSubject.getDataLength(),
-        scrollTopBefore: scrollTopBefore,
-      });
-
       // Remove old page indexes from cache
       for (let i = 0; i < recordsToRemove; i += this.virtualScrollPageSize) {
         const pageToRemove = Math.floor(
@@ -1207,11 +1186,6 @@ export class EncounterListComponent
           const scrollHeightAfter = gridEl.scrollHeight;
           const heightDiff = scrollHeightBefore - scrollHeightAfter;
           gridEl.scrollTop = scrollTopBefore - heightDiff;
-
-          console.log('📍 Scroll preserved:', {
-            heightRemoved: heightDiff,
-            newScrollTop: gridEl.scrollTop,
-          });
         });
       }
     } else {
@@ -1219,13 +1193,6 @@ export class EncounterListComponent
       const oldWindowEnd = this.windowEnd;
       this.windowEnd -= recordsToRemove;
       this.claimDashboardListSubject.removeFromBottom(recordsToRemove);
-
-      console.log('🧹 CLEANUP UP:', {
-        removed: recordsToRemove,
-        oldWindowEnd: oldWindowEnd,
-        newWindowEnd: this.windowEnd,
-        newDOMLength: this.claimDashboardListSubject.getDataLength(),
-      });
 
       // Remove old page indexes from cache
       for (let i = 0; i < recordsToRemove; i += this.virtualScrollPageSize) {
@@ -1353,7 +1320,7 @@ export class EncounterListComponent
       this.lastScrollTop = 0;
       this.lastLoadedSkip = -1;
       this.loadedRanges.add(0);
-      this.gridState.take = 99999;
+      this.gridState.take = this.ALL_RECORDS_TAKE;
       this.gridState.skip = 0;
       this.paginationService.setPageSizes(0);
       this.isAllInitializing = true;
@@ -1372,8 +1339,6 @@ export class EncounterListComponent
       this.cdr.detectChanges();
       // Ensure scroll is at top when switching to ALL
       this.resetGridScrollTop();
-      // Initialize virtual scroll mode with first chunk and correct totals
-      this.loadClaimHeadersForVirtualScroll(this.selectedTab, true, false);
       // Prefetch listeners are set up after initial load in loadClaimHeadersForVirtualScroll
 
       localStorage.setItem('lastPageSize', '0');
@@ -1532,7 +1497,7 @@ export class EncounterListComponent
     const claimsToSubmit: number[] = [];
     const claimsToApproveIds: number[] = [];
     var dataToSubmit: any;
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       for (const dataItem of result.data) {
         if (this.mySelection.indexOf(dataItem.id) !== -1) {
           if (dataItem.errorsCount !== 0) {
@@ -1642,7 +1607,7 @@ export class EncounterListComponent
 
     const claimsToUnapproveIds: number[] = [];
 
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       for (const dataItem of result.data) {
         if (this.mySelection.indexOf(dataItem.id) !== -1) {
           claimsToUnapproveIds.push(dataItem.id);
@@ -1724,7 +1689,7 @@ export class EncounterListComponent
 
     const claimsToUnflagIds: number[] = [];
 
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       for (const dataItem of result.data) {
         if (this.mySelection.indexOf(dataItem.id) !== -1) {
           claimsToUnflagIds.push(dataItem.id);
@@ -1755,7 +1720,7 @@ export class EncounterListComponent
 
     const claimsToAssignId: number[] = [];
 
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       for (const dataItem of result.data) {
         if (this.mySelection.indexOf(dataItem.id) !== -1) {
           claimsToAssignId.push(dataItem.id);
@@ -1786,7 +1751,7 @@ export class EncounterListComponent
     if (result) {
       const claimsToDelete: ClaimHeader[] = [];
 
-      this.view.subscribe((result) => {
+      this.view.pipe(take(1)).subscribe((result) => {
         for (const dataItem of result.data) {
           if (this.mySelection.indexOf(dataItem.id) !== -1) {
             claimsToDelete.push(dataItem);
@@ -2015,7 +1980,7 @@ export class EncounterListComponent
 
     const claimsToVoid: ClaimHeader[] = [];
 
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       for (const dataItem of result.data) {
         if (this.mySelection.indexOf(dataItem.id) !== -1) {
           claimsToVoid.push(dataItem);
@@ -2273,7 +2238,7 @@ export class EncounterListComponent
     if (!this.mySelection.length) return;
     const claimsToRebill: ClaimHeader[] = [];
 
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       for (const dataItem of result.data) {
         if (this.mySelection.indexOf(dataItem.id) != -1) {
           claimsToRebill.push(dataItem);
@@ -2312,7 +2277,7 @@ export class EncounterListComponent
     var selectedClaim: any;
     // if(claimId)
     // {
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       selectedClaim = result.data.first((item) => item.id === claimId);
     });
     // }
@@ -2381,7 +2346,7 @@ export class EncounterListComponent
 
     if (!model) {
       if (this.mySelection.length > 0) {
-        this.view.subscribe((result) => {
+        this.view.pipe(take(1)).subscribe((result) => {
           for (const dataItem of result.data) {
             if (this.mySelection.indexOf(dataItem.id) != -1) {
               let writeOffchargeModel: ClaimOrChargeToWriteOff = {
@@ -2582,7 +2547,7 @@ export class EncounterListComponent
   markAsBilledBulk() {
     if (this.mySelection.length > 0) {
       const claimsToBill = [];
-      this.view.subscribe((result) => {
+      this.view.pipe(take(1)).subscribe((result) => {
         for (const dataItem of result.data) {
           if (this.mySelection.indexOf(dataItem.id) !== -1) {
             claimsToBill.push(dataItem.id);
@@ -2994,7 +2959,7 @@ export class EncounterListComponent
     this.closeAssignPopup();
     this.isDropdownOpenDisabled = true;
     const claimsToAssignId: number[] = [];
-    this.view.subscribe((result) => {
+    this.view.pipe(take(1)).subscribe((result) => {
       for (const dataItem of result.data) {
         if (this.mySelection.indexOf(dataItem.id) !== -1) {
           claimsToAssignId.push(dataItem.id);

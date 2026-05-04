@@ -89,12 +89,15 @@ namespace BillingService.Domain.Services.Billing
                 .Distinct()
                 .ToList();
 
-            var staffs = await _staffSearchRepository.Query().ToListAsync();
+            var staffIdList = staffIds.Select(s => s.staffId).ToList();
+            var staffsDict = await _staffSearchRepository.Query()
+                .Where(x => staffIdList.Contains(x.Id))
+                .ToDictionaryAsync(x => x.Id, x => x.Name);
 
             staffIds.ForEach(staff =>
             {
-                var staffData = staffs.FirstOrDefault(x => x.Id == staff.staffId);
-                staffBaseNameOption.Add(new StaffBaseNameOption { Id = staff.staffId, Name = staffData?.Name, TypeId = staff.typeId });
+                staffsDict.TryGetValue(staff.staffId ?? 0, out var name);
+                staffBaseNameOption.Add(new StaffBaseNameOption { Id = staff.staffId, Name = name, TypeId = staff.typeId });
             });
 
             return staffBaseNameOption;

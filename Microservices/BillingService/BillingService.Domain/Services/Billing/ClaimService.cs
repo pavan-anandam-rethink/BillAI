@@ -108,9 +108,10 @@ namespace BillingService.Domain.Services.Billing
                 ClaimHistoryAction.BilledInvoice,
                 ClaimHistoryAction.BilledPaper
         };
-        List<ClaimTransactionModel> claimTransactionData = [];
         private readonly IRepository<BillingDbContext, StateEntity> _stateRepository;
         private readonly IRepository<BillingDbContext, ExternalCodeEntity> _externalCodeRepository;
+        private const string authorizationCacheKeyPrefix = "auth_";
+        private static readonly TimeSpan authorizationCacheDuration = TimeSpan.FromMinutes(5);
 
         public ClaimService(
             IRepository<BillingDbContext, PaymentClaimEntity> paymentClaimRepository,
@@ -349,10 +350,19 @@ namespace BillingService.Domain.Services.Billing
             }
 
             var claimSub = new List<ClaimDropdownModel>();
+
+            // Batch: one query to find which claims have at least one submission (replaces N individual queries)
+            var filteredClaimIds = filteredClaims.Select(c => c.Id).ToList();
+            var claimsWithSubmissions = (await _claimSubmissionRepository.Query()
+                .Where(x => filteredClaimIds.Contains(x.ClaimId) && x.DateDeleted == null)
+                .Select(x => x.ClaimId)
+                .Distinct()
+                .ToListAsync())
+                .ToHashSet();
+
             foreach (var claim in filteredClaims)
             {
-                var submissionClaims = await _claimSubmissionRepository.Query().Where(x => x.ClaimId == claim.Id && x.DateDeleted == null).Select(x => x.Id).FirstOrDefaultAsync();
-                if (submissionClaims != 0)
+                if (claimsWithSubmissions.Contains(claim.Id))
                 {
                     claimSub.Add(claim);
 
@@ -370,180 +380,6 @@ namespace BillingService.Domain.Services.Billing
             var result = filteredClaims.OrderBy(c => c.PatientName).ToList();
 
             return result;
-        }
-
-        // RHD-32726 making obsolete this method for performance tab as we are doing optimization to load the claims in batch and remove the foreach loop, we will remove this method after testing the new optimized method
-      
-
-        [Obsolete("GetClaimHeadersAsync")]
-        public async Task<ClaimHeaderModelResponseModel> GetClaimHeadersAsyncold(ClaimGetRequestSortFilterWithUserInfo model)
-        {
-            var sqlParams = new List<SqlParameter>
-            {
-                new ("AccountInfoId", model.AccountInfoId),
-                new ("Skip", model.Skip),
-                new ("Take", model.Take)
-            };
-
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("AccountInfoId", model.AccountInfoId),
-            };
-
-            var filters = model.Filters;
-            if (filters != null)
-            {
-                sqlParams.Add(new SqlParameter("ClaimNumber", filters.ClaimNumber));
-                sqlParams.Add(new SqlParameter("PatientIds", filters.PatientIds));
-                sqlParams.Add(new SqlParameter("ReasonCode", filters.ReasonCode));
-                sqlParams.Add(new SqlParameter("FunderIds", filters.FunderIds));
-                sqlParams.Add(new SqlParameter("AssigneeIds", filters.AssigneeIds));
-                sqlParams.Add(new SqlParameter("LocationIds", filters.LocationIds));
-                sqlParams.Add(new SqlParameter("ClaimIds", filters.ClaimIds));
-                sqlParams.Add(new SqlParameter("ReasonIds", filters.ReasonIds));
-                sqlParams.Add(new SqlParameter("BalanceFrom", filters.BalanceFrom));
-                sqlParams.Add(new SqlParameter("BalanceTo", filters.BalanceTo));
-                sqlParams.Add(new SqlParameter("BilledFrom", filters.BilledFrom));
-                sqlParams.Add(new SqlParameter("BilledTo", filters.BilledTo));
-                sqlParams.Add(new SqlParameter("PatientResponsibilityFrom", filters.PatientResponsibilityFrom));
-                sqlParams.Add(new SqlParameter("PatientResponsibilityTo", filters.PatientResponsibilityTo));
-                sqlParams.Add(new SqlParameter("DateOfServiceFrom", filters.DateOfServiceFrom));
-                sqlParams.Add(new SqlParameter("DateOfServiceTo", filters.DateOfServiceTo));
-                sqlParams.Add(new SqlParameter("RenderingProviderIds", filters.RenderingProviderIds));
-                sqlParams.Add(new SqlParameter("StatusIds", filters.StatusIds));
-                sqlParams.Add(new SqlParameter("Tab", filters.Tab));
-                sqlParams.Add(new SqlParameter("ShowVoided", filters.ShowVoided));
-                sqlParams.Add(new SqlParameter("ValidationIds", filters.ValidationIds));
-                sqlParams.Add(new SqlParameter("ResponseIds", filters.ResponseIds));
-                parameters.Add(new SqlParameter("ClaimNumber", filters.ClaimNumber));
-                parameters.Add(new SqlParameter("ShowVoided", filters.ShowVoided));
-
-            }
-
-            var sort = model.SortingModels.FirstOrDefault();
-            if (sort != null && sort.Dir != string.Empty)
-            {
-                sqlParams.Add(new SqlParameter("OrderField", sort.Field));
-                sqlParams.Add(new SqlParameter("OrderDir", sort.Dir == "desc"));
-            }
-            ;
-
-            var result =
-                await _dbHelper.ExecuteListAsync<ClaimHeaderModel>("GetClaimsByAccountInfoId",
-                    sqlParams);
-
-            var memberdetails = await _rethinkServices.GetStaffMemberList(model.AccountInfoId);
-            var memberIds = memberdetails.Select(m => m.memberId).ToList();
-            var memberNamesDict = memberdetails.ToDictionary(m => m.memberId, m => m.name);
-
-            var renderingProviders = await _rethinkServices.GetRenderingProvidersAsync(model.AccountInfoId);
-
-            //Get Account Detail for Test Account
-            var accountDetail = await _rethinkServices.GetAccountReturningEntityAsync(model.AccountInfoId, true);
-            var accountType = accountDetail.AccountType;
-
-
-            // Get the patients from BH Service.
-            var clientUsersList = await _rethinkServices.GetChildProfilesForAccount(model.AccountInfoId);
- 
-            #region Added new Optimize code to remove the foreach loop and use dictionary for lookup to improve performance
-            var clientUsersDict = clientUsersList.ToDictionary(x => x.Id);
-            var isTestAccount = accountType == 1;
-
-            foreach (var claim in result)
-            {
-                clientUsersDict.TryGetValue(claim.ChildProfileId, out var patientDetail);
-
-                if (string.IsNullOrWhiteSpace(claim?.PatientName) && patientDetail?.DateDeleted == null)
-                {
-                    claim.PatientName = patientDetail != null
-                        ? $"{patientDetail.FirstName} {patientDetail.MiddleName} {patientDetail.LastName}"
-                        : string.Empty;
-                }
-
-                if (patientDetail == null)
-                {
-                    claim.IsClientDeleted = true;
-                }
-
-                claim.AssigneeName = memberNamesDict.TryGetValue(claim.AssigneeId, out var assigneeName)
-                    ? FullNameExt.GetFullName(assigneeName.firstName, null, assigneeName.lastName)
-                    : "Unassigned";
-
-                claim.IsTestAccount = isTestAccount;
-                var auth = await _rethinkServices.GetChildProfileAuthorizationByClientId(model.AccountInfoId, claim.ChildProfileId, claim.ChildProfileAuthorizationId );
-                var isOverrideProvider = auth?.renderingProviderStaffId != null;
-
-                if (isOverrideProvider)
-                {
-                    claim.RenderingProviderName = renderingProviders.FirstOrDefault(x=>x.StaffMemberId == auth.renderingProviderStaffId.Value)?.Name;
-                }
-                else
-                {
-                    claim.RenderingProviderName = claim.RenderingProviderName;
-                    
-                }
-            }
-
-            #endregion
-
-            var totalCount = result.FirstOrDefault()?.TotalCount ?? 0;
-
-            var claimsCountResult =
-                (await _dbHelper.ExecuteListAsync<ClaimsCountModel>("GetClaimsCount",
-                    parameters)).FirstOrDefault();
-
-            switch (filters.Tab)
-            {
-                case (int)ClaimsTab.PendingReview:
-                    claimsCountResult.PendingReviewTotalCount = totalCount;
-                    break;
-                case (int)ClaimsTab.ReadyToBill:
-                    claimsCountResult.ReadyToBillTotalCount = totalCount;
-                    break;
-                case (int)ClaimsTab.BilledPending:
-                    claimsCountResult.BillingPendingTotalCount = totalCount;
-                    break;
-                case (int)ClaimsTab.Completed:
-                    claimsCountResult.ClosedTotalCount = totalCount;
-                    break;
-                case (int)ClaimsTab.Rejected:
-                    claimsCountResult.RejectedTotalCount = totalCount;
-                    break;
-                case (int)ClaimsTab.Denied:
-                    claimsCountResult.DeniedTotalCount = totalCount;
-                    break;
-                case (int)ClaimsTab.Flagged:
-                    claimsCountResult.FlaggedTotalCount = totalCount;
-                    break;
-            }
-
-            var response = new ClaimHeaderModelResponseModel()
-            {
-                Data = result,
-                TotalCount = totalCount,
-                ClaimsCount = claimsCountResult
-            };
-
-
-
-            // Refactored to batch load all claims in one query for performance
-            var claimNumbers = response.Data.Select(d => d.ClaimNumber).ToList();
-            var claims = await _claimRepository.Query()
-                .Where(x => x.AccountInfoId == model.AccountInfoId && x.DateDeleted == null && claimNumbers.Contains(x.ClaimIdentifier))
-                .Include(x => x.ClaimHistory)
-                .ToListAsync();
-
-            var claimsDict = claims.GroupBy(c => c.ClaimIdentifier).ToDictionary(g => g.Key, g => g.First());
-
-            response.Data.ForEach(data =>
-            {
-                data.IsManual = claimsDict.TryGetValue(data.ClaimNumber, out var claim)
-                && claim.ClaimHistory.Any(x => x.ClaimHistoryAction == ClaimHistoryAction.ClaimCreated && x.Mode == ClaimActionMode.User);
-            });
-
-            response.Data = response.Data.ApplySorting(model.SortingModels).ToList();
-            return response;
         }
 
         public async Task<ClaimHeaderModelResponseModel> GetClaimHeadersAsync(ClaimGetRequestSortFilterWithUserInfo model)
@@ -748,7 +584,11 @@ namespace BillingService.Domain.Services.Billing
 
                 try
                 {
-                    var auth = await _rethinkServices.GetChildProfileAuthorizationByClientId(accountInfoId,request.ClientId,request.AuthorizationId);
+                    var cacheKey = $"{authorizationCacheKeyPrefix}{accountInfoId}_{request.ClientId}_{request.AuthorizationId}";
+                    var auth = await _cacheService.GetOrSetCacheAsync(
+                        cacheKey,
+                        () => _rethinkServices.GetChildProfileAuthorizationByClientId(accountInfoId, request.ClientId, request.AuthorizationId),
+                        authorizationCacheDuration);
 
                     return new
                     {
@@ -884,22 +724,30 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task<List<ClaimFilterOptionModel>> GetClaimIdentifiersAsync(ClaimFilterGetModel model)
         {
-            var result = await _claimRepository.Query()
+            var query = _claimRepository.Query()
                 .Where(x => x.AccountInfoId == model.AccountInfoId &&
                             !x.DateDeleted.HasValue)
-                .Where(FilterClaimsBySelectedTab(model.Tab))
+                .Where(FilterClaimsBySelectedTab(model.Tab));
+
+            if (!string.IsNullOrWhiteSpace(model.SearchValue))
+            {
+                query = query.Where(x => x.ClaimIdentifier.Contains(model.SearchValue));
+            }
+
+            var result = await query
+                .OrderBy(x => x.ClaimIdentifier)
+                .Take(500)
                 .Select(x => new ClaimFilterOptionModel
                 {
                     Id = x.Id,
                     Name = x.ClaimIdentifier
                 })
-                .OrderBy(x => x.Name)
                 .ToListAsync();
 
             return result;
         }
 
-        public async Task<IQueryable<BillingClaimDetailsModel>> GetClaimChargesForAccountAsync(GetBillingClaimDetailsModel model)
+        public async Task<List<BillingClaimDetailsModel>> GetClaimChargesForAccountAsync(GetBillingClaimDetailsModel model)
         {
 
             var unitTypes = await _rethinkServices.GetUnitTypesAsync();
@@ -952,9 +800,11 @@ namespace BillingService.Domain.Services.Billing
 
             if (claimDiagnosisIds.Count > 0)
             {
-                foreach (var claimDiagnosId in claimDiagnosisIds)
+                // Batch all diagnosis lookups in parallel instead of sequential awaits
+                var diagnosisTasks = claimDiagnosisIds.Select(d => _rethinkServices.GetDiagnosisById(d.DiagnosisId)).ToList();
+                var diagnosisResults = await Task.WhenAll(diagnosisTasks);
+                foreach (var diagnosis in diagnosisResults)
                 {
-                    var diagnosis = await _rethinkServices.GetDiagnosisById(claimDiagnosId.DiagnosisId);
                     if (diagnosis != null)
                     {
                         claimDiagnosisCodesList.Add(diagnosis.diagnosisCode);
@@ -981,22 +831,36 @@ namespace BillingService.Domain.Services.Billing
 
             var hideChargeProvider = distinctChargeProviders.Count == 1;
 
+            // Batch the appointment-count query: one GroupBy instead of N CountAsync calls
+            var chargeEntryIds = billingClaimDetails.Select(x => x.Id).ToList();
+            var appointmentCountsDict = await _claimAppointmentChargeEntryEntityRepository.Query()
+                .Where(x => chargeEntryIds.Contains(x.ClaimChargeEntryEntityId))
+                .GroupBy(x => x.ClaimChargeEntryEntityId)
+                .Select(g => new { ChargeEntryId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.ChargeEntryId, x => x.Count);
+
+            // Pre-fetch all unique note-creator members in parallel
+            var uniqueNoteCreatorIds = billingClaimDetails
+                .Where(x => x.NoteCreatedBy.HasValue)
+                .Select(x => x.NoteCreatedBy!.Value)
+                .Distinct()
+                .ToList();
+            var memberTasks = uniqueNoteCreatorIds.ToDictionary(
+                id => id,
+                id => _rethinkServices.GetMemberAsync(accountInfoId, id));
+            await Task.WhenAll(memberTasks.Values);
+            var membersDict = memberTasks.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Result);
+
             foreach (var item in billingClaimDetails)
             {
-                if (!hideChargeProvider)
-                {
-                    item.RenderingProvider = renderingProviders.FirstOrDefault(rp => rp.StaffMemberId == item.RenderingProviderId)?.Name;
-                }
-                else
-                {
-                    item.RenderingProvider = null;
-                }
+                item.RenderingProvider = hideChargeProvider
+                    ? null
+                    : renderingProviders.FirstOrDefault(rp => rp.StaffMemberId == item.RenderingProviderId)?.Name;
 
-                var count = await _claimAppointmentChargeEntryEntityRepository.Query().Where(x => x.ClaimChargeEntryEntityId == item.Id).CountAsync();
-                item.AssociatedAppointmentsCount = count;
+                item.AssociatedAppointmentsCount = appointmentCountsDict.TryGetValue(item.Id, out var cnt) ? cnt : 0;
             }
 
-            var totalCount = billingClaimDetails.Count();
+            var totalCount = billingClaimDetails.Count;
 
             var paymentClaims = await GetPaymentClaimsWithByClaimIdAsync(model.ClaimId);
 
@@ -1010,11 +874,9 @@ namespace BillingService.Domain.Services.Billing
 
                 bcd.TotalCount = totalCount;
 
-                if (bcd.NoteCreatedBy != null)
+                if (bcd.NoteCreatedBy.HasValue && membersDict.TryGetValue(bcd.NoteCreatedBy.Value, out var noteMember))
                 {
-                    var member = await _rethinkServices.GetMemberAsync(accountInfoId, bcd.NoteCreatedBy ?? 0);
-
-                    bcd.NoteCreatorName = FullNameExt.GetFullName(member?.firstName, member?.lastName);
+                    bcd.NoteCreatorName = FullNameExt.GetFullName(noteMember?.firstName, noteMember?.lastName);
                 }
 
                 var writeOffAmount = _claimChargeEntryWriteOffRepository.Query().Where(x => x.ClaimChargeEntryId == bcd.Id && x.DateDeleted == null).Sum(x => x.WriteOffAmount);
@@ -1089,7 +951,7 @@ namespace BillingService.Domain.Services.Billing
                 processingQuery = processingQuery.Skip(model.Skip).Take(model.Take);
             }
 
-            return processingQuery;
+            return processingQuery.ToList();
         }
 
         public async Task<ActionResponse> RemoveBillingClaimDetailAsync(RemoveBillingClaimDetailsModel model)
@@ -1700,7 +1562,7 @@ namespace BillingService.Domain.Services.Billing
             var modelList = new List<GetBillingClaimDetailsModel>();
             var resultList = new List<BillingClaimDetailsModel>();
             int claimId = model.BillingClaimDetailsModels.Select(x => x.ClaimId).FirstOrDefault();
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
 
             foreach (var modelItem in model.BillingClaimDetailsModels)
             {
@@ -1903,7 +1765,7 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task<MemberViewSettingEntity> SaveSelectedColumnsAsync(int accountInfoId, int memberId, List<string> selectedColumns)
         {
-            var memberViewSettingExist = _memberViewSettingRepository.Query().FirstOrDefault(x => x.Id == memberId);
+            var memberViewSettingExist = await _memberViewSettingRepository.Query().FirstOrDefaultAsync(x => x.Id == memberId);
 
             if (memberViewSettingExist != null)
             {
@@ -1961,11 +1823,12 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task<MemberViewSettingEntity> GetMemberViewSettingsAsync(int memberId)
         {
-            var memberViewSettingEntity = _memberViewSettingRepository.Query().FirstOrDefault(x => x.Id == memberId);
+            var memberViewSettingEntity = await _memberViewSettingRepository.Query().FirstOrDefaultAsync(x => x.Id == memberId);
 
             if (memberViewSettingEntity == null)
             {
-                memberViewSettingEntity = new MemberViewSettingEntity
+                // Return default without persisting — the caller (save action) will write when the user explicitly saves
+                return new MemberViewSettingEntity
                 {
                     Id = memberId,
                     Client = true,
@@ -1986,9 +1849,6 @@ namespace BillingService.Domain.Services.Billing
                     Adjustment = true,
                     Actions = true
                 };
-
-                _memberViewSettingRepository.Add(memberViewSettingEntity);
-                await _memberViewSettingRepository.CommitAsync();
             }
 
             return memberViewSettingEntity;
@@ -2248,21 +2108,36 @@ namespace BillingService.Domain.Services.Billing
             }
             /*billingCodes*/
             int? lastBillingCodeRenderingProviderId = null;
+
+            // Pre-fetch all provider billing codes in parallel (one HTTP call per unique code)
+            var uniqueBillingCodeIds = saveModel.DiagnosisCode.BillingCodes
+                .Select(bc => bc.BillingCodeId)
+                .Distinct()
+                .ToList();
+            var billingCodeTasks = uniqueBillingCodeIds.ToDictionary(
+                id => id,
+                id => _rethinkServices.GetProviderBillingCode(claim.AccountInfoId, id));
+            await Task.WhenAll(billingCodeTasks.Values);
+            var providerBillingCodesLookup = billingCodeTasks.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Result);
+
+            // Pre-fetch client diagnoses once; re-use across all billing codes
+            var clientDiagnoses = firstClaimDiagnosisCode != null
+                ? await _rethinkServices.GetClientDiagnosisAsync(claim.AccountInfoId, claim.ChildProfileId)
+                : null;
+
             foreach (var billingCode in saveModel.DiagnosisCode.BillingCodes)
             {
-                var provider = await _rethinkServices.GetProviderBillingCode(claim.AccountInfoId, billingCode.BillingCodeId);
-                var providerBillingCodes = new BillingCodeData()
+                if (!providerBillingCodesLookup.TryGetValue(billingCode.BillingCodeId, out var provider) || provider == null)
+                {
+                    continue;
+                }
+                var providerBillingCode = new BillingCodeData()
                 {
                     billingCode = provider.billingCode,
                     billingCode2 = provider.billingCode2,
                     id = provider.id
                 };
-                var providerBillingCode = providerBillingCodes;
 
-                if (providerBillingCode == null)
-                {
-                    continue;
-                }
                 var claimChargeEntry = new ClaimChargeEntryEntity
                 {
                     ClaimId = claim.Id,
@@ -2309,9 +2184,8 @@ namespace BillingService.Domain.Services.Billing
                 //       one in the dx code list. I changed it to set it to the first dxCode.
                 if (firstClaimDiagnosisCode != null)
                 {
-                    var diagnos = await _rethinkServices.GetClientDiagnosisAsync(claim.AccountInfoId, claim.ChildProfileId);
-                    var diagnosisCodes = diagnos.FirstOrDefault(x => x.diagnosisId == firstClaimDiagnosisCode.DiagnosisId);
-                    DiagnosisEntityModel diagnosisEntity = null;
+                    var diagnosisCodes = clientDiagnoses?.FirstOrDefault(x => x.diagnosisId == firstClaimDiagnosisCode.DiagnosisId);
+                    DiagnosisEntityModel diagnosisEntity;
                     if (diagnosisCodes != null)
                     {
                         diagnosisEntity = new DiagnosisEntityModel()
@@ -2329,8 +2203,7 @@ namespace BillingService.Domain.Services.Billing
                             DiagnosisCode = diagnosisCode.diagnosisCode
                         };
                     }
-                    var diagnosis = diagnosisEntity;
-                    claimChargeEntry.DiagnosisCode = diagnosis.DiagnosisCode;
+                    claimChargeEntry.DiagnosisCode = diagnosisEntity.DiagnosisCode;
                 }
 
                 MarkCreated(claimChargeEntry, model.MemberId);
@@ -2352,7 +2225,7 @@ namespace BillingService.Domain.Services.Billing
             }, Queues.RT_Billing_ClaimCreationEnd);
 
 
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             foreach (var chargeEntryId in claim.ClaimChargeEntries)
             {
                 claimTransactionData.Add(PrepareClaimTransaction(chargeEntryId.Id, ClaimTransactionType.billedAmount));
@@ -2365,7 +2238,7 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task<List<ClaimApprovalResponseModel>> ApproveClaimsAsync(int accountInfoId, int memberId, int[] claimsIds)
         {
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             var claimErrors = new List<ClaimApprovalResponseModel>();
 
             var claimsList = await _claimRepository.Query()
@@ -2397,7 +2270,7 @@ namespace BillingService.Domain.Services.Billing
                     });
 
                     await PrepareClaimError("Claim not found", ClaimErrorNumber.FunderNotFound, claimId, memberId);
-                    throw new ArgumentNullException("Claim not found");
+                    continue;
                 }
 
                 var mapping = mappings[claimId];
@@ -2414,7 +2287,7 @@ namespace BillingService.Domain.Services.Billing
                     claim.ClaimStatus = ClaimStatus.ApprovalFailed;
                     MarkUpdated(claim, memberId);
                     await _claimRepository.CommitAsync();
-                    throw new ArgumentNullException("Claim approval Failed — Please add the Funder first, then try again.");
+                    continue;
                 }
 
                 if (mapping.insuranceType == ResponsibilitySequenceType.Secondary)
@@ -2429,7 +2302,7 @@ namespace BillingService.Domain.Services.Billing
                     claim.ClaimStatus = ClaimStatus.ApprovalFailed;
                     MarkUpdated(claim, memberId);
                     await _claimRepository.CommitAsync();
-                    throw new ArgumentNullException("Claim approval pending — update Secondary Funder to Primary and complete the appointment.");
+                    continue;
                 }
 
                 else
@@ -2483,7 +2356,7 @@ namespace BillingService.Domain.Services.Billing
                         });
 
                         await PrepareClaimError("Claim approval Failed", ClaimErrorNumber.FunderNotFound, claimId, memberId);
-                        throw new ArgumentNullException("Claim approval Failed");
+                        continue;
                     }
                 }
             }
@@ -2495,11 +2368,11 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task<int[]> UnapproveClaimsAsync(int accountInfoId, int memberId, int[] claimsIds)
         {
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             foreach (var claimId in claimsIds)
             {
-                var claim = _claimRepository.Query().FirstOrDefault(x => x.Id == claimId);
-                if (claim != null && claim.ClaimStatus == ClaimStatus.ReadyToBill || claim.ClaimStatus == ClaimStatus.Rebill)
+                var claim = await _claimRepository.Query().FirstOrDefaultAsync(x => x.Id == claimId);
+                if (claim != null && (claim.ClaimStatus == ClaimStatus.ReadyToBill || claim.ClaimStatus == ClaimStatus.Rebill))
                 {
                     await _claimHistoryService.AddAsync(new ClaimHistorySaveModel
                     {
@@ -2530,10 +2403,10 @@ namespace BillingService.Domain.Services.Billing
         public async Task<int[]> FlagClaimsAsync(int accountInfoId, int memberId, int[] claimsIds, string impersonationUserName = null)
         {
             List<int> flagIds = new List<int>();
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             foreach (var claimId in claimsIds)
             {
-                var claim = _claimRepository.Query().FirstOrDefault(x => x.Id == claimId);
+                var claim = await _claimRepository.Query().FirstOrDefaultAsync(x => x.Id == claimId);
                 if (claim.IsFlagged != true)
                 {
                     claim.IsFlagged = true;
@@ -2568,12 +2441,12 @@ namespace BillingService.Domain.Services.Billing
         public async Task<int[]> FlagClaimsAsync(int accountInfoId, int memberId, int[] claimIds, int[] reasonIds, string? notes, int? claimReasonTransactionId = null, string impersonationUserName = null)
         {
             var now = DateTime.UtcNow;
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
 
             // Fetch all claims
-            var claims = _claimRepository.Query()
+            var claims = await _claimRepository.Query()
                 .Where(c => claimIds.Contains(c.Id))
-                .ToList();
+                .ToListAsync();
 
             if (!claims.Any())
                 return Array.Empty<int>();
@@ -2604,8 +2477,8 @@ namespace BillingService.Domain.Services.Billing
             else
             {
                 // Edit mode: soft-delete the existing ClaimFlagTransaction
-                var existingTxn = _claimFlagTransactionRepository.Query()
-                    .FirstOrDefault(t => t.Id == claimReasonTransactionId.Value && t.DateDeleted == null);
+                var existingTxn = await _claimFlagTransactionRepository.Query()
+                    .FirstOrDefaultAsync(t => t.Id == claimReasonTransactionId.Value && t.DateDeleted == null);
 
                 if (existingTxn != null)
                 {
@@ -2655,18 +2528,18 @@ namespace BillingService.Domain.Services.Billing
         public async Task<int[]> UnflagClaimsAsync(int accountInfoId, int memberId, int[] claimsIds, string impersonationUserName = null)
         {
             List<int> unFlagIds = new List<int>();
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             foreach (var claimId in claimsIds)
             {
-                var claim = _claimRepository.Query().FirstOrDefault(x => x.Id == claimId);
+                var claim = await _claimRepository.Query().FirstOrDefaultAsync(x => x.Id == claimId);
                 if (claim != null && claim.IsFlagged != false)
                 {
                     claim.IsFlagged = false;
                     MarkUpdated(claim, memberId);
                     _claimRepository.Update(claim);
 
-                    var activeFlagTransactions = _claimFlagTransactionRepository.Query()
-                    .Where(t => t.HcClaimId == claimId && t.DateDeleted == null).ToList();
+                    var activeFlagTransactions = await _claimFlagTransactionRepository.Query()
+                    .Where(t => t.HcClaimId == claimId && t.DateDeleted == null).ToListAsync();
 
                     if (activeFlagTransactions.Any())
                     {
@@ -2707,10 +2580,10 @@ namespace BillingService.Domain.Services.Billing
         {
             List<AppointmentBillingStatus> apptBillingStatus = [];
             var claimIdentifiers = new List<ClaimDeleteResultModel>();
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             foreach (var claimId in claimIds)
             {
-                var claim = _claimRepository.Query().FirstOrDefault(x => x.Id == claimId);
+                var claim = await _claimRepository.Query().FirstOrDefaultAsync(x => x.Id == claimId);
                 if (claim != null)
                 {
                     SoftDelete(claim, memberId);
@@ -2921,7 +2794,7 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task<int[]> MarkBilledClaimsAsync(int accountInfoId, int memberId, int[] claimsIds)
         {
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             List<AppointmentBillingStatus> apptBillingStatus = [];
 
             foreach (var claimId in claimsIds)
@@ -2972,7 +2845,7 @@ namespace BillingService.Domain.Services.Billing
                 var claim = new ClaimEntity();
                 try
                 {
-                    claim = _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefault(x => x.Id == claimId);
+                    claim = await _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefaultAsync(x => x.Id == claimId);
                     if (claim != null)
                     {
                         var clearingHouseId = await _rethinkServices.GetClearingHouseId(claim.AccountInfoId);
@@ -3074,10 +2947,10 @@ namespace BillingService.Domain.Services.Billing
         public async Task<List<string>> VoidClaimsAsync(int accountInfoId, int memberId, ClaimsVoidModel claimsToVoid, int? clearingHouseId)
         {
             var claimIdentifiers = new List<string>();
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             foreach (var claimId in claimsToVoid.ClaimIds)
             {
-                var claim = _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefault(x => x.Id == claimId);
+                var claim = await _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefaultAsync(x => x.Id == claimId);
                 if (claim != null && claim.ClaimStatus != ClaimStatus.Closed && claim.ClaimStatus != ClaimStatus.VoidClosed)
                 {
                     DateTime reminddate = DateTime.Now;
@@ -3162,7 +3035,7 @@ namespace BillingService.Domain.Services.Billing
             var claimIdentifiers = new List<string>();
             foreach (var claimId in claimsToCompleteIds)
             {
-                var claim = _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefault(x => x.Id == claimId);
+                var claim = await _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefaultAsync(x => x.Id == claimId);
                 if (claim != null)
                 {
                     await _claimHistoryService.AddAsync(new ClaimHistorySaveModel
@@ -3192,10 +3065,10 @@ namespace BillingService.Domain.Services.Billing
         public async Task<List<string>> RebillClaimsAsync(int accountInfoId, int memberId, ClaimsRebillModel claimsToRebill, int? clearingHouseId = 0)
         {
             var claimIdentifiers = new List<string>();
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             foreach (var claimId in claimsToRebill.ClaimIds)
             {
-                var claim = _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefault(x => x.Id == claimId);
+                var claim = await _claimRepository.Query().Include(x => x.ClaimSubmissions).FirstOrDefaultAsync(x => x.Id == claimId);
                 var initialClaimStatus = claim.ClaimStatus;
 
                 if (claim.ClaimStatus == ClaimStatus.PendingReview || claim.ClaimStatus == ClaimStatus.ReadyToBill || claim.ClaimStatus == ClaimStatus.Rebill)
@@ -3299,7 +3172,7 @@ namespace BillingService.Domain.Services.Billing
         public async Task<List<string>> SecondaryBillingRebillClaimsAsync(SecondaryBillingClaimsRebillModel claimsToRebill)
         {
             var claimIdentifiers = new List<string>();
-            claimTransactionData = new List<ClaimTransactionModel>();
+            var claimTransactionData = new List<ClaimTransactionModel>();
             ClaimSubmitModel submitModel = null;
 
             var claim = await _claimRepository.Query()
@@ -3416,11 +3289,11 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task<ClaimNextFundersAndControlNumberModel> GetClaimBillNextFundersAndControlNumberAsync(int accountInfoId, int memberId, int claimId)
         {
-            var claim = _claimRepository.Query()
+            var claim = await _claimRepository.Query()
                 .Include(x => x.ClaimSubmissions)
                 .Include(x => x.PaymentClaims)
                 .ThenInclude(x => x.Payment)
-                .FirstOrDefault(x => x.Id == claimId && x.DateDeleted == null);
+                .FirstOrDefaultAsync(x => x.Id == claimId && x.DateDeleted == null);
 
             var controlNumber = claim.PaymentClaims.Where(x => x.Payment.PaymentTypeId == (int)PaymentTypes.ERAReceived).Any() ?
                 claim.PaymentClaims.Where(x => x.Payment.PaymentTypeId == (int)PaymentTypes.ERAReceived).OrderByDescending(x => x.DateCreated).FirstOrDefault().ControlNumber : "";

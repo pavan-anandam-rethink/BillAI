@@ -18,7 +18,7 @@ namespace BillingService.Domain.Interfaces.Billing
 {
     public interface IClaimService
     {
-        Task<IQueryable<BillingClaimDetailsModel>> GetClaimChargesForAccountAsync(GetBillingClaimDetailsModel model);
+        Task<List<BillingClaimDetailsModel>> GetClaimChargesForAccountAsync(GetBillingClaimDetailsModel model);
         Task<ActionResponse> RemoveBillingClaimDetailAsync(RemoveBillingClaimDetailsModel model);
 
 
