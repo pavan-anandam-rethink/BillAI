@@ -1,0 +1,88 @@
+﻿<ng-container *ngIf="!printType">
+    <kendo-grid #grid
+                class="Body2 adjustments-grid"
+                [data]="view | async"
+                [rowClass]="rowCallback"
+                (dataStateChange)="onStateChange($event)"
+                [navigable]="true">
+        <kendo-grid-column title="Date of Service">
+            <ng-template kendoGridCellTemplate let-dateItem>
+                {{dateItem.dateOfService | date: 'MM/dd/yyyy'}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="procedure" title="Procedure">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="nav-link" (click)="adjustmentClicked(dataItem)">{{dataItem.procedure}}</div>
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="mods" title="Mods">
+        </kendo-grid-column>
+        <kendo-grid-column field="billedAmount" title="Billed" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="expectedAmount" title="Expected" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="allowedAmount" title="Allowed" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="paidAmount" title="Payment" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="adjustment" title="Adjustment" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="patientResponsibility" title="Patient Responsibility" format="{0:c2}" [width]="180">
+        </kendo-grid-column>
+        <kendo-grid-column field="balance" title="Balance" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="actions" *ngIf="canEdit" [sortable]="false" title="Actions" class="border-bottom border-top p-0" [width]="90">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="status Body2">
+                    <span class="icon-24 write-off-icon pointer" (click)="writeOffCharge(dataItem)"  title="writeoff claim"></span>
+                </div>
+            </ng-template>
+        </kendo-grid-column>
+    </kendo-grid>
+</ng-container>
+<ng-container *ngIf="printType === 'payment-receipt'">
+    <kendo-grid #grid
+                class="Body2 payment-receipt-grid"
+                [data]="view | async"
+                (dataStateChange)="onStateChange($event)"
+                [navigable]="true">
+        <kendo-grid-column title="Date of Service">
+            <ng-template kendoGridCellTemplate let-dateItem>
+                {{dateItem.dateOfService | date: 'MM/dd/yyyy'}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="procedure" title="Procedure">
+        </kendo-grid-column>
+        <kendo-grid-column [width]=180 field="patientResponsibility" title="Patient Responsibility" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="paidAmount" title="Payment" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="balance" title="Balance" format="{0:c2}">
+        </kendo-grid-column>
+    </kendo-grid>
+</ng-container>
+<ng-container *ngIf="printType === 'itemized-receipt'">
+    <kendo-grid #grid
+                class="Body2 itemized-receipt-grid"
+                [data]="view | async"
+                (dataStateChange)="onStateChange($event)"
+                [navigable]="true">
+        <kendo-grid-column title="Date of Service">
+            <ng-template kendoGridCellTemplate let-dateItem>
+                {{dateItem.dateOfService | date: 'MM/dd/yyyy'}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="procedure" title="Procedure">
+        </kendo-grid-column>
+        <kendo-grid-column field="billedAmount" title="Billed" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="paidAmount" title="Payment" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="adjustment" title="Adjustment" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column [width]=180 field="patientResponsibility" title="Patient Responsibility" format="{0:c2}">
+        </kendo-grid-column>
+        <kendo-grid-column field="balance" title="Balance" format="{0:c2}">
+        </kendo-grid-column>
+    </kendo-grid>
+</ng-container>

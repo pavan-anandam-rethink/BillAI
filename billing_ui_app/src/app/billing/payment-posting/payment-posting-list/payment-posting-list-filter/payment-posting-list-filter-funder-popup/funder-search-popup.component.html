@@ -1,0 +1,24 @@
+﻿<kendo-popup #popup [anchor]="anchor" class="funder-search-popup" (anchorViewportLeave)="anchorViewportLeave.emit()">
+    <div [style.width.px]="anchor.nativeElement.offsetWidth - 26" style="display: block;">
+        <div class="mb-3 d-flex w-100 funder-search-input">
+            <span class="ml-2 icon-24 search-icon"></span>
+            <input placeholder="Search" (keyup)="fundersSearchValueChanged($event)"/>
+        </div>
+
+        <div [ngClass]="isLoading ? 'funders-list loading mb-2' : 'funders-list mb-2'" *ngIf="funders.length > 0">
+            <div *ngFor="let funder of funders" (click)="funderClicked(funder)" class="funder-item">
+                <input type="checkbox" [checked]="funder.checked"/>
+                <span class="ml-2">{{funder.funderName}}</span>
+            </div>
+        </div>
+        <ng-template [ngIf]="totalCount">
+            <div *ngIf="totalCount == 1; else notOne">
+                <span>{{totalCount}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{totalCount}} items</span>
+            </ng-template>
+        </ng-template>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+    </div>
+</kendo-popup>

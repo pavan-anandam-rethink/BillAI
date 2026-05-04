@@ -1,0 +1,83 @@
+<div class="WriteOffForm">
+    <div class="" [formGroup]="formGroup">
+        <div class="header col-12">Select your write off amount</div>
+        <div class="row">
+            <div class="col-12 writeoff-control">
+                <label for="amountType">Writeoff Amount</label>
+                <kendo-dropdownlist id="amountType"
+                                class="w-100"
+                                formControlName="amountTypeId"
+                                [valuePrimitive]="true"
+                                [popupSettings]="{popupClass: 'new-style-popup'}"
+                                [data]="claimsOrChargeToWriteOff?.length>1?amountTypeListWithMultiSelect:amountTypeList"
+                                textField="name"
+                                valueField="id"
+                                (valueChange)="updateAmountValueValidators()">
+                    <ng-template kendoDropDownListValueTemplate let-dataItem>
+                        <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                        <span *ngIf="dataItem">{{dataItem.name}}</span>
+                    </ng-template>
+                </kendo-dropdownlist>
+            </div>  
+        </div>
+        <div *ngIf="formGroup.controls['amountTypeId'].value !== null && formGroup.controls['amountTypeId'].value !== AmountType.AllRemaining" class="row">
+            <div class="col-12 writeoff-control amount">
+            <input kendoTextBox id="amount"
+                class="w-100"
+                type="number"
+                formControlName="amount"
+                placeholder="Enter Amount" />
+            <div *ngIf="formGroup.controls['amount'].invalid && formGroup.controls['amountTypeId'].value === AmountType.PercentOfRemaining" class="small-12reg error-message">Percentage value cannot be greater than 100</div>
+            <div *ngIf="formGroup.controls['amount'].invalid && formGroup.controls['amountTypeId'].value === AmountType.Other" class="small-12reg error-message">Other Amount cannot be greater than Outstanding Balance: ${{balance}}</div>
+        </div>
+        </div>
+        <div *ngIf="!isServiceLine && (formGroup.controls['amountTypeId'].value === AmountType.PercentOfRemaining || formGroup.controls['amountTypeId'].value === AmountType.Other)">
+            <div class="header col-12">How would you like to apply the write off amount?</div>
+            <div class="row">
+                <div class="col-12 writeoff-control">
+                    <label for="application">Application</label>
+                    <kendo-dropdownlist id="application"
+                                    class="w-100"
+                                    formControlName="applicationTypeId"
+                                    [valuePrimitive]="true"
+                                    [popupSettings]="{popupClass: 'new-style-popup'}"
+                                    [data]="applicationList"
+                                    textField="name"
+                                    valueField="id">
+                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                            <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                            <span *ngIf="dataItem">{{dataItem.name}}</span>
+                        </ng-template>
+                    </kendo-dropdownlist>
+                </div>
+            </div>
+        </div>
+        <div class="header col-12">Choose your settlement reason code</div>
+        <div class="row">
+            <div class="col-12 writeoff-control">
+                <label for="reasonCode">Reason Code</label>
+                <kendo-dropdownlist id="reasonCode"
+                                class="w-100"
+                                formControlName="reasonCodeId"
+                                [valuePrimitive]="true"
+                                [popupSettings]="{popupClass: 'new-style-popup'}"
+                                [data]="writeOffReasonCodeList"
+                                textField="name"
+                                valueField="id">
+                    <ng-template kendoDropDownListValueTemplate let-dataItem>
+                        <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                        <span *ngIf="dataItem">{{dataItem.name}}</span>
+                    </ng-template>
+                </kendo-dropdownlist>
+            </div>
+        </div>
+        <div class="col-12 writeoff-control">
+            <div class="notes-header">Claim Notes</div>
+            <textarea class="form-control" placeholder="Enter Notes" formControlName="note" rows="5" maxlength="1000"></textarea>
+        </div>
+    </div>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="cancel()">Cancel</button>
+        <button kendoButton [primary]="true" [disabled]="!formGroup.valid" (click)="submit()">Submit</button>
+    </kendo-dialog-actions>
+</div>

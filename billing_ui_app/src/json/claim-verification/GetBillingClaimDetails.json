@@ -1,0 +1,33 @@
+[
+    {
+        "id": 785494,
+        "dos": "2023-10-17T00:00:00",
+        "billingCode": "97156",
+        "modifiers": null,
+        "modifier1": "",
+        "includeOnClaimMod1": true,
+        "modifier2": null,
+        "includeOnClaimMod2": true,
+        "modifier3": null,
+        "includeOnClaimMod3": true,
+        "modifier4": null,
+        "includeOnClaimMod4": true,
+        "diagnosis": "1234",
+        "hours": 0,
+        "units": 115.00,
+        "perUnitsCharge": 40.00,
+        "unitTypeValue": 0,
+        "billedAmount": 4600.00,
+        "expectedAmount": 0,
+        "paymentAmount": 0,
+        "adjustmentAmount": 0,
+        "patientAmount": 0,
+        "balanceAmount": 0,
+        "unitTypeId": 5,
+        "noteText": null,
+        "noteCreatedBy": null,
+        "noteCreatorName": null,
+        "noteCreatedDate": null,
+        "totalCount": 1
+    }
+]

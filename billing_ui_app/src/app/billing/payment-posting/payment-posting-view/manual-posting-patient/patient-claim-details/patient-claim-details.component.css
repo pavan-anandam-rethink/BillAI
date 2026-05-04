@@ -1,0 +1,29 @@
+﻿::ng-deep .claim-list kendo-tabstrip ul {
+    border: none !important;
+}
+
+::ng-deep .claim-list kendo-tabstrip .k-hierarchy-cell {
+    border: none !important;
+}
+
+::ng-deep .claim-list kendo-tabstrip li {
+    border: none !important;
+}
+
+::ng-deep .claim-list kendo-tabstrip div[role="tabpanel"] {
+    border: none;
+    padding: 0;
+}
+
+
+/* #LinkServiceLinesGrid, #UnlinkServiceLinesGrid {
+    width: 130% !important;
+}
+
+#serviceLinesDetails {
+    overflow-x: scroll;
+} */
+.patientChargeGrid ::ng-deep.hasErrors {
+    /* background-color: var(--warning-48) !important; */
+    display: none;
+}

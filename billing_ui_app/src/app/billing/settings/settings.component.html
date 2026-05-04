@@ -1,0 +1,15 @@
+<header-toolbar class="header-position" [headerTitle]="headerTitle" [isBackBtnShow]="false"
+                [isProfileShow]="false"></header-toolbar>
+<div class="encounter-tabs">
+  <mat-tab-group mat-align-tabs="start" disableRipple (selectedIndexChange)="selectedTabChanged($event)" #patientInvoiceListingTabGroup>
+
+    <mat-tab *ngIf="canEditPatientInvoicing" label="Invoicing and Statements">
+        <app-invoicing-statements-settings></app-invoicing-statements-settings>
+      </mat-tab>
+
+      <mat-tab label="Funder Settings">
+        <app-funder-settings></app-funder-settings>
+      </mat-tab>
+</mat-tab-group>
+</div>
+

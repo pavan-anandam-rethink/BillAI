@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <Optimize>True</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <Optimize>False</Optimize>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Interfaces\RethinkMasterDataMicroservices\**" />
+      <Compile Remove="JsonDataObjects\**" />
+      <Compile Remove="Services\RethinkMasterDataMicroservices\**" />
+      <EmbeddedResource Remove="Interfaces\RethinkMasterDataMicroservices\**" />
+      <EmbeddedResource Remove="JsonDataObjects\**" />
+      <EmbeddedResource Remove="Services\RethinkMasterDataMicroservices\**" />
+      <None Remove="Interfaces\RethinkMasterDataMicroservices\**" />
+      <None Remove="JsonDataObjects\**" />
+      <None Remove="Services\RethinkMasterDataMicroservices\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="DataObjects\Base\Address.cs" />
+      <Compile Remove="Models\PatientInvoice\PatientInvoiceViewModelBuilder.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.1" />
+      <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
+      <PackageReference Include="EdiFabric" Version="10.7.3" />
+      <PackageReference Include="HtmlRendererCore.PdfSharp" Version="1.0.5" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+      <PackageReference Include="PuppeteerSharp" Version="20.0.0" />
+      <PackageReference Include="RethinkCore.Print.Contracts" Version="2023.10.25.2" />
+      <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
+	  <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\EdiFabric\EdiFabric.Templates\EdiFabric.Templates.csproj" />
+      <ProjectReference Include="..\..\Rethink.Services.Common\Rethink.Services.Common.csproj" />
+      <ProjectReference Include="..\..\Rethink.Services.Domain\Rethink.Services.Domain.csproj" />
+      <ProjectReference Include="..\..\SummationService.Domain\SummationService.Domain.csproj" />
+      <ProjectReference Include="..\Rethink.Billing.FolderStructure.Core\Billing.FolderStructure.Core.csproj" />
+    </ItemGroup>
+
+</Project>

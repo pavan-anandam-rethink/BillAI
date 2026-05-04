@@ -1,0 +1,137 @@
+.editcomponent {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--Black-88);
+    background: rgba(239, 239, 239, 0.3);
+}
+
+.editinput {
+    border: none;
+    background: rgba(239, 239, 239, 0.3);
+}
+
+.editclaimcontrol {
+    padding: 6px 16px;
+}
+
+.edit-icon {
+    position: absolute;
+    right: 25px;
+    top: 35px;
+}
+
+.padding-left-5 {
+    padding-left: 5px !important;
+}
+
+.margin-left-none {
+    margin-left: 0px !important;
+}
+
+@media only screen and (max-width: 991px) {
+    .padding-right-45 {
+        padding-right: 45px;
+    }
+}
+
+.eye-icon {
+    position: absolute;
+    right: 45px;
+    top: 35px;
+}
+
+
+.nav-link {
+    color: #337ab7;
+    display: initial;
+    padding: 0;
+    cursor: pointer;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+.k-input {
+    text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+
+.disabled {
+    background-color: #F9F9F9 !important;
+}
+
+/* Funder input with pills inside */
+.funder-input-wrapper {
+    position: relative;
+}
+
+.funder-input-with-pill {
+    padding-right: 70px !important;
+}
+
+.funder-pills-container {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 2px;
+    z-index: 1;
+}
+
+/* Funder pill styles */
+.funder-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+    line-height: 20px;
+    flex-shrink: 0;
+}
+
+.pill-primary {
+    background-color: color-mix(in srgb, var(--kendo-color-primary-active, #0f548c) 13%, transparent) !important;
+    color: #004080;
+}
+
+.pill-secondary {
+    background-color: var(--Warning-98-20);
+    color: #ff8c00;
+}
+
+.authorization-status-text {
+    font-size: 12px;   
+}
+
+.status-label {
+    font-weight: 700;  
+}
+
+.status-value {
+    font-weight: 400;  
+    color: #000;
+}
+
+.authorization-warning {
+    font-size: 13px;
+    color: #120303;  
+}
+
+.warning-label {
+    font-weight: 700;
+    color: #d9534f; 
+}
+
+.warning-colon {
+    font-weight: 700;
+    color: #000; /* black */
+}

@@ -1,0 +1,73 @@
+.inline-edit {
+    max-width: 80px;
+    max-height: 24px;
+    margin: 3px 3px 3px 0;
+    /* background-color: #dbdde0; */
+    border-radius: 4px;
+    border-color: #dbdde0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+.actions {
+    display: none;
+    max-height: 20px;
+}
+
+.status:hover .actions {
+    display: block;
+}
+
+.status:hover .status-wrapper {
+    display: none;
+}
+
+.carc-pill {
+  display: inline-block;
+  background-color: #5ecfc1;
+  color: #060606;
+  padding: 4px 10px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 12px;
+  cursor: default;
+}
+
+.carc-pill-button {
+    background-color: #5ecfc1 !important;
+    color: #060606 !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 4px 0 !important;
+    margin: 2px !important;
+    font-size: 12px !important;
+    height: 28px !important;
+    line-height: 20px !important;
+    border-radius: 15px !important;
+    cursor: default !important;
+    text-align: center !important;
+}
+
+.carc-pill-button:hover:not(:disabled) {
+    background-color: #5ecfc1 !important;
+    opacity: 0.9;
+}
+
+.carc-pill-tooltip-host {
+    display: inline-block;
+}
+
+.carc-pill-button[disabled] {
+    cursor: default !important;
+    pointer-events: none !important;
+}

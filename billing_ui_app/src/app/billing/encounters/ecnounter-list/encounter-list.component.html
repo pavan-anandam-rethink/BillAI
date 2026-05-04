@@ -1,0 +1,1452 @@
+<header-toolbar
+  class="header-position"
+  [headerTitle]="headerTitle"
+  [isBackBtnShow]="false"
+  [isProfileShow]="false"
+  [breadcrumbs]="breadcrumbs"
+></header-toolbar>
+<div class="encounter-tabs">
+  <mat-tab-group
+    mat-align-tabs="start"
+    disableRipple
+    (selectedIndexChange)="selectedTabChanged($event)"
+    #claimListingTabGroup
+  >
+    <mat-tab label="Pending Review">
+      <ng-template mat-tab-label>
+        <span>Pending Review</span>
+        <span class="small-12reg encounter-count">{{
+          claimsCountForTabs.pendingReviewTotalCount
+        }}</span>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Ready to Bill">
+      <ng-template mat-tab-label>
+        <span>Ready to Bill</span>
+        <span class="small-12reg encounter-count">{{
+          claimsCountForTabs.readyToBillTotalCount
+        }}</span>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Billed - Pending">
+      <ng-template mat-tab-label>
+        <span>Billed - Pending</span>
+        <span class="small-12reg encounter-count">{{
+          claimsCountForTabs.billingPendingTotalCount
+        }}</span>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Completed">
+      <ng-template mat-tab-label>
+        <span>Completed</span>
+        <span class="small-12reg encounter-count">{{
+          claimsCountForTabs.closedTotalCount
+        }}</span>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Rejected">
+      <ng-template mat-tab-label>
+        <span>Rejected</span>
+        <span class="small-12reg encounter-count">{{
+          claimsCountForTabs.rejectedTotalCount
+        }}</span>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Denied">
+      <ng-template mat-tab-label>
+        <span>Denied</span>
+        <span class="small-12reg encounter-count">{{
+          claimsCountForTabs.deniedTotalCount
+        }}</span>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Flagged">
+      <ng-template mat-tab-label>
+        <span>Flagged</span>
+        <span class="small-12reg encounter-count">{{
+          claimsCountForTabs.flaggedTotalCount
+        }}</span>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<div class="encounter-main-container">
+  <div class="d-flex justify-content-between flex-wrap">
+    <div class="d-flex mt-2 ml-2">
+      <outlined-btn
+        text="Filter"
+        class="filter-btn"
+        id="toggleButton"
+        iconClass="icon-24 filter-icon"
+        [flip]="true"
+        (onClick)="toggleFilter($event)"
+      ></outlined-btn>
+      <contained-btn
+        *ngIf="canEdit && selectedTab === 1"
+        text="Add Claim"
+        iconClass="icon-24 add-circle-icon"
+        [routerLink]="['/billing/claims/add']"
+        style="margin-left: 12px"
+      ></contained-btn>
+    </div>
+
+    <div class="encounter-actions flex-wrap">
+      <div class="d-flex mt-2 ml-2">
+        <span
+          *ngIf="canApprove && selectedTab === 1"
+          class="icon-24 approve-icon pointer"
+          kendoTooltip
+          title="Approve Claim(s)"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="onApproveSelectedClaims()"
+        ></span>
+        <span
+          *ngIf="canApprove && selectedTab === 2"
+          class="icon-24 unapprove-icon pointer"
+          kendoTooltip
+          title="Unapprove"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="unapproveSelectedClaims()"
+        ></span>
+        <span
+          *ngIf="canSubmit && selectedTab === 2"
+          class="icon-24 arrow-right-icon pointer"
+          kendoTooltip
+          title="Submit"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="submitSelectedClaims()"
+        ></span>
+        <!-- <span *ngIf="selectedTab !== 1" class="icon-24 bill-next-icon pointer" kendoTooltip title="Bill Next Funder" (click)="billNextFunderSelectedClaim()" [ngClass]="{'disabled': mySelection.length > 1 || mySelection.length === 0}"></span> -->
+        <span
+          *ngIf="canEdit && selectedTab !== 1"
+          #printAnchorEl
+          class="icon-24 printer-icon pointer"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          [class.active]="flipPrintPopup"
+          (click)="columnsPrintToggle()"
+          kendoTooltip
+          title="Print Claim HCFA"
+        ></span>
+        <span
+          *ngIf="
+            canEdit &&
+            selectedTab !== 1 &&
+            selectedTab !== 2 &&
+            selectedTab !== 7
+          "
+          class="icon-24 unavailable-icon pointer"
+          kendoTooltip
+          title="Void"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="voidSelectedClaims()"
+        ></span>
+        <span
+          *ngIf="canEdit"
+          class="icon-24 write-off-icon pointer"
+          kendoTooltip
+          title="Write Off Claim"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="writeOffClaims()"
+        ></span>
+        <span
+          *ngIf="canEdit"
+          class="icon-24 refresh-right-icon"
+          kendoTooltip
+          title="Re-run Validation"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="reRunValidation()"
+        ></span>
+        <span
+          *ngIf="
+            canEdit &&
+            selectedTab !== 1 &&
+            selectedTab !== 2 &&
+            selectedTab !== 7
+          "
+          class="icon-24 claim-rebill-icon pointer"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="rebillSelectedClaim()"
+          kendoTooltip
+          title="Rebill"
+        ></span>
+        <span
+          *ngIf="canEdit"
+          class="icon-24 notes-r-icon pointer"
+          kendoTooltip
+          title="Notes"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="addNote()"
+        ></span>
+        <span
+          *ngIf="canEdit && selectedTab !== 7"
+          class="icon-24 flag-alt-icon pointer"
+          kendoTooltip
+          title="Flag"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="flagSelectedClaims()"
+        ></span>
+        <span
+          *ngIf="canEdit && selectedTab === 7"
+          class="icon-24 unflag-icon pointer"
+          kendoTooltip
+          title="Unflag"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="unflagSelectedClaims()"
+        ></span>
+        <span
+          *ngIf="canEdit"
+          class="icon-24 user-plus-icon pointe"
+          kendoTooltip
+          title="Assign User"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="openBulkAssignUserPopup(); $event.stopPropagation()"
+        ></span>
+        <span
+          *ngIf="canEdit && (selectedTab === 1 || selectedTab === 2)"
+          class="icon-24 trash-icon pointer"
+          kendoTooltip
+          title="Delete"
+          [ngClass]="{ disabled: mySelection.length === 0 }"
+          (click)="onDeleteSelectedClaims()"
+        ></span>
+      </div>
+      <!-- ASSIGN POPUP MODE -->
+      <div
+        *ngIf="showBulkAssignUserPopupId.length > 0"
+        class="status-dropdown assign-dropdown"
+        (click)="$event.stopPropagation()"
+      >
+        <mat-form-field appearance="outline" class="status-select">
+          <mat-select
+            placeholder="Set Assignee"
+            [(value)]="selectedAssigneeId"
+            (selectionChange)="onAssigneeSelected($event)"
+            (openedChange)="dropdownopen($event)"
+          >
+            <mat-option class="sticky-search-option">
+              <div
+                class="d-flex w-100 assignee-search-input align-items-center"
+              >
+                <span class="icon-24 search-icon"></span>
+                <input
+                  #searchInput
+                  placeholder="Search"
+                  (keyup)="assigneeSearchValueChanged($event)"
+                  (click)="$event.stopPropagation()"
+                  (mousedown)="$event.stopPropagation()"
+                  class="search-input"
+                />
+                <span
+                  *ngIf="searchInput.value"
+                  class="icon-24 close-icon pointer search-clear-input"
+                  (click)="
+                    clearAssigneeSearch(searchInput); $event.stopPropagation()
+                  "
+                  (mousedown)="$event.stopPropagation()"
+                  title="Clear search"
+                ></span>
+              </div>
+            </mat-option>
+            <mat-option
+              *ngFor="let user of filteredAssignableUsers"
+              [value]="user.memberId"
+              class="user-option"
+            >
+              {{ user.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="bulk-status-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="assignUserSelectedClaims()"
+          >
+            Save
+          </button>
+          <button
+            mat-button
+            type="button"
+            class="cancel-button"
+            (click)="closeBulkAssignPopup()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+      <div class="m-2">
+        <outlined-btn
+          #selectorAnchorEl
+          text="Customize Columns"
+          iconClass="icon-24 customize-icon selector-icon"
+          [flip]="true"
+          (onClick)="columnsSelectorToggle()"
+        ></outlined-btn>
+      </div>
+    </div>
+  </div>
+  <claim-filters
+    [tab]="selectedTab"
+    (filterChanged)="onFilterChanged()"
+    (showVoidedEmitter)="onShowVoidedChange($event)"
+  ></claim-filters>
+  <div class="encounter-list">
+    <div id="encounters" class="tab-content">
+      <kendo-grid
+        #encountersGrid
+        id="big-grid"
+        [class.filter-on]="showFilter"
+        class="height-100"
+        *ngIf="!redraw"
+        [data]="view | async"
+        [pageSize]="gridState.take!"
+        [skip]="gridState.skip!"
+        [sort]="gridState.sort!"
+        [pageable]="pagingSettings"
+        [sortable]="{ mode: 'single' }"
+        [navigable]="false"
+        (sortChange)="onSortChange($event)"
+        (pageChange)="onPageChange($event)"
+        kendoGridSelectBy="id"
+        [selectable]="selectableSettings"
+        [selectedKeys]="selectedKeysArray"
+        (selectionChange)="onSelectChange($event)"
+        [resizable]="true"
+        [rowClass]="setRowClass"
+        [trackBy]="trackByClaimId"
+      >
+        <kendo-grid-checkbox-column [showSelectAll]="true" [width]="50">
+          <ng-template kendoGridHeaderTemplate>
+            <input
+              type="checkbox"
+              [checked]="selectAllChecked"
+              (change)="toggleSelectAll($event)"
+            />
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <input
+              type="checkbox"
+              [disabled]="dataItem.isClientDeleted"
+              [checked]="mySelection.includes(dataItem.id)"
+              (change)="onCheckboxChange($event, dataItem)"
+              
+              [title]="dataItem.isClientDeleted ? 'This claim cannot be processed because the associated client has been deleted from the system' : ''"
+            />
+          </ng-template>
+        </kendo-grid-checkbox-column>
+
+        <kendo-grid-column
+          title=""
+          [sortable]="false"
+          class="k-expander-cell border-bottom border-top p-0"
+          [width]="40"
+        >
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+            let-rowIndex="rowIndex"
+          >
+            <a
+              #expanderRef
+              class="k-icon k-plus ng-star-inserted"
+              href="javascript:void(0)"
+              tabindex="-1"
+              (click)="onExpanderClick(rowIndex, expanderRef, dataItem.id)"
+            ></a>
+            <!-- <a #expanderRef class="k-icon k-font-icon k-plus ng-star-inserted" href="javascript:void(0)" tabindex="-1" (click)="onExpanderClick(rowIndex, expanderRef)"></a> -->
+          </ng-template>
+        </kendo-grid-column>
+        
+        <!-- New Validation Column -->
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.validation"
+          field="validation"
+          title="Validation"
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          [width]="120"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="validation Body2">
+              <div class="encounter-validation d-flex">
+                <div
+                  [class.invisible]="dataItem.errorsCount <= 0"
+                  class="d-flex pointer"
+                  title="errors"
+                  kendoTooltip
+                  (click)="showErrorsAlerts(dataItem, 'Error')"
+                >
+                  <span class="validation-count-badge errors-badge">{{
+                    dataItem.errorsCount
+                  }}</span>
+                </div>
+                <div
+                  [class.invisible]="dataItem.warningsCount <= 0"
+                  class="d-flex pointer"
+                  title="alerts"
+                  kendoTooltip
+                  (click)="showErrorsAlerts(dataItem, 'Alert')"
+                >
+                  <span class="validation-count-badge warnings-badge">{{
+                    dataItem.warningsCount
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="claimNumber"
+          title="Claim"
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          [width]="140"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="!canEdit">{{ dataItem.claimNumber }}</div>
+            <div
+              *ngIf="canEdit"
+              class="nav-link"
+              [routerLink]="[
+                '/billing/claims/edit',
+                selectedTab,
+                dataItem.claimNumber
+              ]"
+            >
+              {{ dataItem.claimNumber }}
+            </div>
+            <div [class.invisible]="true">{{ dataItem.cmsPagesCount }}</div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.client"
+          field="patientName"
+          title="Client"
+          class="border-bottom border-top p-0"
+          [width]="130"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="nav-link" (click)="showClientInfo(dataItem)">
+              {{ dataItem.patientName }}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.funder"
+          field="funderName"
+          title="Funder"
+          class="border-bottom border-top p-0"
+          [width]="150"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="funder-cell" style="display: flex; align-items: center; gap: 8px;">   <!--Removing logic to display funder name base on Auth -- RHD-31568--> 
+              <div
+                class="nav-link"
+                (click)="
+                  navigateToFunderSetup(
+                    dataItem.childProfileId,
+                    dataItem.childProfileFunderId
+                  )
+                "
+              >
+                {{ dataItem.funderName }}
+              </div>
+              <ng-container *ngIf="dataItem.authorizationNumber !== 'N/A' && dataItem.funderId && dataItem.primaryFunderId === dataItem.funderId && dataItem.primaryFunderId !== dataItem.secondaryFunderId">
+                <span class="funder-pill pill-primary" kendoTooltip title="Primary Funder">P</span>
+              </ng-container>
+              <ng-container *ngIf="dataItem.authorizationNumber !== 'N/A' && dataItem.funderId && dataItem.secondaryFunderId === dataItem.funderId">
+                <span class="funder-pill pill-secondary" kendoTooltip title="Secondary Funder">S</span>
+              </ng-container>
+              
+              <ng-template #naBlock>
+                <span>N/A</span>
+              </ng-template>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.renderingProvider"
+          field="renderingProviderName"
+          title="Rendering Provider"
+          class="border-bottom border-top p-0"
+          [width]="150"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span
+              class="header-label"
+              kendoTooltip
+              title="{{ column.title }}"
+              >{{ column.title }}</span
+            >
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div
+              class="nav-link"
+              (click)="navigateToRPSetup(dataItem.renderingProviderId)"
+            >
+              {{ dataItem.renderingProviderName }}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.placeOfService"
+          field="placeOfService"
+          title="Place of Service"
+          class="border-bottom border-top p-0"
+          [width]="130"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span
+              class="header-label"
+              kendoTooltip
+              title="{{ column.title }}"
+              >{{ column.title }}</span
+            >
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.dateOfService"
+          field="dateOfServiceStart"
+          title="Date of Service"
+          class="border-bottom border-top p-0"
+          [width]="130"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span
+              class="header-label"
+              kendoTooltip
+              title="{{ column.title }}"
+              >{{ column.title }}</span
+            >
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dateItem>
+            <ng-template
+              [ngIf]="dateItem.DateOfServiceStart == dateItem.DateOfServiceEnd"
+              [ngIfElse]="elseBlock"
+              >{{
+                dateItem.dateOfServiceStart | date : locale.userDateFormat
+              }}</ng-template
+            >
+            <ng-template #elseBlock
+              >{{ dateItem.dateOfServiceStart | date : locale.userDateFormat }}
+              -
+              {{
+                dateItem.dateOfServiceEnd | date : locale.userDateFormat
+              }}</ng-template
+            >
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.authorization"
+          field="authorizationNumber"
+          title="Authorization Number"
+          class="border-bottom border-top p-0"
+          [width]="150"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span
+              class="header-label"
+              kendoTooltip
+              title="{{ column.title }}"
+              >{{ column.title }}</span
+            >
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div
+              *ngIf="
+                dataItem.authorizationNumber &&
+                  dataItem.childProfileAuthorizationId > 0;
+                else emptyAuthNumber
+              "
+              class="nav-link"
+              (click)="
+                navigateToAuthorization(
+                  dataItem.childProfileId,
+                  dataItem.childProfileAuthorizationId
+                )
+              "
+            >
+              {{ dataItem.authorizationNumber }}
+            </div>
+            <ng-template #emptyAuthNumber>
+              <ng-template
+                [ngIf]="dataItem.authorizationNumber"
+                [ngIfElse]="elseBlock"
+                >{{ dataItem.authorizationNumber }}</ng-template
+              >
+              <ng-template #elseBlock><span>N/A</span></ng-template>
+            </ng-template>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.expected"
+          field="expectedAmount"
+          title="Expected"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+          [width]="130"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.billed"
+          field="billedAmount"
+          title="Billed"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+          [width]="100"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.payment"
+          field="paymentAmount"
+          title="Payment"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+          [width]="130"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.patientResponsible"
+          field="patientResponsibilityAmount"
+          title="Patient Responsibility"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+          [width]="150"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span
+              class="header-label"
+              kendoTooltip
+              title="{{ column.title }}"
+              >{{ column.title }}</span
+            >
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.adjustment"
+          field="adjustmentAmount"
+          title="Adjustment"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+          [width]="130"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.balance"
+          field="balanceAmount"
+          title="Balance"
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+          [width]="100"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.billedDate"
+          field="billedDate"
+          title="Billed Date"
+          class="border-bottom border-top p-0"
+          [width]="100"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span
+              class="header-label"
+              kendoTooltip
+              title="{{ column.title }}"
+              >{{ column.title }}</span
+            >
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dateItem>
+            <span
+              *ngIf="
+                dateItem.billedDate !== undefined &&
+                dateItem.billedDate !== null &&
+                dateItem.billedDate !== '' &&
+                dateItem.billedDate !== '0001-01-01T00:00:00'
+              "
+            >
+              {{ dateItem.billedDate | date : locale.userDateFormat }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.status"
+          field="claimStatusName"
+          title="Status"
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          [width]="120"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="claim-status-wrap Body2">
+              <div class="claim-status status-wrapper">
+                <div
+                  *ngIf="showStatusDropdown !== dataItem.id"
+                  class="status-name"
+                  (mouseenter)="hoveredItemId = dataItem.id"
+                  (mouseleave)="hoveredItemId = null"
+                >
+                  <span class="status-text">
+                    {{ dataItem.claimStatusName }}
+                  </span>
+                  <span
+                    *ngIf="
+                      canEdit &&
+                      selectedTab === 3 &&
+                      dataItem.claimStatusName == 'Billed' &&
+                      hoveredItemId === dataItem.id
+                    "
+                    class="icon-24 pen-icon pointer edit-icon"
+                    style="width: 40px !important"
+                    kendoTooltip
+                    title="Update Claim Status"
+                    (click)="toggleStatusDropdown(dataItem)"
+                  ></span>
+                </div>
+
+                <div
+                  *ngIf="showStatusDropdown === dataItem.id"
+                  class="status-dropdown"
+                  (click)="$event.stopPropagation()"
+                  style="width:200px"
+                >
+                  <mat-form-field
+                    appearance="outline"
+                    class="status-select"
+                    aria-label="Update claim status"
+                    style="width:200px"
+                  >
+                    <mat-select #statusSelect placeholder="Set status">
+                      <mat-option value="5">Denied</mat-option>
+                      <mat-option value="9">Rejected</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div class="status-actions">
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      type="button"
+                      [disabled]="!statusSelect.value"
+                      (click)="
+                        updateClaimStatus(dataItem, statusSelect.value);
+                        toggleStatusDropdown(null)
+                      "
+                    >
+                      Update
+                    </button>
+                    <button
+                      mat-button
+                      type="button"
+                      class="cancel-button"
+                      (click)="toggleStatusDropdown(null)"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="
+            viewColumnsSettings &&
+            viewColumnsSettings.status &&
+            (this.selectedTab.toString() == '6' ||
+              this.selectedTab.toString() == '5')
+          "
+          field="reasonCodes"
+          [title]="
+            this.selectedTab.toString() === '6'
+              ? 'Denial Reason'
+              : 'Rejection Reason'
+          "
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          [width]="170"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="claim-status-wrap Body2">
+              <ng-container
+                *ngFor="let code of getUniqueCodes(dataItem.reasonCodes)"
+              >
+                <span
+                  class="carc-pill-tooltip-host"
+                  kendoTooltip
+                  [title]="
+                    selectedTab == 6
+                      ? getCarcDescription(code)
+                      : getExternalDescription(code)
+                  "
+                >
+                  <button mat-raised-button class="carc-pill-button" disabled>
+                    {{ code }}
+                  </button>
+                </span>
+                
+              </ng-container>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings?.status && selectedTab.toString() === '7'"
+          field="reason"
+          title="Flagged Reason"
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          [width]="170"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span>{{ column.title }}</span>
+          </ng-template>
+
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+            let-rowIndex="rowIndex"
+          >
+            <div class="claim-status-wrap Body2">
+              <ng-container
+                *ngFor="let reason of getReason(dataItem.reason); let i = index"
+              >
+                <!-- Pill element -->
+                <span
+                  class="carc-pill clickable-pill"
+                  #pillElement
+                  (click)="togglePopup(rowIndex, i); $event.stopPropagation()"
+                >
+                  {{ reason }}
+                </span>
+
+                <!-- Popup Tooltip -->
+                <kendo-popup
+                  *ngIf="popupOpen[rowIndex] && popupOpen[rowIndex][i]"
+                  [anchor]="pillElement"
+                  [offset]="{ left: 0, top: 5 }"
+                  [positionMode]="'absolute'"
+                >
+                  <div
+                    class="custom-tooltip"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <span class="close-icon" (click)="closePopup(rowIndex, i)"
+                      >✕</span
+                    >
+
+                    <div class="tooltip-body popup-text">
+                      <p class="popup-label">Reason:</p>
+                      <p class="popup-value">{{ reason }}</p>
+
+                      <p class="popup-label">Comments:</p>
+                      <p class="popup-value">
+                        {{
+                          getReasonDescription(dataItem.flagReasonTransactionId)
+                        }}
+                      </p>
+                    </div>
+                    <div class="tooltip-footer">
+                      <span
+                        class="edit-btn"
+                        (click)="openEditModal(dataItem, rowIndex, i)"
+                        kendoTooltip
+                        title="Edit"
+                      >
+                        <!-- <span class="icon-24 edit-icon"></span> -->
+                        <span class="edit-text">Edit</span>
+                      </span>
+                    </div>
+                  </div>
+                </kendo-popup>
+              </ng-container>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.assigneeName"
+          field="assigneeName"
+          title="Assigned To"
+          class="border-bottom border-top p-0"
+          [width]="180"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">
+              {{ column.title }}
+            </span>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="claim-status-wrap Body2">
+              <div class="claim-assignee status-wrapper">
+                <!-- DISPLAY MODE -->
+                <div
+                  *ngIf="showAssignUserPopupId !== dataItem.id"
+                  class="status-name"
+                  (mouseenter)="hoveredAssigneeId = dataItem.id"
+                  (mouseleave)="hoveredAssigneeId = null"
+                >
+                  <span
+                    class="status-text assignee"
+                    [ngClass]="{
+                      'unassigned-text': dataItem.assigneeName == 'Unassigned'
+                    }"
+                    kendoTooltip
+                    title="{{ dataItem.assigneeName }}"
+                  >
+                    {{ dataItem.assigneeName | truncate : 17 }}
+                  </span>
+
+                  <span
+                    *ngIf="canEdit && hoveredAssigneeId === dataItem.id"
+                    class="icon-24 pen-icon pointer edit-icon"
+                    style="width: 40px !important"
+                    kendoTooltip
+                    title="Assign User"
+                    (click)="
+                      openInlineAssignUserPopup(dataItem);
+                      $event.stopPropagation()
+                    "
+                  ></span>
+                </div>
+
+                <!-- POPUP MODE -->
+                <div
+                  *ngIf="showAssignUserPopupId === dataItem.id"
+                  class="status-dropdown"
+                  (click)="$event.stopPropagation()"
+                >
+                  <mat-form-field appearance="outline" class="status-select">
+                    <mat-select
+                      placeholder="Set Assignee"
+                      [(value)]="selectedAssigneeId"
+                      (click)="onGridAssigneeSelected($event)"
+                      (openedChange)="griddropdownopen($event)"
+                    >
+                      <mat-option class="sticky-search-option">
+                        <div
+                          class="d-flex w-100 assignee-search-input align-items-center"
+                        >
+                          <span class="icon-24 search-icon"></span>
+                          <input
+                            #searchInput
+                            placeholder="Search"
+                            (keyup)="assigneeSearchValueChanged($event)"
+                            (click)="$event.stopPropagation()"
+                            (mousedown)="$event.stopPropagation()"
+                            class="search-input"
+                          />
+                          <span
+                            *ngIf="searchInput.value"
+                            class="icon-24 close-icon pointer search-clear-input"
+                            (click)="
+                              clearAssigneeSearch(searchInput);
+                              $event.stopPropagation()
+                            "
+                            (mousedown)="$event.stopPropagation()"
+                            title="Clear search"
+                          ></span>
+                        </div>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let user of filteredAssignableUsers"
+                        [value]="user.memberId"
+                        class="user-option"
+                      >
+                        {{ user.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div class="status-actions">
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      type="button"
+                      (click)="Assignee()"
+                    >
+                      Save
+                    </button>
+                    <button
+                      mat-button
+                      type="button"
+                      class="cancel-button"
+                      (click)="closeAssignPopup()"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.validation"
+          field="validation"
+          title="Responses"
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          [width]="120"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="validation Body2">
+              <div class="encounter-validation d-flex">
+                <div
+                  [class.invisible]="dataItem.responseCount <= 0"
+                  class="d-flex pointer"
+                  title="responses"
+                  kendoTooltip
+                  (click)="showErrorsAlerts(dataItem, 'Response')"
+                >
+                  <span class="validation-count-badge responses-badge">{{
+                    dataItem.responseCount
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          *ngIf="viewColumnsSettings && viewColumnsSettings.actions"
+          title="Actions"
+          [sortable]="false"
+          class="border-bottom border-top p-0"
+          [width]="120"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="Actions">Actions</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="claim-status-wrap Body2">
+              <div class="claim-actions">
+                <span
+                  *ngIf="
+                    SecondaryFunderExists(
+                      dataItem.claimStatusName,
+                      dataItem.submissionTypeId,
+                      dataItem.patientResponsibilityAmount,
+                      dataItem.isSecondaryPayerAvailable
+                    )
+                  "
+                  class="icon-24 bill-next-icon pointer"
+                  (click)="billNextFunderSelectedClaim(dataItem.id, 1)"
+                  kendoTooltip
+                  title="Bill Next Funder"
+                ></span>
+                <span
+                  *ngIf="
+                    RebillPostSecondaryBillingExists(
+                      dataItem.claimStatusName,
+                      dataItem.submissionTypeId,
+                      dataItem.patientResponsibilityAmount,
+                      dataItem.isSecondaryPayerAvailable
+                    ) && this.selectedTab.toString() !== '6'
+                  "
+                  class="icon-24 claim-rebill-icon pointer"
+                  (click)="billNextFunderSelectedClaim(dataItem.id, 2)"
+                  kendoTooltip
+                  title="Rebill Next Funder"
+                ></span>
+                <span
+                  class="icon-24 notes-r-icon"
+                  (click)="editClaimNotes(dataItem)"
+                  kendoTooltip
+                  title="Notes"
+                ></span>
+                <span
+                  *ngIf="canEdit"
+                  class="icon-24 write-off-icon pointer"
+                  (click)="writeOffClaims(dataItem)"
+                  kendoTooltip
+                  title="Write Off Claim"
+                ></span>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <ng-template kendoGridDetailTemplate let-dataItem>
+          <div class="Body1 mb-1 bold">Charge Details</div>
+          <encounter-list-details
+            [claimId]="dataItem.id"
+            [manualClaim]="dataItem.isManual"
+            (onUpdateEvent)="onUpdateServicelines()"
+          ></encounter-list-details>
+        </ng-template>
+
+        <ng-template
+          kendoPagerTemplate
+          let-totalPages="totalPages"
+          let-currentPage="currentPage"
+          let-total="total"
+        >
+          <div
+            style="display: flex; width: 100%; justify-content: space-between"
+          >
+            <div
+              style="margin: auto 0"
+              *ngIf="(view | async).data.length > 0"
+              class="Body1"
+            >
+              <ng-container *ngIf="isAllSelected; else normalPagination">
+                Displaying {{ getFooterRange() }} of {{ total }} items
+              </ng-container>
+              <ng-template #normalPagination>
+                Displaying {{ getPageStart(total) }}–{{ getPageEnd(total) }} of
+                {{ total }} items
+              </ng-template>
+            </div>
+            <div style="display: flex" class="customePageator">
+              <kendo-pager-page-sizes
+                [pageSizes]="gridPageSizes"
+              ></kendo-pager-page-sizes>
+              <kendo-pager-prev-buttons kendoTooltip></kendo-pager-prev-buttons>
+              <kendo-pager-numeric-buttons
+                [buttonCount]="5"
+              ></kendo-pager-numeric-buttons>
+              <kendo-pager-next-buttons kendoTooltip></kendo-pager-next-buttons>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid>
+
+      <kendo-grid
+        #encountersGrid
+        id="small-grid"
+        *ngIf="!redraw"
+        [data]="view | async"
+        [pageSize]="gridState.take!"
+        [skip]="gridState.skip!"
+        [sort]="gridState.sort!"
+        [pageable]="pagingSettings"
+        [sortable]="{ mode: 'single' }"
+        [navigable]="true"
+        (sortChange)="onSortChange($event)"
+        (pageChange)="onPageChange($event)"
+        kendoGridSelectBy="id"
+        [selectable]="true"
+        [selectedKeys]="mySelection"
+        [trackBy]="trackByClaimId"
+      >
+        <kendo-grid-column
+          field="claimNumber"
+          title="Claim"
+          class="border-bottom border-top p-0"
+          [width]="140"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="!canEdit">{{ dataItem.claimNumber }}</div>
+            <div
+              *ngIf="canEdit"
+              class="nav-link"
+              [routerLink]="[
+                '/billing/claims/edit',
+                selectedTab,
+                dataItem.claimNumber
+              ]"
+            >
+              {{ dataItem.claimNumber }}
+            </div>
+            <div [class.invisible]="true">{{ dataItem.cmsPagesCount }}</div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40">
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-checkbox-column>
+
+        <ng-template kendoGridDetailTemplate let-dataItem>
+          <div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.client">
+              Client:
+              <div class="nav-link">{{ dataItem.patientName }}</div>
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.funder">
+              Funder Name:
+              <a
+                class="nav-link"
+                [routerLink]="[
+                  '/clients/' + dataItem.childProfileId + '/info/funders/edit/',
+                  dataItem.childProfileFunderId
+                ]"
+                target="_blank"
+                >{{ dataItem.funderName }}</a
+              >
+            </div>
+            <div
+              *ngIf="
+                viewColumnsSettings && viewColumnsSettings.renderingProvider
+              "
+            >
+              Rendering Provider:
+              <a
+                class="nav-link"
+                [routerLink]="['/staff', dataItem.renderingProviderId]"
+                target="_blank"
+                >{{ dataItem.renderingProviderName }}</a
+              >
+            </div>
+            <div
+              *ngIf="viewColumnsSettings && viewColumnsSettings.placeOfService"
+            >
+              POS:
+              {{ dataItem.placeOfService }}
+            </div>
+            <div
+              *ngIf="viewColumnsSettings && viewColumnsSettings.dateOfService"
+            >
+              DOS:
+              <!--<ng-template [ngIf]="dateItem.dateOfServiceStart == dateItem.dateOfServiceEnd" [ngIfElse]="elseBlock">{{dateItem.dateOfServiceStart | date: locale.userDateFormat}}</ng-template>
+                                <ng-template #elseBlock>{{dateItem.dateOfServiceStart | date: locale.userDateFormat}} - {{dateItem.dateOfServiceEnd | date: locale.userDateFormat}}</ng-template>-->
+            </div>
+            <div
+              *ngIf="viewColumnsSettings && viewColumnsSettings.authorization"
+            >
+              Authorization Number:
+              <a
+                class="nav-link"
+                [routerLink]="[
+                  '/clients/' +
+                    dataItem.childProfileId +
+                    '/info/authorizations/',
+                  dataItem.childProfileAuthorizationId
+                ]"
+                target="_blank"
+                >{{ dataItem.authorizationNumber }}</a
+              >
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.expected">
+              Expected:
+              {{ dataItem.expectedAmount | currency : "CAD" : "symbol-narrow" }}
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.billed">
+              Billed:
+              {{ dataItem.billedAmount | currency : "CAD" : "symbol-narrow" }}
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.payment">
+              Payment:
+              {{ dataItem.paymentAmount | currency : "CAD" : "symbol-narrow" }}
+            </div>
+            <div
+              *ngIf="
+                viewColumnsSettings && viewColumnsSettings.patientResponsible
+              "
+            >
+              Patient Responsibility:
+              {{
+                dataItem.patientResponsible | currency : "CAD" : "symbol-narrow"
+              }}
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.adjustment">
+              Adjustment:
+              {{
+                dataItem.adjustmentAmount | currency : "CAD" : "symbol-narrow"
+              }}
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.balance">
+              Balance:
+              {{ dataItem.balanceAmount | currency : "CAD" : "symbol-narrow" }}
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.billedDate">
+              Billed Date:
+              <!--  {{dataItem.billedDate| date: locale.userDateFormat  }}-->
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.status">
+              Status:
+              {{ dataItem.claimStatusName }}
+            </div>
+            <div *ngIf="viewColumnsSettings && viewColumnsSettings.validation">
+              Validation:
+              <div class="validation Body2">
+                <div class="encounter-validation d-flex">
+                  <div
+                    [class.invisible]="dataItem.errorsCount <= 0"
+                    class="d-flex pointer"
+                    title="errors"
+                    kendoTooltip
+                    (click)="showErrorsAlerts(dataItem, 'Error')"
+                  >
+                    <span class="validation-count-badge errors-badge">{{
+                      dataItem.errorsCount
+                    }}</span>
+                  </div>
+                  <div
+                    [class.invisible]="dataItem.warningsCount <= 0"
+                    class="d-flex pointer"
+                    title="alerts"
+                    kendoTooltip
+                    (click)="showErrorsAlerts(dataItem, 'Alert')"
+                  >
+                    <span class="validation-count-badge warnings-badge">{{
+                      dataItem.warningsCount
+                    }}</span>
+                  </div>
+                  <div
+                    [class.invisible]="dataItem.responseCount <= 0"
+                    class="d-flex pointer"
+                    title="responses"
+                    kendoTooltip
+                    (click)="showErrorsAlerts(dataItem, 'Response')"
+                  >
+                    <span class="validation-count-badge responses-badge">{{
+                      dataItem.responseCount
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="Body1 mb-1 bold">Details</div>
+          <encounter-list-details
+            [claimId]="dataItem.id"
+          ></encounter-list-details>
+        </ng-template>
+      </kendo-grid>
+    </div>
+  </div>
+</div>
+
+<selector-popup
+  [anchor]="this.selectorAnchor"
+  (selectedColumnsEmitter)="setColumns($event)"
+  (onColumnSelect)="onColumnSelect($event)"
+  *ngIf="showSelectorPopup"
+  (onSelectorLeave)="onSelectorLeave($event)"
+  [viewColumns]="viewColumnsSettings"
+></selector-popup>
+<print-hcfa-popup
+  [anchor]="this.printAnchor"
+  [isPatientInvoiceComponent]="false"
+  *ngIf="showPrintPopup"
+  (onPrintPopupLeave)="onPrintPopupLeave($event)"
+  (onPrint)="printBulk()"
+  (onPrintMarkAsBilledOrSubmitted)="printMarkAsBilledBulk()"
+></print-hcfa-popup>
+
+<confirmation-dialog
+  [confirmDialog]="confirmExportToExcelDialog"
+></confirmation-dialog>
+<title-tooltip #tooltip></title-tooltip>
+<confirmation-dialog
+  #approveNoErrors
+  [confirmDialog]="confirmApproveNoErrors"
+  (onConfirm)="approveSelectedClaimsNoErrors($event)"
+></confirmation-dialog>
+<confirmation-dialog
+  #approveWithErrors
+  [confirmDialog]="confirmApproveWithErrors"
+  (onConfirm)="approveSelectedClaimsWithErrors($event)"
+></confirmation-dialog>
+<confirmation-dialog
+  [confirmDialog]="confirmDeleteClaimDialog"
+  (onConfirm)="deleteSelectedClaims($event)"
+></confirmation-dialog>
+<div kendoDialogContainer></div>
+
+<ng-template #testAccountDialog>
+  <div>
+    This claim is linked to a <b>test account</b> and cannot be submitted to the
+    Clearing House. Instead, it will be completed and marked as
+    <mark><strong>Billed</strong></mark
+    >, the same as using <mark><strong>Print &amp; Mark as Billed</strong></mark
+    >.<br />
+    <span>Do you want to continue with this action?</span>
+  </div>
+</ng-template>

@@ -1,0 +1,163 @@
+<div class="claim-details-block" [formGroup]="claimForm">
+    <div class="title Header-5">Additional Info</div>
+    <div class="content new-style">
+
+
+        <div class="row">
+            <div class="col-lg-4 mb-4 ">
+                <label for="responsibleParty" class="small-12med" style="font-size: 11px;">
+                    Benefits Assignment Certification Indicator*
+                </label>
+                <div id="clientName" class="client-name">
+                    <kendo-dropdownlist formControlName="benefitsAssignmentId"
+                        [popupSettings]="{ popupClass: 'new-style-popup' }" id="benefitAssignment"
+                        [data]="benefitsAssignmentIndicatorTypes" [valuePrimitive]="true" textField="description"
+                        valueField="id" class="w-100 k-component">
+                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                            <span class="dropdown-default" *ngIf="!dataItem">
+                                Select
+                            </span>
+                            <span *ngIf="dataItem">
+                                {{ dataItem.description }}
+                            </span>
+                        </ng-template>
+                    </kendo-dropdownlist>
+                </div>
+
+            </div>
+            <div class="col-lg-4 mb-4">
+                <label for="responsibleParty" class="small-12med">
+                    Authorized Release of Info*
+                </label>
+                <div id="clientName" class="client-name">
+                    <kendo-dropdownlist [popupSettings]="{ popupClass: 'new-style-popup' }" id="patientReleaseAgreement"
+                        [valuePrimitive]="true" [data]="confirmationTypes" formControlName="patientReleaseAgreement"
+                        textField="description" valueField="id" class="w-100 k-component" [disabled]="true">
+                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                            <span class="dropdown-default" *ngIf="!dataItem">
+                                Select
+                            </span>
+                            <span *ngIf="dataItem">
+                                {{ dataItem.description }}
+                            </span>
+                        </ng-template>
+                    </kendo-dropdownlist>
+                </div>
+
+            </div>
+            <div class="col-lg-4 mb-4 ">
+                <label for="authorizePayment" class="small-12med">
+                    Authorized Payment
+                </label>
+                <div id="authorizePaymentdiv" class="client-name">
+                    <kendo-dropdownlist [popupSettings]="{ popupClass: 'new-style-popup' }" id="authorizePayment"
+                        [data]="confirmationTypes" [valuePrimitive]="true" formControlName="authorizePayment"
+                        textField="description" valueField="id" class="w-100 k-component" [disabled]="true">
+                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                            <span class="dropdown-default" *ngIf="!dataItem">
+                                Select
+                            </span>
+                            <span *ngIf="dataItem">
+                                {{ dataItem.description }}
+                            </span>
+                        </ng-template>
+                    </kendo-dropdownlist>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-4">
+
+                <div class="mb-4" style="display: block;">
+                    <label for="responsibleParty" class="small-12med">
+                        Place of Service
+                    </label>
+                    <div id="clientName" class="client-name">
+                        <input id="funderName" type="text" formControlName="placeOfService" kendoTextBox 
+                            class="w-100 k-component editclaimcontrol disabled" placeholder="Place of Service" readonly/>
+                    </div>
+                </div>
+
+                <div class="mb-4" style="display: block;">
+                    <label for="submissionReason" class="small-12med">
+                        Submission Reason *
+                    </label>
+                    <div id="clientName" class="client-name">
+                        <kendo-dropdownlist formControlName="submissionReason"
+                            [popupSettings]="{ popupClass: 'new-style-popup' }" id="submissionReason"
+                            [data]="submissionReasonTypes" [valuePrimitive]="true" textField="description"
+                            valueField="id" class="w-100 k-component">
+                            <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                <span class="dropdown-default" *ngIf="!dataItem">
+                                    Select
+                                </span>
+                                <span *ngIf="dataItem">
+                                    {{ dataItem.description }}
+                                </span>
+                            </ng-template>
+                        </kendo-dropdownlist>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="col-lg-4 mb-4 ">
+                <label for="responsibleParty" class="small-12med">
+                    Original Claim
+                    <span *ngIf="hasRequiredValidator('originalClaim')">*</span>
+                </label>
+                <div id="clientName" class="client-name">
+                    <div class="textarea-wrapper">
+                        <textarea placeholder="Original Claim..." [rows]="3" class="w-100 k-textarea"
+                            formControlName="originalClaim" (resize)="true"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-lg-4 mb-4 ">
+                <label for="responsibleParty" class="small-12med">
+                    Note                    
+                    <span *ngIf="hasRequiredValidator('note')">*</span>
+                </label>
+                <div id="clientName" class="client-name">
+                    <div class="textarea-wrapper">
+                        <textarea placeholder="Note..." [rows]="3" class="w-100 k-textarea" formControlName="note"
+                            (resize)="true"></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- <div class="row">
+
+            <div class="col-lg-4 mb-4 ">
+                <label for="responsibleParty" class="small-12med">
+                    Submission Reason*
+                </label>
+                <div id="clientName" class="client-name">
+                    <kendo-dropdownlist formControlName="submissionReason"
+                        [popupSettings]="{ popupClass: 'new-style-popup' }" id="submissionReason"
+                        [data]="submissionReasonTypes" [valuePrimitive]="true" textField="description" valueField="id"
+                        class="w-100 k-component">
+                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                            <span class="dropdown-default" *ngIf="!dataItem">
+                                Select
+                            </span>
+                            <span *ngIf="dataItem">
+                                {{ dataItem.description }}
+                            </span>
+                        </ng-template>
+                    </kendo-dropdownlist>
+                </div>
+            </div>
+        </div> -->
+
+
+    </div>
+</div>

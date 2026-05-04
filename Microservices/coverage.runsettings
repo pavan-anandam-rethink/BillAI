@@ -1,0 +1,19 @@
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+
+          <!-- EXCLUDE TEST PROJECTS -->
+			<Exclude>
+				[*.Tests]*
+				[*.DTO*]*
+				[*.Model*]*
+				[*.DataObject*]*
+			</Exclude>
+
+         </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

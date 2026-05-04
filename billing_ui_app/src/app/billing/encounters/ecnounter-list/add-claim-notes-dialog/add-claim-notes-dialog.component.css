@@ -1,0 +1,33 @@
+.notes-header {
+    font-size: 12px;
+    color:  var(--Black-60);
+}
+
+label {
+    margin-bottom: 0rem;
+}
+
+.k-textbox, .k-input.k-textbox, .k-textarea {
+    padding: .375rem .75rem !important;
+}
+
+.claim-notes-control {
+    padding-top: 5px;
+    padding-bottom: 15px;
+    font-size: 13px;
+}
+.new-style .k-input-solid {
+    
+    border: 1px solid #ced4da !important;
+}
+:host ::ng-deep .new-style>.dateInput>.k-icon-button
+{
+    position: relative;
+    right: 0% !important;
+}
+textarea.form-control {
+    min-height: 4.5em;
+    max-height: 9.5em;
+    resize:vertical;
+    border-radius: 0.375rem;
+}

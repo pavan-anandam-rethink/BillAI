@@ -1,0 +1,28 @@
+﻿<div class="invoice-search-popup">
+    <!-- <div class="mb-3 d-flex w-100 invoice-search-input">
+        <span class="ml-2 icon-24 search-icon"></span>
+        <input #searchInput placeholder="Search" (keyup)="statusSearchValueChanged($event)"/>
+    </div> -->
+
+    <div [ngClass]="isLoading ? 'invoice-list loading mb-2' : 'invoice-list mb-2'" style="display: flow !important;" *ngIf="invoiceStatuses.length > 0">
+         <div class="invoice-item" (click)="selectAll(!isAllSelect)">
+            <input role="button" type="checkbox" [checked]="isAllSelect">
+            <span class="ml-2">Select All</span>
+        </div>
+        <div *ngFor="let status of invoiceStatuses" (click)="onStatusClicked(status)" class="invoice-item">
+            <input type="checkbox" readonly [checked]="status.checked"/>
+            <span class="ml-2">{{status.name}}</span>
+        </div>
+    </div>
+    <div>
+        <ng-template [ngIf]="invoiceStatuses.length">
+            <div *ngIf="invoiceStatuses.length == 1; else notOne">
+                <span>{{invoiceStatuses.length}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{invoiceStatuses.length}} items</span>
+            </ng-template>
+        </ng-template>
+        <!-- <mat-spinner *ngIf="isLoading"></mat-spinner> -->
+    </div>
+</div>

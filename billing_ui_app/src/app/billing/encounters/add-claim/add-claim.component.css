@@ -1,0 +1,14 @@
+.add-claim-tab-btns > outlined-btn, .add-claim-tab-btns > contained-btn:first-of-type {
+    margin-right: 16px;
+}
+
+.add-claim-tab-btns {
+    margin-top: 0px;
+}
+
+
+
+.add-claim-tiles {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

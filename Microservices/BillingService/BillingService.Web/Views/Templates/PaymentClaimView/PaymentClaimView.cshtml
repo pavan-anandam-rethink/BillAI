@@ -1,0 +1,514 @@
+﻿@using BillingService.Domain.Templates.ViewModels
+@using System.Globalization;
+@model PaymentClaimEOBViewModel
+@{
+    var currencyFormat = "{0:C2}";
+    var usCultureInfo = new CultureInfo("en-us");
+    usCultureInfo.NumberFormat.CurrencyNegativePattern = 1;
+    usCultureInfo.NumberFormat.CurrencyGroupSeparator = string.Empty;
+    var notSpecified = "Not Specified";
+    var issuedDate = Model.PaymentEOB.IssuedDate.HasValue ? Model.PaymentEOB.IssuedDate.Value.ToShortDateString()
+        : Model.CurrentTime.ToShortDateString();
+    var receivedDate = Model.PaymentEOB.RecievedDate.HasValue ? Model.PaymentEOB.RecievedDate.Value.ToShortDateString()
+        : Model.CurrentTime.ToShortDateString();
+
+    string currencyFormatter(decimal amount)
+    {
+        return @String.Format(usCultureInfo, currencyFormat, amount);
+    }
+}
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <style>
+            tbody {
+                page-break-inside: avoid
+            }
+
+            tr {
+                page-break-inside: avoid;
+                margin-top: 2px
+            }
+
+            td > div {
+                padding: 5px
+            }
+
+            table, th, td {
+                border-collapse: collapse;
+            }
+
+            .table-border {
+                border: 1px solid #CED6E0;
+            }
+
+            .border-styles {
+                border-style: solid;
+                border-color: #CED6E0;
+            }
+
+            .bt-br-bb-bl {
+                border-width: 1px;
+            }
+
+            .bt-br-bl {
+                border-width: 1px 1px 0 1px;
+            }
+
+            .bt-br-bb {
+                border-width: 1px 1px 1px 0;
+            }
+
+            .bt-br {
+                border-width: 1px 1px 0 0;
+            }
+
+            .bt-bb {
+                border-width: 1px 0 1px 0;
+            }
+
+            .br-bl {
+                border-width: 0 1px 0 1px;
+            }
+
+            .bt {
+                border-width: 1px 0 0 0;
+            }
+
+            .br {
+                border-width: 0 1px 0 0;
+            }
+
+            .bb {
+                border-width: 0 0 1px 0;
+            }
+
+            .align-top {
+                vertical-align: top;
+            }
+
+            .total {
+                color: #282E33
+            }
+
+            .Header-1 { /*Title*/
+                font-family: DM Sans;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 32px;
+                line-height: 120%;
+            }
+
+            .Header-3 {
+                font-family: DM Sans;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 24px;
+                line-height: 128%;
+            }
+
+            .Header-4 {
+                font-family: DM Sans;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 120%;
+                letter-spacing: 0.2px;
+            }
+
+            .bold {
+                font-weight: 700;
+            }
+
+            .small-12med {
+                font-style: normal;
+                font-weight: 600; /*initial 500 less diff with normal = 400 */
+                font-size: 12px;
+                letter-spacing: 0.2px;
+            }
+
+            .w-100 {
+                width: 100%
+            }
+
+            .w-33 {
+                width: 33.333%
+            }
+
+            .w-50 {
+                width: 50%
+            }
+
+            .h-100 {
+                height: 100%
+            }
+
+            .mh-100 {
+                min-height: 100%
+            }
+
+            .h-100p {
+                height: 100px;
+            }
+        </style>
+    </head>
+<body>
+
+<div id="wrapper" class="w-100" style="page-break-inside: avoid;">
+<div>
+    <table class="w-100 border-styles bt-br-bb-bl">
+        <tbody class="w-100">
+        <tr>
+            <td class="w-50 border-styles bt-br-bb-bl align-top">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="w-100">
+                            <div>Payment Amount</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="Header-1 total">@currencyFormatter(@Model.PaymentEOB.PaymentAmount)</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+                <td class="w-50 border-styles bt-br align-top">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="w-100">
+                            <div>Payer Info</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="Header-3">
+                                @Model.PaymentEOB.PayerName
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>Phone Number</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                @(string.IsNullOrEmpty(Model.PaymentEOB.PayerPhoneNumber) ?
+                                    notSpecified : Model.PaymentEOB.PayerPhoneNumber)
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="w-50 h-100p border-styles bt-br-bb-bl align-top">
+                <table class="w-100 mh-100 border-styles bb align-top">
+                    <tbody>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div class="small-12med">Method</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div class="small-12med">Check Number</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bb-bl">
+                            <div>@Model.PaymentEOB.PaymentMethod</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br-bb">
+                            <div>@Model.PaymentEOB.CheckNumber</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div class="small-12med">Issued Date</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div class="small-12med">Recieved Date</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bb-bl">
+                            <div>@issuedDate</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br-bb">
+                            <div>@receivedDate</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td class="w-50 border-styles bt-br-bb-bl">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="w-100">
+                            <div>Payee Info</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="Header-3">@Model.PaymentEOB.PayeeName</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>Address</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                @(string.IsNullOrEmpty(Model.PaymentEOB.PayeeAddress) ?
+                                    notSpecified : Model.PaymentEOB.PayeeAddress)
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+@foreach (var claim in Model.ClaimEOBInfo)
+{
+    <div style="margin-top: 10px; margin-bottom: 5px;">
+        <table style="page-break-inside: avoid">
+            <tbody>
+            <tr>
+                @if (@Model.ShowErrors)
+                {
+                    <td style="width: 95%; word-wrap: break-word">
+                        <div class="Header-4 bold">
+                            Claim #@claim.ClaimIdentifier
+                        </div>
+                    </td>
+                    <td>
+                        <div>Error</div>
+                    </td>
+                }
+                else
+                {
+                    <td colspan="2" style="word-wrap: break-word">
+                        <div class="Header-4 bold">
+                            Claim #@claim.ClaimIdentifier
+                        </div>
+                    </td>
+                }
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <table class="w-100 border-styles bt-br-bb-bl" style="page-break-inside: avoid">
+        <tbody>
+        <tr>
+            <td class="border-styles bt-br-bl">
+                <div class="bold">Claim Info:</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">@claim.PatientName</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Payer Claim Number @claim.PayerClaimNumber</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="w-33 h-100p border-styles bt-br-bl">
+                <table class="w-100 mh-100 border-styles bt-bb">
+                    <tbody class="w-100">
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div>Total Billed</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div>@currencyFormatter(@claim.BilledAmount ?? 0)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div>Total Paid</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div>@currencyFormatter(@claim.PaidAmount ?? 0)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bb-bl">
+                            <div>Patient Responsibility</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br-bb">
+                            <div>@currencyFormatter(@claim.PatientResponsibility ?? 0)</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td class="w-33 h-100p border-styles bt-br-bl">
+                <table class="w-100 mh-100 border-styles bt-bb">
+                    <tbody class="w-100">
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div>Patient ID</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div>@(string.IsNullOrEmpty(claim.PatientId) ?
+                                     notSpecified : claim.PatientId)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div>Provider</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div>@(string.IsNullOrEmpty(claim.ProviderName) ?
+                                     notSpecified : claim.ProviderName)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bb-bl">
+                            <div>Provider ID</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br-bb">
+                            <div>@(string.IsNullOrEmpty(claim.ProviderId) ?
+                                     notSpecified : claim.ProviderId)</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td class="w-33 h-100p border-styles bt-br-bl">
+                <table class="w-100 mh-100 border-styles bt-bb">
+                    <tbody class="w-100">
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div>Place of Service</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div>@(string.IsNullOrEmpty(claim.PlaceOfService) ?
+                                     notSpecified : claim.PlaceOfService)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bl">
+                            <div>Dates of Service</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br">
+                            <div>
+                                @{
+                                    var dates = claim.ServiceLines
+                                    .Where(sl => sl.DateOfService.HasValue)
+                                    .Select(sl => sl.DateOfService.Value);
+
+                                     string display = dates.Any()
+                                     ? dates.Min().ToShortDateString() + " - " + dates.Max().ToShortDateString()
+                                     : "N/A";
+                                }
+                                @display
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50 border-styles bt-br-bb-bl">
+                            <div>Claim Received</div>
+                        </td>
+                        <td class="w-50 border-styles bt-br-bb">
+                            <div>@Model.CurrentTime.ToShortDateString()</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 10px; margin-bottom: 5px">
+        @if (@Model.ShowErrors)
+        {
+            <div class="Header-4 bold">Errored Service Lines</div>
+        }
+        else
+        {
+            <div class="Header-4 bold">Service Lines</div>
+        }
+    </div>
+
+    <table class="w-100 border-styles bt-br-bb-bl">
+        <tbody>
+        <tr>
+            <td class="border-styles bt-br-bl">
+                <div class="bold">DOS</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Procedure/Units</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Billed/Allowed</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Adjustment</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Reason Code</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Deductible</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Co-Ins/Co-Pay</div>
+            </td>
+            <td class="border-styles bt-br">
+                <div class="bold">Payment</div>
+            </td>
+        </tr>
+        @foreach (var serviceLine in claim.ServiceLines)
+        {
+            <tr>
+                <td class="border-styles bt-br-bl">
+                    <div>@serviceLine.DateOfService.Value.ToShortDateString()</div>
+                </td>
+                <td class="border-styles bt-br-bl">
+                    <div>@serviceLine.Procedure/@(serviceLine.Units.GetValueOrDefault().ToString("0.####"))</div>
+                </td>
+                <td class="border-styles bt-br-bl">
+                    <div>@currencyFormatter(@serviceLine.BilledAmount ?? 0)/@currencyFormatter(@serviceLine.AllowedAmount ?? 0)</div>
+                </td>
+                <td class="border-styles bt-br-bl">
+                    <div>@currencyFormatter(@serviceLine.Adjustment ?? 0)</div>
+                </td>
+                <td class="border-styles bt-br-bl">
+                    @foreach (var reasonCodeData in @serviceLine.ReasonCodeData)
+                    {
+                        <div>@reasonCodeData.CombinedCode</div>
+                    }
+                </td>
+                <td class="border-styles bt-br-bl">
+                    <div>@currencyFormatter(@serviceLine.DeductibleAmount ?? 0)</div>
+                </td>
+                <td class="border-styles bt-br-bl">
+                    <div>@currencyFormatter(@serviceLine.CoPayCoInsAmount ?? 0)</div>
+                </td>
+                <td class="border-styles bt-br-bl">
+                    <div>@currencyFormatter(@serviceLine.PaidAmount ?? 0)</div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+</div>
+</body>
+</html>

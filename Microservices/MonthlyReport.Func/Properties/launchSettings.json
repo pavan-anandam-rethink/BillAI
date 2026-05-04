@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "MonthlyReport.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7126"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 30544,
+      "useSSL": false
+    }
+  }
+}

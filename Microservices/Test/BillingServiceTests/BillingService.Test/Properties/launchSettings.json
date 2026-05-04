@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "BillingService.Test": {
+      "commandName": "Project"
+    }
+  }
+}

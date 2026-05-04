@@ -1,0 +1,205 @@
+.icon-24 {
+    height: 10px;
+}
+.encounter-validation .icon-24 {
+    width: 10px;
+    height: 10px;
+    margin-right: 3px;
+}
+.encounter-validation div:first-child .icon-24 {
+    background-color: var(--Negative-88);
+}
+.encounter-validation div:nth-child(2) .icon-24 {
+    background-color: var(--Warning-98);
+    margin-left: 9px;
+}
+.encounter-validation div:last-child .icon-24 {
+    background-color: var(--Black-48);
+    margin-left: 9px;
+}
+
+.header-row {
+  margin-bottom: 12px;
+}
+
+.header-row contained-btn {
+  min-width: 150px; 
+}
+
+::ng-deep .encounter-tabs .mat-mdc-tab-header .mat-mdc-tab-labels {
+  justify-content: flex-start !important;
+}
+
+#invoice-list {
+    font-style: normal;
+    font-weight: normal;
+    background-color: var(--White-220);
+}
+
+#invoice-list .k-grid-header,
+#invoice-list .k-widget {
+    font-size: 14px !important;
+    line-height: 20px;
+}
+
+.header-actions-wrapper {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#invoice-list td {
+    padding: 10px 12px !important;
+    line-height: 20px;
+}
+
+td a.nav-link {
+    color: var(--Blue-72);
+    text-decoration: none;
+    padding: 0 !important;
+    padding: 0.75rem 1rem;
+}
+
+#actions-dropdown-list {
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    height: 0px;
+    width: 200px;
+    right: 0;
+    background-color: white;
+    padding: 0;
+    margin-top: 5px;
+    box-shadow: 0px 8px 20px rgba(37, 40, 43, 0.08);
+    border-radius: 8px;
+    background-color: var(--White-220);
+}
+
+#actions-dropdown-list li {
+    display: flex;
+    line-height: 40px;
+}
+
+#actions-dropdown-list.active {
+    border: 1px solid var(--Black-88);
+}
+
+#actions-dropdown-list span {
+    display: flex;
+    margin-left: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-right: 0px;
+}
+
+#actions-dropdown-list a {
+    display: flex;
+    font-weight: 500;
+    font-size: 14px;
+    color: #616E7A;
+    margin-left: 11px;
+}
+
+#actions-dropdown-list li:hover span {
+    background-color: var(--secd-text);
+}
+
+#actions-dropdown-list li:hover a {
+    color: var(--prim-act);
+}
+
+.payment-status {
+    max-height: 20px;
+}
+
+.actions {
+    display: none;
+    max-height: 20px;
+}
+
+.posting-actions span {
+    margin-right: 16px;
+}
+
+.invoice-list #invoice-grid {
+    width: 100%;
+}
+@media only screen and (min-width: 992px) {
+    .invoice-list #big-grid {
+        height: calc(100vh - 190px);
+    }
+    .invoice-list #big-grid.filter-on {
+        height: calc(100vh - 254px);
+    }
+}
+
+::ng-deep>.k-grid tbody tr {
+    height: 40px;
+}
+
+::ng-deep>.k-grid tbody tr td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+::ng-deep .customePageator .k-input-inner{
+  padding: 7px;
+}
+
+.encounter-tabs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.single-tab {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-tab-label-container {
+    display: flex;
+    overflow: hidden;
+    flex-grow: 0 !important;
+    z-index: 1;
+}
+
+.invoice-status-pill {
+    display: inline-block;
+    min-width: 150px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 0px 12px;
+    letter-spacing: 0.2px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.invoice-status-pill.fully-paid {
+    background-color: var(--Positive-84-20);
+    color: var(--Positive-84);
+}
+
+.invoice-status-pill.invoice-sent {
+    background-color: var(--Blue-72-20, rgba(56, 132, 244, 0.2));
+    color: var(--Blue-72, #3884F4);
+}
+
+.invoice-status-pill.partially-paid {
+    background-color: var(--Warning-98-20);
+    color: var(--Warning-98);
+}
+
+.invoice-status-pill.ready-to-invoice {
+    background-color: var(--Black-48-20, rgba(97, 110, 122, 0.2));
+    color: var(--Black-48, #616E7A);
+}
+
+.invoice-status-pill.submitted-to-revspring {
+    background-color: var(--Purple-72-20, rgba(136, 84, 208, 0.2));
+    color: var(--Purple-72, #8854D0);
+}

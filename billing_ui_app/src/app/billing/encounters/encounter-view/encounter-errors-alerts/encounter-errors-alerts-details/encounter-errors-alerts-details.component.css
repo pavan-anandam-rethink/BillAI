@@ -1,0 +1,33 @@
+.error-frame {
+    border: 1px solid var(--Black-88);
+    box-sizing: border-box;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px 5px 5px 5px;
+}
+
+.error-frame .w-50,
+.error-frame .w-100 {
+    padding: 10px 15px;
+}
+
+.error-frame .b-l {
+    border-left: 1px solid var(--Black-88);
+    padding-right: 0;
+    padding-bottom: 0;
+}
+
+.error-frame .b-t {
+    border-top: 1px solid var(--Black-88);
+}
+
+.error-frame .details {
+    display: flex;
+    flex-direction: column;
+}
+
+.error-frame .details .value {
+    text-align: start;
+    white-space: pre-line;
+}

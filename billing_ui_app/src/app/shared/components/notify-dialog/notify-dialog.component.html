@@ -1,0 +1,16 @@
+<div (clickOutside)="onClickedOutside($event)" id='notify-dialog-component'>
+    <kendo-dialog *ngIf="notifyDialog.opened" (close)="close()" [minWidth]="250" [width]="450">
+    <kendo-dialog-titlebar>
+        <div style="font-size: 18px; line-height: 1.3em;display:flex">
+        <mat-icon *ngIf="notifyDialog.title==='success'" class="{{notifyDialog.title}}">check_circle</mat-icon>
+        <mat-icon *ngIf="notifyDialog.title==='error'" class="{{notifyDialog.title}}">error_circle</mat-icon>
+        <mat-icon *ngIf="notifyDialog.title==='warning'" class="{{notifyDialog.title}}">warning_circle</mat-icon>
+        &nbsp;&nbsp;<span class="{{notifyDialog.title}}">{{notifyDialog.title}}</span>
+    </div>
+    </kendo-dialog-titlebar>
+    <p>{{notifyDialog.message}}</p>
+        <div class="d-flex flex-row-reverse">
+            <outlined-btn text="{{notifyDialog.okText}}" class="pointer" (onClick)="close()"></outlined-btn>
+        </div>
+    </kendo-dialog>
+  </div>

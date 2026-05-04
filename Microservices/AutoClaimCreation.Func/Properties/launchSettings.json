@@ -1,0 +1,29 @@
+{
+  "profiles": {
+    "AutoClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7090",
+      "launchBrowser": false
+    },
+    "Development.AutoClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7090",
+      "launchBrowser": false
+    },
+    "QA.AutoClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7090",
+      "launchBrowser": false
+    },
+    "Production.AutoClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7090",
+      "launchBrowser": false
+    },
+    "Staging.AutoClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7090",
+      "launchBrowser": false
+    }
+  }
+}

@@ -1,0 +1,36 @@
+﻿<div class="details Body2 strech-vert">
+    <div class="light head">
+        <div class="group">
+            <div class="header">Payment Amount</div>
+        </div>
+        <div class="group total Header-1">{{payment?.paymentAmount || 0 | currency}}</div>
+    </div>
+    <div class="light bottom">
+        <div class="dark small-12reg">
+            <div class="w-100">
+                <div class="group">
+                    <div class="property small-12med">Method</div>
+                    <div class="value">{{payment?.paymentMethod}}</div>
+                </div>
+            </div>
+            <div class="w-100 b-t">
+                <div class="group">
+                    <div class="property small-12med">Check Number</div>
+                    <div class="value">{{payment?.checkNumber}}</div>
+                </div>
+            </div>
+            <div class="w-50 b-t">
+                <div class="group">
+                    <div class="property small-12med">Issued Date</div>
+                    <div class="value">{{payment?.issuedDate || currentDate | date: 'MM/dd/yyyy'}}</div>
+                </div>
+            </div>
+            <div class="w-50 b-t b-l">
+                <div class="group">
+                    <div class="property small-12med">Recieved Date</div>
+                    <div class="value">{{payment?.recievedDate || currentDate | date: 'MM/dd/yyyy'}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

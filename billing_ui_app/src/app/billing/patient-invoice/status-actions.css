@@ -1,0 +1,41 @@
+﻿.status {
+    padding: .75em 7px .75em 0;
+}
+
+.status-name {
+    height: 28px;
+    border-radius: 14px;
+    font-weight: 700;
+    padding: 0px 12px;
+    letter-spacing: 0.2px;
+    line-height: 28px;
+}
+
+.status-name.partially {
+    background-color: var(--Warning-98-20);
+    color: var(--Warning-98);/*#DB9123;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+.status-name.fully {
+    background: var(--Positive-84-20);
+    color: var(--Positive-84);/*#579859;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.status-name.processed {
+    color: var(--Positive-84);
+    background-color: var(--Positive-84-20);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.status-name.denied {
+    color: var(--Negative-88);
+    background-color: var(--Negative-88-20);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,0 +1,159 @@
+<mat-toolbar class="headerBar" fxLayout="row" fxLayoutAlign="start center">
+  <mat-toolbar-row>
+    <div fxFlex class="header-left-section" fxLayout="column" fxLayoutAlign="start start">
+      <span *ngIf="isBackBtnShow" style="margin: 15px 15px 15px 0px;" class="icon-24 back chevron-left-icon pointer"
+        [routerLink]="['/billing/claims/list']"></span>
+
+      <!-- Section for Breadcrumbs begins -->
+      <div class="breadcrumb-container" *ngIf="breadcrumbs?.length > 0">
+        <ng-container *ngFor="let breadcrumb of breadcrumbs; let last = last">
+          <a *ngIf="!last" [routerLink]="breadcrumb.url" (click)="setTabIndexFromBreadcrumb(breadcrumb)"
+            class="breadcrumb-link">{{ breadcrumb.label }}</a>
+          <span *ngIf="last" class="breadcrumb-current">{{ breadcrumb.label }}</span>
+          <span *ngIf="!last" class="breadcrumb-separator icon-24 back chevron-right-icon pointer"></span>
+        </ng-container>
+      </div>
+      <!-- Section for Breadcrumbs ends -->
+
+      <!-- <div class="d-flex align-items-center"> -->
+      <!-- <div class="small-12reg path">{{headerTitle}}</div> -->
+      <div class="Header-2">{{headerTitle}}</div>
+    </div>
+
+
+    <div fxFlex class="profile" fxShow fxHide.xs> 
+      <div class="notif-wrapper" style="position: relative; display: inline-block; margin-right: -1%;">
+        <!-- Notification Bell -->
+        <button mat-icon-button class="notification-btn" #notifAnchorEl
+          (click)="$event.stopPropagation(); showNotifications = !showNotifications" [matBadge]="notifications?.length"
+          matBadgeOverlap="false" matBadgeColor="warn" [matBadgeHidden]="!(notifications?.length)"
+          aria-label="Notifications">
+          <mat-icon [style.color]="(notifications?.length || 0) > 0 ? 'rgb(211 99 60 / 87%)' : '#1D6EB8'">
+            notifications_none
+          </mat-icon>
+        </button>
+
+        <!-- Notification Dropdown -->
+        <div class="notification-panel" *ngIf="showNotifications">
+          <!-- Header Row -->
+          <div class="notif-header">
+            <div class="header-left">
+              <mat-icon
+                [style.color]="(notifications?.length || 0) > 0 ? 'rgb(211 99 60 / 87%)' : '#1D6EB8'">notifications_none</mat-icon>
+              <span>Alerts</span>
+            </div>
+
+            <button mat-icon-button class="header-close-btn" (click)="showNotifications = false" aria-label="Close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <div *ngIf="notifications?.length; else noNotifications">
+            <div *ngFor="let notify of notifications" class="notification-item">
+              <!-- LEFT IMAGE ICON -->
+              <div class="notif-icon-wrapper"
+                   *ngIf="!notify.title?.toLowerCase().includes('unprocessed appointments') && notify.title?.toLowerCase().includes('claims processed') || notify.title?.toLowerCase().includes('claims approved')">
+                <img src="/assets/img/ApprovedP.png"
+                     class="notif-icon-img"
+                     alt="status icon" />
+              </div>
+
+              <div class="notif-icon-wrapper"
+                   *ngIf="!notify.title?.toLowerCase().includes('unprocessed appointments') && notify.title?.toLowerCase().includes('claims rejected') || notify.title?.toLowerCase().includes('claims failed')">
+                <img src="/assets/img/DenielP.png"
+                     class="notif-icon-img"
+                     alt="status icon" />
+              </div>
+              <!-- CONTENT -->
+              <div class="notif-content">
+
+                <!-- Title + Time -->
+                <div class="notif-row">
+                  <div class="notif-title">
+                    {{
+                      (notify.title == 'Claims Approved' || notify.title == 'Claims Processed')
+                        ? (notify.processed !== notify.total ? (notify.title == 'Claims Processed' ? 'Claims Submitted' : notify.title) : '')
+                        : ''
+                    }}
+                  </div>
+
+                  <div class="progress-text">
+                    <span> {{ notify.processed }} {{ (notify.processed && notify.total) ? ' / ' : '' }} {{ notify.total }}</span>
+                  </div>
+                  <div class="notif-date" *ngIf="!notify.title?.toLowerCase().includes('unprocessed appointments')">
+                    {{ notify.time | date:'MM/dd/yyyy h:mm a' }}
+                  </div>
+                </div>
+                <div *ngIf="notify.total == notify.processed && notify.title== 'Claims Approved'">
+                  <span>Claim(s) Approved Successfully</span>
+                </div>
+                <div *ngIf="notify.total == notify.processed && notify.title== 'Claims Processed'">
+                  <span>Claim(s) Submitted Successfully</span>
+                </div>
+       
+                <!-- Progress Bar -->
+                <div *ngIf="
+                            notify.title &&
+                            (
+                              notify.title.toLowerCase().includes('claims approved') ||
+                              notify.title.toLowerCase().includes('claims rejected')
+                            )
+                              ? shouldShowNotify1(notify)
+                              : shouldShowNotify2(notify)
+                          ">
+                  <div *ngIf="notify.total != notify.processed" class="notif-progress" style="margin-top:6px;">
+                    <div class="custom-progress-wrapper" role="progressbar" [attr.aria-valuemin]="0"
+                         [attr.aria-valuemax]="notify.total || 100" [attr.aria-valuenow]="(notify.processed || 0)"
+                         style="height:12px; background:#e6e6e6; border-radius:6px; overflow:hidden;">
+                      <div class="custom-progress-bar" [ngStyle]="{
+                      width: (notify.total ? ((notify.processed || 0) / notify.total) * 100 : 0) + '%',
+                      background: notify.color || '#1976d2',
+                      height: '100%',
+                      transition: 'width .3s ease'
+                    }">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Add retry button only for failures -->
+                <button *ngIf="notify.title !== 'Claims Processed' && notify.title !== 'Claims Approved'"
+                        mat-button color="warn"
+                        (click)="retryFailedClaims(notify.failedIds, notify.buttonText)">
+                  {{ (notify.buttonText?.toLowerCase().includes('approval failed') || notify.buttonText?.toLowerCase().includes('submission failed')) ? 'Claim(s)' : '' }} {{ notify.buttonText || 'Claim(s) Submission Failed' }}
+                </button>
+                <span *ngIf="notify.buttonText == 'Review Appointments'" class="notif-time" style="margin-top:6px; text-align: right;">{{notify.time | date:'shortTime'}}</span>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noNotifications>
+            <div class="no-notif">
+              You're all caught up! <mat-icon style="padding-top: 5px;">check</mat-icon>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- User Info -->
+      <div class="user-data" #userAnchorEl (click)="showUserProfile = !showUserProfile">
+        <div id="welcomeBackTx">
+          <!-- <span class="userInitials">HH</span> -->
+          <div class="username">
+             {{userName}} &nbsp; ({{userRole}})
+            <span class="fa fa-chevron-down" *ngIf="!showUserProfile" style="margin:0 3px;"></span>
+            <span class="fa fa-chevron-up" *ngIf="showUserProfile" style="margin:0 3px;"></span>
+            <br /> <span class="userrole">{{accountDetail}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button mat-icon-button fxHide fxShow.xs *ngIf="isProfileShow">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<app-profile-options [anchor]="userAnchor || userAnchorArrowUp || userAnchorArrowDown"
+  *ngIf="showUserProfile"></app-profile-options>

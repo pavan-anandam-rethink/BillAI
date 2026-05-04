@@ -1,0 +1,19 @@
+<div class="status-search-popup">
+    <div [ngClass]="isLoading ? 'statuses-list loading mb-2' : 'statuses-list mb-2'" *ngIf="statuses.length > 0">
+        <div *ngFor="let status of statuses" (click)="onStatusClicked(status)" class="status-item">
+            <input type="checkbox" readonly [checked]="status.checked"/>
+            <span class="ml-2">{{status.name}}</span>
+        </div>
+    </div>
+    <div>
+        <ng-template [ngIf]="statuses.length">
+            <div *ngIf="statuses.length == 1; else notOne">
+                <span>{{statuses.length}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{statuses.length}} items</span>
+            </ng-template>
+        </ng-template>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+    </div>
+</div>

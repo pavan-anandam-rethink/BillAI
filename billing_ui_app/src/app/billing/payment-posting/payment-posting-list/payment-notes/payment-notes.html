@@ -1,0 +1,122 @@
+﻿<div class="title">
+    <span class="title-icon icon-24 notes-icon"></span>
+    <div class="title-text">Payment Notes</div>
+</div>
+<div class="body flex-column justify-content-between" style="display: inline-flex;">
+    <div>
+        <div *ngIf="(paymentInfo$ | async) as payment">
+            <div class="">
+                <div class="light head Body2">
+                    <div class="details">
+                        <div class="payment-header">Payment Amount</div>
+                        <span *ngIf="(paymentShortInfo$ | async) as short" class="status-name-alignment status small-12bld"
+                              [ngClass]="'status-name ' + short?.reconcileStatus.toLowerCase()">{{short?.reconcileStatus}}</span>
+                    </div>
+                    <div class="details payment-total Header-1">{{payment?.paymentAmount || 0 | currency}}</div>
+                </div>
+                <div class="light bottom">
+                    <div class="dark small-12reg">
+                        <div class="w-100" *ngIf="payment?.funderName == null">
+                            <div class="details">
+                                <div class="property small-12med">Method</div>
+                                <div class="value">{{payment?.paymentMethod}}</div>
+                            </div>
+                        </div>
+                        <div class="w-50" *ngIf="payment?.funderName != null">
+                            <div class="details">
+                                <div class="property small-12med">{{payment?.isManual ? 'Funder' : 'Payee'}}</div>
+                                <div class="value">{{payment?.isManual ? payment?.funderName : payment?.payee}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-50 b-l" *ngIf="payment?.funderName != null">
+                            <div class="details">
+                                <div class="property small-12med">Method</div>
+                                <div class="value">{{payment?.paymentMethod}}</div>
+                            </div>
+                        </div>
+                        <div class="w-50 b-t">
+                            <div class="details">
+                                <div class="property small-12med">Deposit Date</div>
+                                <div class="value">{{payment?.depositDate | date: 'MM/dd/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <div class="w-50 b-t b-l">
+                            <div class="details">
+                                <div class="property small-12med">Reference Number</div>
+                                <div class="value">{{payment?.referenceNumber}}</div>
+                            </div>
+                        </div>
+                        <div class="w-100 b-t" *ngIf="payment && !payment.isManual">
+                            <div class="details">
+                                <div class="property small-12med">Funder</div>
+                                <div class="value">{{payment?.funderName}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notes-list">
+            <mat-tab-group mat-align-tabs="left" disableRipple>
+                <mat-tab label="Active">
+                    <payment-note-details [notes]="getActive(notes)" (onReload)="reload()"></payment-note-details>
+                </mat-tab>
+                <mat-tab label="Deleted">
+                    <payment-note-details [notes]="getInactive(notes)" (onReload)="reload()" [hideActions]="true"></payment-note-details>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+    <div>
+        <div *ngIf="addMode" class="add-area">
+            <div class="add-wrap">
+                <form [formGroup]="noteForm">
+                    <!--novalidate (change)="showSaveButton = true;"-->
+                    <div class="group">
+                        <div class="label">Follow Up*</div>
+                        <div class="Input new-style">
+                            <kendo-datepicker format="{{locale.userDateFormat}}"
+                            placeholder="Select Date"
+                            formControlName="remindDate"
+                            [ngClass]="{'date-picker-error': showErrors && noteForm.controls['remindDate'].invalid}"
+                            [incompleteDateValidation]="true" class="w-100 k-diagnosis dateInput" (valueChange)="checkTextAndDateArea()"
+                            >
+                            <ng-template kendoDropDownListItemTemplate let-dataItem>
+                                <span class="template">{{dataItem | date:
+                                    'MM/dd/yyyy'}}</span>
+                            </ng-template>
+                            <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                <span class="dropdown-default" *ngIf="!dataItem">Select
+                                    Date</span>
+                                <span *ngIf="dataItem">{{dataItem | date:
+                                    'MM/dd/yyyy'}}</span>
+                            </ng-template>
+                        </kendo-datepicker>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="label">Note*</div>
+                        <div class="Input new-style">
+                            <textarea class="form-control text-area noteInput" formControlName="note" placeholder="Type Here" (change)="checkTextAndDateArea()"
+                                      [ngClass]="{FieldError: showErrors && noteForm.controls['note'].invalid}"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="actions">
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+<!--            <span class="title-icon icon-24 push-pin-icon"></span>-->
+<!--            <span class="title-icon icon-24 printer-icon"></span>-->
+        </div>
+        <div class="d-flex">
+            <outlined-btn *ngIf="!addMode && canEdit" text="Add a note" iconClass="icon-24 add-circle-icon" (onClick)="addNote()"></outlined-btn>
+            <outlined-btn *ngIf="addMode" text="Cancel" (onClick)="cleanup()" style="margin-right:16px;"></outlined-btn>
+            <contained-btn *ngIf="addMode && canEdit" text="Save" (onClick)="saveNote()" [isDisabled]="saving"></contained-btn>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="patient-search-popup">
+    <div class="mb-3 d-flex w-100 patient-search-input">
+        <span class="ml-2 icon-24 search-icon"></span>
+        <input #searchInput placeholder="Search" (keyup)="fundersSearchValueChanged($event)"/>
+    </div>
+
+    <div [ngClass]="isLoading ? 'patients-list loading mb-2' : 'patients-list mb-2'" style="display: flow !important;" *ngIf="funders.length > 0">
+        <div class="patient-item" (click)="selectAll(funders)">
+            <input role="button" type="checkbox" [checked]="isAllSelect">
+            <span class="ml-2">Select All</span>
+        </div>
+        <div *ngFor="let funder of funders" (click)="onFunderClicked(funder)" class="patient-item">
+            <input type="checkbox" readonly [checked]="funder.checked"/>
+            <span class="ml-2">{{funder.name}}</span>
+        </div>
+    </div>
+    <div>
+        <ng-template [ngIf]="funders.length">
+            <div *ngIf="funders.length == 1; else notOne">
+                <span>{{funders.length}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{funders.length}} items</span>
+            </ng-template>
+        </ng-template>
+        <!-- <mat-spinner *ngIf="isLoading"></mat-spinner> -->
+    </div>
+</div>

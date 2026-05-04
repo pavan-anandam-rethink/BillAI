@@ -1,0 +1,112 @@
+﻿<div class="title">
+    <span class="title-icon icon-24 client-icon"></span>
+    <div class="title-text">Patient Profile</div>
+</div>
+
+<div class="body" *ngIf="!details">
+    <div class="patient-header d-flex mb-4">
+        <div class="default-user-icon mr-3">{{getInitials(clientName)}}</div>
+        <div>
+            <div class="Header-5 mb-2 mt-2 patient-name">{{clientName}}</div>
+            <div>
+                <span>Client ID </span>
+                <span class="font-weight-bold ml-1">-</span>
+            </div>
+        </div>
+    </div>
+    <div class="patient-header d-flex mb-4">
+        No additional info.
+    </div>
+</div>
+<div class="body" *ngIf="details">
+    <div class="patient-header d-flex mb-4">
+        <div class="default-user-icon mr-3">{{getInitials(details.patientName)}}</div>
+        <div style="display:block !important;">
+            <div class="Header-5 mb-2 mt-2 patient-name">{{details.patientName}}</div>
+            <div style="font-size: 13px;">
+                <span>Client ID </span>
+                <span class="font-weight-bold ml-1">{{details.patientId}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="patient-info-title d-flex justify-content-between mb-1">
+        <div class="Body1 font-weight-bold">Demographics</div>
+        <div class="client-link d-flex pointer" (click)="navigateToRethink(details.patientId)">
+            <span>Client Screen</span>
+            <span class="icon-24 arrow-top-right-r-icon ml-2"></span>
+        </div>
+    </div>
+    <div class="dark small-12reg">
+        <div class="w-50">
+            <div class="details">
+                <div class="property small-12med">DOB</div>
+                <div class="value">{{details.dateOfBirth | date: 'MM/dd/yyyy'}}</div>
+            </div>
+        </div>
+        <div class="w-50 b-l">
+            <div class="details">
+                <div class="property small-12med">Age</div>
+                <div class="value">{{details.age}}</div>
+            </div>
+        </div>
+        <div class="w-50 b-t">
+            <div class="details">
+                <div class="property small-12med">Gender</div>
+                <div class="value">{{details.gender}}</div>
+            </div>
+        </div>
+        <div class="w-50 b-t b-l">
+            <div class="details">
+                <div class="property small-12med">UCI</div>
+                <div class="value">{{details.uci || '--'}}</div>
+            </div>
+        </div>
+        <div class="w-50 b-t">
+            <div class="details">
+                <div class="property small-12med">Service Intensity</div>
+                <div class="value">{{details.serviceIntensity}}</div>
+            </div>
+        </div>
+        <div class="w-50 b-t b-l">
+            <div class="details">
+                <div class="property small-12med">Location</div>
+                <div class="value">{{details.location}}</div>
+            </div>
+        </div>
+        <div class="w-50 b-t">
+            <div class="details">
+                <div class="property small-12med">Primary Policy</div>
+                <div class="value">{{details.primaryPolicy || 'None'}}</div>
+            </div>
+        </div>
+        <div class="w-50 b-t b-l">
+            <div class="details">
+                <div class="property small-12med">Secondary Policy</div>
+                <div class="value">{{details.secondaryPolicy || 'None'}}</div>
+            </div>
+        </div>
+        <div class="w-100 b-t">
+            <div class="details">
+                <div class="property small-12med">Address</div>
+                <div class="value">{{details.address}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!--    <div class="summary">-->
+    <!--        <div class="header">Client ID</div>-->
+    <!--        <div class="details total Header-1">{{data?.patientId || 0}}</div>-->
+    <!--    </div>-->
+    <!--    <a class="nav-link" [routerLink]="['/clients/', data.patientId]">{{data.patientName}}</a>-->
+    <!--    <div>Demographics</div>-->
+    <!--    <div>{{data.dateOfBirth | date: 'MM/dd/yyyy'}}</div>-->
+    <!--    <div>{{data.age}}</div>-->
+    <!--    <div>{{data.gender}}</div>-->
+    <!--    <div>{{data.uci}}</div>-->
+    <!--    <div>{{data.serviceIndustry}}</div>-->
+    <!--    <div>{{data.location}}</div>-->
+    <!--    <div>{{data.primaryPolicy}}</div>-->
+    <!--    <div>{{data.secondaryPolicy}}</div>-->
+    <!--    <div>{{data.address}}</div>-->
+
+</div>

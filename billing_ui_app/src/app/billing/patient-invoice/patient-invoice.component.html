@@ -1,0 +1,20 @@
+﻿<header-toolbar class="header-position" [headerTitle]="headerTitle" [isBackBtnShow]="false"
+    [isProfileShow]="false" [breadcrumbs]="breadcrumbs"></header-toolbar>
+<div class="encounter-tabs">
+    <mat-tab-group mat-align-tabs="start" disableRipple (selectedIndexChange)="selectedTabChanged($event)" #patientInvoiceListingTabGroup>
+        <mat-tab label="Create Invoice">
+            <create-invoice *ngIf="this.selectedTab == 1"></create-invoice>
+        </mat-tab>
+
+        <mat-tab label="Pending Collection">
+            <pending-collection *ngIf="this.selectedTab == 2"></pending-collection>
+        </mat-tab>
+
+        <!-- <mat-tab label="Client History">
+            <ng-template mat-tab-label>
+                <span>Client History</span>
+            </ng-template>
+        </mat-tab> -->
+    </mat-tab-group>
+</div>
+

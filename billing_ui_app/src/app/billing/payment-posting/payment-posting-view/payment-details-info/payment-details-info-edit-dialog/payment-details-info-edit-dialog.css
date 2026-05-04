@@ -1,0 +1,52 @@
+﻿.icon-24 {
+    height: 20px;
+}
+
+.dialog-wrapper > ::ng-deep.k-dialog {
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.dialog-wrapper > ::ng-deep.k-dialog > .k-content{
+    padding: 40px 20px;
+}
+
+.dialog-body {
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 16px 24px rgba(0, 0, 0, 0.25);
+    background-color: var(--White-220);
+}
+
+.title {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 25px;
+    letter-spacing: 0.1px;
+    margin-bottom: 12px;
+}
+
+
+.new-style ::ng-deep.k-numeric-wrap ::ng-deep input,
+.new-style ::ng-deep.k-picker-wrap ::ng-deep input,
+.new-style ::ng-deep.k-searchbar input{
+    height: auto;
+}
+
+.new-style ::ng-deep.k-numeric-wrap,
+.new-style ::ng-deep.k-dateinput-wrap,
+.new-style ::ng-deep.k-searchbar {
+    height: 100%;
+}
+
+.new-style .k-dropdown ::ng-deep.k-input {
+    text-align: left;
+    font-family: DM Sans, serif;
+    font-style: normal;
+    font-weight: normal!important;
+    font-size: 14px!important;
+    line-height: 140%!important;
+
+    padding: 0 15px;
+}

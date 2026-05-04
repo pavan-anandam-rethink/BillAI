@@ -1,0 +1,18 @@
+<div class="validation-search-popup">
+    <div [ngClass]="isLoading ? 'validations-list loading mb-2' : 'validations-list mb-2'" *ngIf="validations.length > 0">
+        <div *ngFor="let status of validations" (click)="onValidationClicked(status)" class="validation-item">
+            <input type="checkbox" readonly [checked]="status.checked"/>
+            <span class="ml-2">{{status.name}}</span>
+        </div>
+    </div>
+    <div>
+        <ng-template [ngIf]="validations.length">
+            <div *ngIf="validations.length == 1; else notOne">
+                <span>{{validations.length}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{validations.length}} items</span>
+            </ng-template>
+        </ng-template>
+    </div> 
+</div>

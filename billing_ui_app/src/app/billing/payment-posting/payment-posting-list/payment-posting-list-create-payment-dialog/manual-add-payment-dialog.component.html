@@ -1,0 +1,156 @@
+﻿<kendo-dialog class="new-style dialog-wrapper" (close)="close()" [minWidth]="250" [width]="560">
+    <div kendoDialogContainer class="dialog-body">
+        <div class="title">Create Payment</div>
+        <div class="body" style="display: block;">
+            <form class="k-form" [formGroup]="paymentForm" style="padding:0;">
+                <div class="input-line row mb-3">
+                    <div class="dropdown-style col-md-6">                        
+                        <label for="funderType">Funder Type*</label>
+                        <kendo-dropdownlist id="funderType" formControlName="funderType" class="w-100"
+                                            [popupSettings]="{popupClass: 'new-style-popup'}"
+                                            [data]="funderTypes" (valueChange)="funderTypeChange($event)">
+                            <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                                <span *ngIf="dataItem">{{dataItem}}</span>
+                            </ng-template>
+                        </kendo-dropdownlist>
+                    </div>
+                    <div class="dropdown-style col-md-6">
+                        <label for="paymentMethodType">Method*</label>
+                        <kendo-dropdownlist id="paymentMethodType" formControlName="paymentMethod" class="w-100"
+                                            [data]="paymentMethodTypes" (valueChange)="methodChanged($event)"
+                                            [popupSettings]="{popupClass: 'new-style-popup'}">
+                            <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                                <span *ngIf="dataItem">{{dataItem}}</span>
+                            </ng-template>
+                        </kendo-dropdownlist>
+                    </div>
+                </div>
+
+                <div *ngIf="showAmountsFields && paymentMethodControl.value" formGroupName="paymentInfo" style="padding:0;  display: block;">
+                    <div class="row mb-3" *ngIf="showFunderDropdown">
+                        <div class="dropdown-style col-12">
+                            <label for="funder">Funder*</label>
+                            <kendo-autocomplete id="funder" #funderAutocomplete [placeholder]="'Search Funder List'"
+                                                [data]="funderSearchResult" [filterable]="true"
+                                                [valueField]="'funderName'"
+                                                (filterChange)="fundersSearchValueChanged($event)"
+                                                (close)="onFunderSearchClose($event)"
+                                                (valueChange)="funderValueChange($event)"
+                                                class="w-100 d-flex"
+                                                (focus)="showFunderAutocomleteList()"
+                                                [popupSettings]="funderPopupSettings">
+                                <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                    <div *ngIf="!dataItem">
+                                        <span class="dropdown-default">Select</span>
+                                    </div>
+                                    <div *ngIf="dataItem">
+                                        <span>{{dataItem.funderName}}</span>
+                                    </div>
+                                </ng-template>
+                            </kendo-autocomplete>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 align-items-end" *ngIf="showClientDropdown">
+                        <div class="dropdown-style col-md-6">
+                            <label for="client">Client Name*</label>
+                            <kendo-autocomplete id="client" #clientAutocomplete [placeholder]="'Search Client List'"
+                                                [data]="clients" [filterable]="true"
+                                                [valueField]="'patientName'"
+                                                (filterChange)="clientsSearchValueChanged($event)"
+                                                (close)="onClientSearchClose($event)"
+                                                (valueChange)="clientValueChange($event)"
+                                                class="w-100 d-flex"
+                                                (focus)="showClientAutocomleteList()"
+                                                [popupSettings]="clientPopupSettings">
+                                <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                    <div *ngIf="!dataItem">
+                                        <span class="dropdown-default">Select</span>
+                                    </div>
+                                    <div *ngIf="dataItem">
+                                        <span>{{dataItem.patientName}}</span>
+                                    </div>
+                                </ng-template>
+                            </kendo-autocomplete>
+                        </div>
+                        <div class="guarantor-info col-md-6" style="display: flex; flex-direction: column; align-items: flex-start;">
+                            <label for="guarantor" style="margin-bottom: 4px; display: block;">Guarantor:</label>
+                            <input
+                                id="guarantor"
+                                class="form-control"
+                                [ngClass]="{ 'missing-guarantor': !selectedGuarantor }"
+                                style="height: 40px; padding: 0 12px; border-radius: 24px; border: 1px solid #d9d9d9; background: #f5f6fa; font-size: 16px; font-weight: 400; color: #6c757d; width: 100%; display: block;"
+                                [value]="
+                                    ((selectedGuarantor?.name?.firstName || '') +
+                                    (selectedGuarantor?.name?.lastName ? ' ' + selectedGuarantor.name.lastName : '')) ||
+                                    'Missing Guarantor'
+                                "
+                                readonly
+                                tabindex="-1"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-between mb-3">
+                        <div class="col-md-6">
+                            <label for="paymentAmount">Payment Amount*</label>
+                            <kendo-numerictextbox id="paymentAmount" formControlName="paymentAmount"
+                                                  [spinners]="false" [maxlength]="12" [format]="'c2'" class="w-100"
+                                                  placeholder="Enter Amount">
+                            </kendo-numerictextbox>
+                        </div>
+                        <div class="col-md-6 input-style" style="display: block; margin: auto;">
+                                <label for="referenceNumber" class="d-flex">Reference Number<span *ngIf="!(paymentFunderTypeControl.value === 'Patient' && paymentMethodControl.value === 'RevSpring')">*</span></label>
+                                <input kendoTextBox id="referenceNumber" formControlName="referenceNumber"
+                                       class="w-100" placeholder="Enter Reference Number" style="height: 40px;"/>
+                        </div>
+                    </div>
+                    <div class="row justify-content-between mb-3"
+                         *ngIf="!(paymentFunderTypeControl.value === 'Patient' && paymentMethodControl.value === 'RevSpring')">
+                        <div class="col-md-6 datepicker-style">
+                            <label for="postDate">Date Posted*</label>
+                            <kendo-datepicker id="postDate" #postDate formControlName="postDate"
+                                              [navigation]="false"
+                                              [min]="datePickerMinDate" (close)="onDatePickerClose(postDate)"
+                                              placeholder="Select">
+                            </kendo-datepicker>
+                        </div>
+                        <div class="col-md-6 datepicker-style">
+                            <label for="depositDate">Deposit Date*</label>
+                            <kendo-datepicker id="depositDate" #depositDate formControlName="depositDate"
+                                              [navigation]="false"
+                                              [min]="datePickerMinDate" (close)="onDatePickerClose(depositDate)"
+                                              placeholder="Select">
+                            </kendo-datepicker>
+                        </div>
+                    </div>
+                    
+                    <!-- EOB Upload Section for Insurance Payments (optional) -->
+                    <div class="row mb-3" *ngIf="showEobUpload">
+                        <div class="dropdown-style col-12">
+                            <label>EOB Attachment</label>
+                            <eob-upload (fileSelected)="eobFileSelectedEvent($event)"></eob-upload>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="showUploadDropzone">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <manual-upload-era (fileIdChanged)="fileUploadedEvent($event.fileName, $event.fileId)"></manual-upload-era>
+                        </div>
+                    </div>
+                   
+                </div>
+            </form>
+        </div>
+        <div class="d-flex mt-3 mb-1 justify-content-end">
+            <outlined-btn (onClick)="close()" text="Cancel"></outlined-btn>
+            <contained-btn [isDisabled]=" paymentForm.invalid || startedParsingLoading || isLoading || !isGuarantorSetForClaient" (onClick)="createPayment()"
+                           text="Submit"
+                           class="ml-3"></contained-btn>
+        </div>
+    </div>
+</kendo-dialog>
+

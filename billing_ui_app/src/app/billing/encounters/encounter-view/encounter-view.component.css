@@ -1,0 +1,76 @@
+.edit-claim-tabs .mat-tab-group {
+    padding: 0;
+}
+
+.edit-claim-tabs ::ng-deep.mat-tab-label-container {
+    margin: 0;
+    border: none;
+}
+
+.edit-claim-tabs ::ng-deep.mat-tab-list {
+    background-color: var(--White-220) !important;
+    border-bottom: 1px solid var(--Blue-96);
+}
+
+.claimlink {
+    color: var(--Blue-72);
+    text-decoration: none;
+    padding: 0 !important;
+    cursor: pointer;
+}
+.status {
+    margin: auto auto auto 20px;
+}
+
+mat-toolbar {
+  border-bottom: none !important;
+  margin-bottom: 19px !important;
+}
+
+.claim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  margin: 0 18px;
+}
+
+.claim-id {
+  font-weight: bold;
+  font-size: 16px; 
+}
+
+.preview-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.preview-icon {
+  width: 1.3em;
+  height: 1.3em;
+  font-size: inherit; 
+}
+
+.edi-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+  .edi-dialog-header h2 {
+    margin: 0;
+  }
+
+.edi-dialog-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edi-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: monospace;
+  font-size: 13px;
+}

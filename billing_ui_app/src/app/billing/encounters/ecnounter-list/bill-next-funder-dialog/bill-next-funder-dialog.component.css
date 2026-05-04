@@ -1,0 +1,40 @@
+label {
+    margin-bottom: 0rem;
+}
+
+.bill-control {
+    padding-top: 5px;
+    font-size: 13px;
+}
+
+.notes-header {
+    font-size: 12px;
+    color:  var(--Black-60);
+}
+
+.error-message {
+    color: var(--Negative-88);
+    margin-left: 5px;
+}
+
+.types-container {
+    padding: 10px 0 10px 0;
+}
+
+.k-radio-label {
+    padding-right: 50px;
+}
+
+.k-radio {
+  appearance: none;
+  border: 2px solid #666;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+
+.k-radio:checked {
+  background-color: #1976d2; /* blue dot */
+  border-color: #1976d2;
+}

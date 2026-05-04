@@ -1,0 +1,73 @@
+<kendo-dialog width="560" class="dialog-container">
+    <div class="d-flex">
+        <div class="Header-4">
+            Add Claim
+        </div>
+        <mat-spinner class="ml-2" *ngIf="isLoading"></mat-spinner>
+    </div>
+
+    <div class="col-md-12 px-md-3 claim-search-result-wrapper">
+        <div #patientSearchContainer class="d-flex claim-search-input-container">
+            <span class="ml-2 icon-24 search-icon"></span>
+            <kendo-autocomplete #claimsAutocomplete class="w-100 claim-search-input" [placeholder]="'Search Claims'"
+                                [data]="claims" [filterable]="true" [valueField]="'patientName'"
+                                (filterChange)="claimsSearchValueChange($event)"
+                                (close)="onCloseAutocomplete($event)"
+                                [popupSettings]="{popupClass: 'new-style-popup'}">
+                <!--[value]="claimSearchRequest.searchString">-->
+                <ng-template kendoAutoCompleteItemTemplate let-claimItem>
+                    <div (click)="claimClick($event, claimItem)" class="w-100">
+                        <div class="d-flex justify-content-between w-100 claim-line">
+                            <div class="claim-checkbox">
+                                <input type="checkbox" [checked]="claimItem.checked" style="transform: scale(1.5)"/>
+                            </div>
+                            <div class="claim-id overflow-text" [title]="claimItem.id">
+                                {{claimItem.claimIdentifier}}
+                            </div>
+                            <div class="overflow-text claim-patient-name" [title]="claimItem.patientName">
+                                {{claimItem.patientName}}
+                            </div>
+                            <div class="claim-date">
+                                {{claimItem.startDate | date : 'MM/dd/yy'}}-{{claimItem.endDate | date : 'MM/dd/yy'}}
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </kendo-autocomplete>
+        </div>
+
+        <div *ngIf="selectedClaims.length > 0" class="claim-search-result-wrapper">
+            <div *ngIf="selectedClaims.length == 1; else moreThanOne" class="claim-search-result-wrapper">
+                <span style="font-weight: bold">1 Selected Claim</span>
+            </div>
+            <ng-template #moreThanOne>
+                <span style="font-weight: bold">{{selectedClaims.length}} Selected Claims</span>
+            </ng-template>
+
+            <div class="mt-2">
+                <div *ngFor="let claim of selectedClaims">
+                    <div class="selected-claim-row d-flex" >
+                        <div class="claim-id overflow-text" [title]="claim.claimIdentifier">
+                            {{claim.claimIdentifier}}
+                        </div>
+                        <div class="claim-patient-name overflow-text" [title]="claim.patientName">
+                            {{claim.patientName}}
+                        </div>
+                        <div class="claim-date">
+                            {{claim.startDate | date : 'MM/dd/yy'}}-{{claim.endDate | date : 'MM/dd/yy'}}
+                        </div>
+                        <div class="claim-delete" (click)="uncheckClaim(claim.id)">
+                            <span class="icon-24 trash-icon" style="color: #1D6EB8"
+                                  (click)="uncheckClaim(claim.id)"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="claim-search-dialog-buttons flex-end-css">
+        <outlined-btn text="Cancel" (onClick)="onCloseDialog()"></outlined-btn>
+        <contained-btn text="Add Claim" (onClick)="addClaims()" [isDisabled]="isAddClaimBtnDisabled"></contained-btn>
+    </div>
+</kendo-dialog>

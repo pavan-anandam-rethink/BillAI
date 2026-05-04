@@ -1,0 +1,11 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "ServiceBusConnectionString": "Endpoint=sb://rta-billing-dev-sbns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=/O5G9mfW+Fq7rAIcAxxqHKL6IeMP70FDn+ASbN68FDY=;",
+        "QueueName": "rt-billing-queue-clearinghouse-sftpfiles-download",
+        "ApiUrl": "https://rta-billing-dev-app-ch-svc.agreeableforest-1d2b8eb2.eastus2.azurecontainerapps.io/api/ClearingHouseProcessor/processclearinghouseresponse",
+        "XApiKey": "ED911B29-72C2-4C66-9349-B26DD9DECA3D"
+    }
+}

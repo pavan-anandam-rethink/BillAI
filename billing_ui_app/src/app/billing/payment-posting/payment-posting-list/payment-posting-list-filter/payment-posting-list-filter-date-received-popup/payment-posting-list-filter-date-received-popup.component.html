@@ -1,0 +1,17 @@
+<kendo-popup #popup [anchor]="anchor" class="funder-search-popup" (anchorViewportLeave)="anchorViewportLeave.emit()">
+    <div [style.width.px]="anchor.nativeElement.offsetWidth - 26" style="display: block;">
+        <div [ngClass]="isLoading ? 'funders-list loading mb-2' : 'funders-list mb-2'" *ngIf="receivedDateOptions.length > 0">
+            <div *ngFor="let status of receivedDateOptions" (click)="statusClicked(status)"  class="funder-item">
+                <span class="ml-2">{{status}}</span>
+            </div>
+        </div>
+        <ng-template [ngIf]="totalCount">
+            <div *ngIf="totalCount == 1; else notOne">
+                <span>{{totalCount}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{totalCount}} items</span>
+            </ng-template>
+        </ng-template>
+    </div>
+</kendo-popup>

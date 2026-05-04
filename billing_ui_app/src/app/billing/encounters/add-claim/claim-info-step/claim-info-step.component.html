@@ -1,0 +1,132 @@
+<div class="claim-details-block">
+    <div class="title Header-5">Claim Info</div>
+    <div class="content new-style">
+        <form [formGroup]="parentForm">
+            <div formArrayName="formData">
+                <ng-container [formGroupName]="0">
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-combobox matInput id="notWorkingDropDownList" class="w-100 k-component"
+                                formControlName="clientId" [valuePrimitive]="true"
+                                [popupSettings]="{popupClass: 'new-style-popup'}" placeholder="Select Client"
+                                [filterable]="true" (filterChange)="clientSearchValueChanged($event)"
+                                [data]="filteredClients" textField="name" (valueChange)="onClientChange($event)"
+                                valueField="id" textField="name">
+                            </kendo-combobox>
+                        </div>
+                        <label for="clientName" class="small-13bld">
+                            Client*
+                        </label>
+                    </div>
+
+
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-dropdownlist id="funder" formControlName="clientFunderId" [valuePrimitive]="true"
+                                class="w-100 k-component" [popupSettings]="{popupClass: 'new-style-popup'}"
+                                [data]="funders" textField="funderName" (valueChange)="onFunderChange($event)"
+                                [disabled]="isFunderDisabled" [attr.disabled]="true" valueField="id">
+                                <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                    <span class="dropdown-default" *ngIf="!dataItem">Select Funder</span>
+                                    <span *ngIf="dataItem">{{dataItem.funderName}}</span>
+                                </ng-template>
+                            </kendo-dropdownlist>
+                        </div>
+                        <label for="funderName" class="small-13bld">
+                            Funder*
+                        </label>
+                    </div>
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-dropdownlist id="responsibleParty" class="w-100 k-component"
+                                formControlName="responsiblePartyId" [valuePrimitive]="true"
+                                [popupSettings]="{popupClass: 'new-style-popup'}" [data]="responsibleParties"
+                                textField="name" [disabled]="true" valueField="id">
+                                <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                    <span class="dropdown-default" *ngIf="!dataItem">Responsible Party</span>
+                                    <span *ngIf="dataItem">{{dataItem.name}}</span>
+                                </ng-template>
+                            </kendo-dropdownlist>
+                        </div>
+                        <label for="responsibleParty" class="small-13bld">
+                            Responsible Party
+                        </label>
+                    </div>
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-dropdownlist id="serviceLine" class="w-100 k-component"
+                                formControlName="serviceLineId" [valuePrimitive]="true"
+                                [popupSettings]="{popupClass: 'new-style-popup'}" [data]="serviceLines" textField="name"
+                                (selectionChange)="onServiceLineChange($event)" [disabled]="isServiceLineDisabled"
+                                valueField="mappingId">
+                                <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                    <span class="dropdown-default" *ngIf="!dataItem">Select Service Line</span>
+                                    <span *ngIf="dataItem">{{dataItem.name}}</span>
+                                </ng-template>
+                            </kendo-dropdownlist>
+                        </div>
+                        <label for="ServiceLine" class="small-13bld">
+                            Service Line*
+                        </label>
+                    </div>
+
+                    <div class="col-12 mb-4 d-block">
+                        <label for="ServiceLine" class="small-13bld d-flex">
+                            <div style="display: flex;">Authorization Number<span *ngIf="allowManualAuth">*</span></div>
+                        </label>
+                        <div id="clientName" class="client-name mb-4">
+                            <kendo-combobox id="authorizationNumber" class="w-100 k-component"
+                                formControlName="authorizationNumberId" [valuePrimitive]="true"
+                                [popupSettings]="{popupClass: 'new-style-popup'}"
+                                placeholder="Select Authorization Number" [filterable]="true" [data]="authorizations"
+                                (valueChange)="onAuthNumberChange($event)" (open)="onAuthNumberOpen($event)"
+                                [allowCustom]="allowManualAuth" [disabled]="isAuthNumberDisabled" textField="name"
+                                valueField="id">
+                            </kendo-combobox>
+                        </div>
+                        <div class="allow-manual-auth-wrapper">
+                            <input id="addManualAuth" formControlName="allowManualAuthorization" type="checkbox"
+                                class="k-checkbox" kendoCheckBox [(ngModel)]="allowManualAuth"
+                                (change)="onAllowManualAuthChange()"
+                                [attr.disabled]="isAuthNumberDisabled ? true : null" />
+                            <label for="addManualAuth" class="k-checkbox-label">Add Authorization # Manually</label>
+                        </div>
+                      
+                    </div>
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div class="step-title">
+                            <span class="Header-5">Additional Info</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-dropdownlist id="placeOfService" formControlName="placeOfServiceCodeId"
+                                [valuePrimitive]="true" class="w-100 k-component"
+                                [popupSettings]="{popupClass: 'new-style-popup'}" [data]="placesOfService"
+                                textField="value" valueField="id">
+                                <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                    <span class="dropdown-default" *ngIf="!dataItem">Select Place of Service</span>
+                                    <span *ngIf="dataItem">{{dataItem.value}}</span>
+                                </ng-template>
+                            </kendo-dropdownlist>
+                        </div>
+                        <label for="ServiceLine" class="small-13bld">
+                            Place of Service*
+                        </label>
+                    </div>
+
+
+
+
+
+                </ng-container>
+            </div>
+        </form>
+    </div>
+</div>

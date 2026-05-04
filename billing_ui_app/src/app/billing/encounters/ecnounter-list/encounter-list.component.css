@@ -1,0 +1,704 @@
+::ng-deep encounter-list .nav-link {
+  display: table-cell;
+}
+
+::ng-deep encounter-list .nav-link.active {
+  background: #ccc !important;
+}
+
+::ng-deep encounter-list .tab-pane {
+  border: 1px solid #ccc !important;
+}
+
+.icon-24 {
+  height: 24px;
+}
+
+.action-button {
+  margin: 0 2px;
+}
+
+.action-button:first-child {
+  margin-left: 0;
+}
+
+.action-button:last-child {
+  margin-right: 0;
+}
+
+::ng-deep encounter-list td a.nav-link {
+  color: #337ab7 !important;
+  text-decoration: underline !important;
+}
+
+::ng-deep encounter-list .k-grid-header {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+::ng-deep encounter-list .k-window-titlebar button.k-button-icon {
+  display: none !important;
+}
+
+::ng-deep encounter-list .k-filter-menu .k-button.k-primary {
+  display: none;
+}
+
+/*new*/
+.funder-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  line-height: 20px;
+}
+
+.pill-primary {
+  background-color: color-mix(in srgb, var(--kendo-color-primary-active, #0f548c) 13%, transparent) !important;
+  color: #004080;
+}
+
+.pill-secondary {
+  background-color: var(--Warning-98-20);
+  color: #ff8c00;
+}
+
+.funder-cell {
+  white-space: nowrap;
+}
+
+/* Virtual scroll loading row styling */
+::ng-deep encounter-list .loading-row {
+  background-color: #f5f5f5 !important;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+::ng-deep encounter-list .loading-row td {
+  font-style: italic;
+  color: #999;
+}
+
+.encounter-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  background: var(--Blue-72);
+  border-radius: 10px;
+  line-height: 20px;
+  color: var(--White-220);
+  margin-left: 10px;
+}
+
+::ng-deep encounter-list .encounter-tabs .mat-tab-group {
+  padding: 0;
+}
+
+::ng-deep encounter-list .encounter-tabs .mat-tab-label-container {
+  margin: 0;
+  border: none;
+}
+
+::ng-deep encounter-list .encounter-tabs .mat-tab-list {
+  padding: 0 40px;
+  background-color: var(--Black-5);
+  border: 1px solid var(--Blue-96);
+}
+
+::ng-deep encounter-list .encounter-tabs .mat-tab-label-active {
+  background-color: var(--White-220);
+  color: var(--Black-100);
+  border-bottom: 2px solid var(--Blue-80);
+}
+
+.encounter-main-container {
+  background-color: var(--White-220);
+}
+
+.encounter-actions {
+  display: flex;
+}
+
+.encounter-actions-wrapper {
+  padding-bottom: 16px;
+}
+
+.encounter-actions span {
+  margin-right: 10px;
+}
+
+.encounter-actions .selector-btn {
+  flex-direction: row-reverse;
+}
+
+.encounter-actions .selector-icon {
+  margin-left: 16px !important;
+}
+
+.encounter-actions span.text {
+  padding-left: 0 !important;
+  padding-right: 16px;
+}
+
+.encounter-validation .icon-24 {
+  width: 10px;
+  height: 10px;
+  margin-right: 3px;
+}
+
+.encounter-validation div:first-child .icon-24 {
+  background-color: var(--Negative-88);
+}
+
+.encounter-validation div:nth-child(2) .icon-24 {
+  background-color: var(--Warning-98);
+  margin-left: 9px;
+}
+
+.encounter-validation div:last-child .icon-24 {
+  background-color: var(--Black-48);
+  margin-left: 9px;
+}
+
+.validation-count-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  color: var(--White-220);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.errors-badge {
+  background-color: #e12222;
+}
+
+.warnings-badge {
+  background-color: #ff8c00;
+}
+
+.responses-badge {
+  background-color: var(--Black-48);
+}
+
+.invisible {
+  display: none;
+}
+
+.selector-btn {
+  background: var(--White-220);
+  border: 1px solid var(--Black-88);
+  color: var(--Black-32);
+  width: auto;
+  height: 40px;
+  border-radius: 20px;
+  align-items: center;
+  display: flex;
+  padding: 1px;
+  cursor: pointer;
+}
+
+.selector-btn .text {
+  line-height: 40px;
+  display: inline-block;
+  padding-left: 16px;
+}
+
+.selector-btn:hover {
+  border-color: var(--Blue-72);
+}
+
+.selector-btn.active {
+  padding: 0px;
+  background-color: var(--Black-96);
+  border: 2px solid var(--Blue-72);
+}
+
+.selector-icon {
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.notification-container {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+::ng-deep encounter-list kendo-notification-container {
+  z-index: 1000;
+}
+
+::ng-deep kendo-notification-container .k-notification-group {
+  z-index: 1000;
+}
+
+::ng-deep encounter-list .k-notification-wrap {
+  padding: 10px 16px;
+}
+
+::ng-deep encounter-list .k-notification-closable > .k-notification-wrap {
+  padding-right: 16px;
+}
+
+::ng-deep encounter-list .k-notification-wrap > .k-notification-content:before {
+  content: "";
+  display: inline-block;
+  margin-right: 14px;
+}
+
+::ng-deep
+  encounter-list
+  .k-notification-error
+  > .k-notification-wrap
+  > .k-notification-content:before {
+  width: 20px;
+  height: 20px;
+  background: url(/core/images/exclamation-point.svg);
+}
+
+::ng-deep
+  encounter-list
+  .k-notification-success
+  > .k-notification-wrap
+  > .k-notification-content:before {
+  width: 19px;
+  height: 19px;
+  background: url(/core/images/check-o-status.svg);
+}
+
+::ng-deep encounter-list .k-notification-wrap > .k-notification-content {
+  display: inline-flex;
+}
+
+::ng-deep encounter-list .k-notification-wrap > .k-icon {
+  font-family: inherit;
+  vertical-align: baseline;
+  display: initial;
+}
+
+::ng-deep encounter-list .k-notification-wrap > .k-i-close {
+  position: initial;
+}
+
+::ng-deep encounter-list .k-notification-wrap > .k-icon:before {
+  content: "View";
+  color: var(--Blue-72);
+  cursor: pointer;
+  margin-left: 28px;
+  font-size: inherit;
+}
+
+.claim-status-wrap {
+  padding: 0.75em 7px 0.75em;
+  display: inline;
+}
+
+.claim-status {
+  max-height: 24px;
+  max-width: 95px;
+  position: absolute;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.claim-status .status-name {
+  display: contents;
+  padding: 0;
+  line-height: 24px;
+  font-weight: normal;
+}
+
+.claim-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.claim-actions span {
+  margin: 0;
+}
+
+::ng-deep encounter-list .k-grid .k-checkbox-label {
+  padding: 0;
+}
+
+::ng-deep encounter-list .k-hierarchy-cell {
+  visibility: hidden;
+}
+
+::ng-deep encounter-list .k-grid .k-hierarchy-col {
+  width: 0px;
+}
+
+::ng-deep encounter-list .k-expander-cell {
+  text-overflow: clip;
+}
+::ng-deep encounter-list .k-grid-md .k-table-th > .k-cell-inner > .k-link {
+  display: block;
+  text-overflow: ellipsis;
+}
+
+@media only screen and (min-width: 992px) {
+  .encounter-list #big-grid {
+    transition: height ease 0.5s;
+    height: calc(100vh - 231px);
+  }
+  .encounter-list #big-grid.filter-on {
+    height: calc(100vh - 295px);
+  }
+}
+
+::ng-deep .k-tooltip {
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+#toggleButton.outlined-btn.active {
+  padding: 0px;
+  background-color: var(--Black-96);
+  border: 2px solid var(--Blue-72);
+}
+
+.carc-pill {
+  display: inline-block;
+  background-color: #5ecfc1;
+  color: #060606;
+  padding: 4px 10px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 12px;
+  cursor: default;
+}
+
+.carc-pill-button {
+  background-color: #5ecfc1 !important;
+  color: #060606 !important;
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  padding: 4px 0 !important;
+  margin: 2px !important;
+  font-size: 12px !important;
+  height: 28px !important;
+  line-height: 20px !important;
+  border-radius: 15px !important;
+  cursor: default !important;
+  text-align: center !important;
+}
+
+.carc-pill-button:hover:not(:disabled) {
+  background-color: #5ecfc1 !important;
+  opacity: 0.9;
+}
+
+.carc-pill-tooltip-host {
+  display: inline-block;
+}
+
+.carc-pill-button[disabled] {
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+::ng-deep .customePageator .k-input-inner {
+  padding: 7px;
+}
+
+::ng-deep encounter-list .k-grid-header th {
+  height: auto !important;
+  padding: 4px 8px !important;
+  vertical-align: top !important;
+  text-align: left !important;
+}
+
+::ng-deep encounter-list .k-grid-header th .header-label,
+::ng-deep encounter-list .k-grid-header th span {
+  display: block !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere;
+  line-height: 1.2em;
+  max-width: 100%;
+}
+
+::ng-deep encounter-list .k-grid-header th[role="columnheader"] .k-link {
+  white-space: nowrap !important; /* prevent wrapping */
+  display: inline-flex !important; /* align text and arrow in one line */
+  align-items: center !important; /* vertical alignment */
+  justify-content: space-between !important; /* space between text and arrow */
+}
+
+::ng-deep .encounter-list .k-grid table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+::ng-deep .encounter-list .k-grid-header th {
+  border-right: 1px solid #ccc !important;
+}
+
+::ng-deep .k-grid tr.highlight-row,
+::ng-deep .k-grid tr.k-table-alt-row.highlight-row {
+  background-color: #f9c8c8 !important;
+  color: #000 !important;
+}
+
+.custom-tooltip {
+  position: relative; /* needed for absolute positioning inside */
+  width: 200px;
+  max-width: 200px;
+  background: #333333;
+  border-radius: 6px;
+  padding: 12px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Close button top-right */
+.close-icon {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.close-icon:hover {
+  color: #ffdddd;
+}
+
+/* Text area: LEFT aligned */
+.popup-text {
+  text-align: left;
+  font: normal normal normal 12px/16px Arial;
+  letter-spacing: 0px;
+  color: #ffffff;
+}
+
+.popup-label {
+  font-weight: 600;
+  margin: 6px 0 2px;
+}
+
+.popup-value {
+  margin: 0 0 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+/* Footer: RIGHT aligned */
+.tooltip-footer {
+  width: 100%;
+  justify-content: flex-end;
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Clickable icons */
+.edit-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.clickable-pill:hover {
+  cursor: pointer;
+}
+
+.tooltip-content {
+  white-space: pre-line;
+}
+
+/*For Status Dropdown*/
+.status-dropdown {
+  display: block;
+  position: absolute;
+  z-index: 10;
+  background-color: var(--White-220);
+  border: 1px solid var(--Black-88);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 8px;
+  margin-top: 100px;
+  width: 380px;
+  min-width: 380px;
+  max-width: 380px;
+  box-sizing: border-box;
+}
+
+.d-flex {
+  display: none;
+  flex-direction: row;
+}
+
+.status-dropdown {
+  display: block;
+}
+
+.assign-dropdown {
+  margin-top: 56px;
+}
+
+.cancel-button {
+  margin-left: 8px;
+  background-color: var(--Black-5);
+  color: var(--Black-100);
+}
+
+::ng-deep .k-grid tr.highlight-row,
+::ng-deep .k-grid tr.k-table-alt-row.highlight-row {
+  background-color: #f9c8c8 !important;
+  color: #000 !important;
+}
+
+.unassigned-text {
+  font-style: italic;
+}
+
+.status-dropdown {
+  min-width: 220px;
+}
+
+/* ASSIGNEE COLUMN FIXES */
+
+.claim-assignee {
+  max-height: 24px;
+  position: absolute;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.claim-assignee .status-name {
+  display: contents;
+  padding: 0;
+  line-height: 24px;
+  font-weight: normal;
+}
+.assignee-search-input {
+  border: 1px solid var(--Black-88);
+  border-radius: 20px;
+  height: 40px;
+  font-size: 15px;
+  color: var(--Black-48);
+  padding: 8px 12px;
+  position: relative;
+}
+
+.assignee-search-input .search-icon {
+  margin: auto 0;
+  margin-right: 8px;
+  width: 45px;
+}
+
+.assignee-search-input input {
+  background: transparent;
+  border: none;
+  height: auto;
+  font-size: 14px !important;
+  width: 230px;
+}
+::ng-deep .sticky-search-option {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  background: white !important;
+  pointer-events: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+::ng-deep .sticky-search-option .assignee-search-input {
+  pointer-events: all !important;
+}
+
+::ng-deep .sticky-search-option:hover {
+  background: white !important;
+}
+
+.search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding-right: 30px;
+}
+.search-clear-input {
+  position: absolute;
+  right: 12px;
+  opacity: 0.6;
+}
+
+.user-option {
+  padding: 8px 12px;
+}
+
+.status-select {
+  width: 360px;
+  padding: 8px 8px 0 8px;
+  cursor: pointer;
+}
+
+.assignee-select-panel .sticky-search-option {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fff;
+}
+
+.assignee-select-panel .mat-option {
+  z-index: 1;
+}
+
+::ng-deep .mat-mdc-select-panel {
+  padding: 0 !important;
+}
+
+.assignee {
+  white-space: nowrap;
+}
+
+/*  Styles for error and warning icons in encounter validation */
+.icon-30 {
+    width: 24px !important;
+    height: 24px !important;
+    display: inline-block;
+    margin: auto;
+    margin-right: 5px;
+}
+
+.icon-30:hover {
+  background-color: var(--Blue-72);
+}
+.icon-30.disabled:hover {
+  background-color: var(--Black-72);
+  cursor: not-allowed;
+}
+
+.pointer {
+  margin-right: 10px;
+}

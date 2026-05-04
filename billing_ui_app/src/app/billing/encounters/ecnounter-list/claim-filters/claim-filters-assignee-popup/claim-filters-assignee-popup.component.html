@@ -1,0 +1,24 @@
+<div class="funder-search-popup">
+    <div class="mb-3 d-flex w-100 funder-search-input">
+        <span class="ml-2 icon-24 search-icon"></span>
+        <input #searchInput placeholder="Search" (keyup)="assigneesSearchValueChanged($event)"/>
+    </div>
+
+    <div [ngClass]="isLoading ? 'funders-list loading mb-2' : 'funders-list mb-2'" *ngIf="assignees.length > 0">
+        <div *ngFor="let assignee of assignees" (click)="onAssigneeClicked(assignee)" class="funder-item">
+            <input type="checkbox" readonly [checked]="assignee.checked"/>
+            <span class="ml-2">{{assignee.name}}</span>
+        </div>
+    </div>
+    <div>
+        <ng-template [ngIf]="assignees.length">
+            <div *ngIf="assignees.length == 1; else notOne">
+                <span>{{assignees.length}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{assignees.length}} items</span>
+            </ng-template>
+        </ng-template>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+    </div>
+</div>

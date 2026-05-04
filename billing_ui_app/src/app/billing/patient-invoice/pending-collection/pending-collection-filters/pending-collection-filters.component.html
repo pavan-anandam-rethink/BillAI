@@ -1,0 +1,115 @@
+<div class="d-flex w-100 justify-content-between filter" [class.opened]="opened">
+    <div #clientAnchor [class.active]="selectedFilterId == 0" class="filter-item"
+        (click)="selectFilter(0, clientAnchor)">
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div class="filter-name">Client</div>
+                <div class="filter-info" *ngIf="selectedPatients.length">{{selectedPatients.length}}
+                    {{selectedPatients.length == 1 ? 'item' : 'items'}}</div>
+            </div>
+            <span [class.active]="selectedFilterId == 0 || selectedPatients.length"
+                class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+        </div>
+    </div>
+
+
+
+    <div #patientRespAnchor [class.active]="selectedFilterId == 1" class="filter-item"
+        (click)="selectFilter(1, patientRespAnchor)">
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div class="filter-name">Patient Responsibility</div>
+                <div class="filter-info" *ngIf="(patientResponsibilityFrom != undefined || patientResponsibilityTo != undefined)">${{patientResponsibilityFrom}} - ${{patientResponsibilityTo}}</div>
+            </div>
+            <span
+                [class.active]="selectedFilterId == 1 || (patientResponsibilityFrom != undefined || patientResponsibilityTo != undefined)"
+                class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+        </div>
+    </div>
+
+    <div #DateOfServiceAnchor [class.active]="selectedFilterId == 2" class="filter-item"
+        (click)="selectFilter(2, DateOfServiceAnchor)">
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div class="filter-name">Date Of Service</div>
+                <div class="filter-info" *ngIf="(dateOfServiceFromString != undefined || dateOfServiceToString != undefined)">{{dateOfServiceFromString}} - {{dateOfServiceToString}}</div>
+            </div>
+            <span
+                [class.active]="selectedFilterId == 2 || (dateOfServiceFromString != undefined || dateOfServiceToString != undefined)"
+                class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+        </div>
+    </div>
+
+    <div #InvoiceDateAnchor [class.active]="selectedFilterId == 3" class="filter-item"
+        (click)="selectFilter(3, InvoiceDateAnchor)">
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div class="filter-name">Invoice Date</div>
+                <div class="filter-info" *ngIf="(invoiceFrom != undefined || invoiceTo != undefined)">{{invoiceFromString}} - {{invoiceToString}}</div>
+            </div>
+            <span
+                [class.active]="selectedFilterId == 3 || (invoiceFrom != undefined || invoiceTo != undefined)"
+                class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+        </div>
+    </div>
+
+    <div #paymentDueDateAnchor [class.active]="selectedFilterId == 4" class="filter-item"
+        (click)="selectFilter(4, paymentDueDateAnchor)">
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div class="filter-name">Invoice Due Date</div>
+                <div class="filter-info" *ngIf="(paymentDueFrom != undefined || paymentDueTo != undefined)">{{paymentDueFromString}} - {{paymentDueToString}}</div>
+            </div>
+            <span
+                [class.active]="selectedFilterId == 4 || (paymentDueFrom != undefined || paymentDueTo != undefined)"
+                class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+        </div>
+    </div>
+
+    <kendo-popup #popup [anchor]="selectedAnchor" *ngIf="selectedFilterId != undefined" class="new-popup">
+        <div [ngSwitch]="selectedFilterId" class='content'>
+            <div *ngSwitchCase="0" class="filter-body">
+                <patient-popup [userList]="this.userList" [selectedPatients]="selectedPatients"
+                    (patientClicked)="onFilterChange()"></patient-popup>
+            </div>
+            <div *ngSwitchCase="1" class="filter-body">
+                <filter-by-range-popup (valueChanged)="setPatientResponsibilityRange($event)"></filter-by-range-popup>
+            </div>
+            <div *ngSwitchCase="2" class="filter-body">
+                <calendar-popup [anchor]="this.dateAnchor" (anchorViewportLeave)="showDatePopup = false"
+                *ngIf="showDatePopup" [range]="{
+                    start:dateOfServiceFrom ,
+                    end: dateOfServiceTo
+                }"  (selectedDateEmitter)="setDOSPeriod($event)" (onFilterLeave)="onDateFilterLeave()"></calendar-popup>
+            </div>
+            <div *ngSwitchCase="3" class="filter-body">
+                <calendar-popup [anchor]="this.dateAnchor" (anchorViewportLeave)="showDatePopup = false"
+                *ngIf="showDatePopup" [range]="{
+                    start:invoiceFrom ,
+                    end: invoiceTo
+                }" (selectedDateEmitter)="setInvoiceDatePeriod($event)" (onFilterLeave)="onDateFilterLeave()"></calendar-popup>
+            </div>
+            <div *ngSwitchCase="4" class="filter-body">
+                <calendar-popup [anchor]="this.dateAnchor" (anchorViewportLeave)="showDatePopup = false"
+                *ngIf="showDatePopup" [range]="{
+                    start:paymentDueFrom ,
+                    end: paymentDueTo
+                }" (selectedDateEmitter)="setpaymentDueDatePeriod($event)" (onFilterLeave)="onDateFilterLeave()"></calendar-popup>
+            </div>
+        </div>
+    </kendo-popup>
+
+    <div class="clear-filter filter-item">
+        <div *ngIf="isFiltersApplied;else filtersNotApplied">
+            <button kendoButton [disabled]="isFilterButtonDisabled"  (click)="clearFilters()">
+                Clear Filters
+            </button>
+        </div>
+        <ng-template #filtersNotApplied>
+            <button kendoButton [disabled]="isFilterButtonDisabled" (click)="applyFilters()">
+                Apply Filters
+            </button>
+        </ng-template>
+        
+    </div>
+</div>

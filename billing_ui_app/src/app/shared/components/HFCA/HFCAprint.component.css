@@ -1,0 +1,141 @@
+﻿#HFCAcontent {
+    min-width: 900px;
+    /*pointer-events: none;*/
+}
+
+    #HFCAcontent .form-container {
+        display: flex;
+    }
+
+    #HFCAcontent img {
+        margin: 0 auto 10px;
+    }
+
+.download-icon,
+.printer-icon {
+    cursor: pointer;
+}
+
+    .printer-icon.disabled {
+        pointer-events: none;
+        background-color: var(--Black-72);
+        cursor: not-allowed;
+    }
+
+body + .printer-icon.disabled {
+    overflow: hidden;
+}
+
+::ng-deep .annotationLayer {
+    display: none;
+}
+
+.backGroundForm {
+    position: relative;
+    height: 500px;
+}
+
+.pdf-source {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.pdf-form-input {
+    position: absolute;
+    z-index: 1000;
+    /* margin-left: 41px;*/
+    margin-top: -5px;
+}
+
+    .pdf-form-input div {
+        position: absolute;
+    }
+
+        .pdf-form-input div input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+        }
+
+            .pdf-form-input div input[type=radio] {
+                border: 0;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+
+                .pdf-form-input div input[type=radio] + label {
+                    width: 12px;
+                    height: 12px;
+                    background: transparent;
+                    margin-left: 6px;
+                    margin-bottom: unset;
+                }
+
+                .pdf-form-input div input[type=radio]:checked + label {
+                    -webkit-print-color-adjust: exact !important;
+                    color-adjust: exact !important;
+                    background: url(/core/images/x.svg) no-repeat center;
+                    z-index: 1000;
+                }
+
+#HFCAheader {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media print {
+    ::ng-deep app {
+        display: none !important;
+    }
+
+    ::ng-deep #HFCAcontent {
+        margin: 0 !important;
+    }
+    
+    ::ng-deep #HFCAcontent .form-container {
+        position: relative;
+        zoom: 130%;
+        break-inside: avoid;
+        margin: 0 !important;
+    }
+
+    ::ng-deep #HFCAcontent .pdf-form-input {
+        margin: 0 !important;
+        break-inside: avoid;
+        clear: both;
+        page-break-after: always;
+    }
+
+    ::ng-deep #HFCAcontent img {
+        margin: 0 !important;
+        break-inside: avoid;
+    }
+
+    ::ng-deep #HFCAcontent pdfjs-viewer {
+        display: block !important;
+    }
+
+    body {
+        background: #fff !important;
+        visibility: hidden;
+        /* visibility: hidden !important; */
+    }
+}
+
+#print-container {
+    width: auto;
+}
+
+    #print-container input {
+        font-size: 10.25px !important;
+        font-weight: 200 !important;
+        line-height: 12 !important;
+        overflow: auto !important;
+    }

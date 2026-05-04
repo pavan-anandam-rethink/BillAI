@@ -1,0 +1,16 @@
+<div class="dialog-wrapper new-style" width="600">
+  
+    <div class="title">
+        Incomplete Authorization
+    </div>
+
+    <div>
+        We noticed that you didn’t add an authorization for this claim. Without an 
+        authorization, please review all providers and enter billing 
+        codes. Would you like to proceed?
+    </div>
+    <div class="d-flex flex-row-reverse mt-4">
+        <contained-btn class="pointer ml-3" text="Proceed" (onClick)="proceed('Step 2')"></contained-btn>
+        <outlined-btn class="pointer" text="Cancel" (onClick)="cancelIncompleteAuth()"></outlined-btn>
+    </div>
+</div>

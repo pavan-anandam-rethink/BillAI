@@ -1,0 +1,146 @@
+﻿<div class="encounter-main-container">
+    <div class="encounter-actions-wrapper d-flex justify-content-between flex-wrap ">
+        <div class="d-flex mt-2 ml-2">
+            <outlined-btn text="Filter" class="filter-btn" iconClass="icon-24 filter-icon" [flip]="true" (onClick)="toggleFilter($event)"></outlined-btn>
+        </div>
+        <!-- <div class="encounter-actions flex-wrap">
+            <div class="d-flex mt-2 ml-2">
+                <span #printAnchorEl class="icon-24 billing-icon pointer" [ngClass]="{'disabled': selectedPatientWithLines.length === 0}"  title="Add Payment"></span>
+                <span #printAnchorEl class="icon-24 write-off-icon pointer" [ngClass]="{'disabled': selectedPatientWithLines.length === 0}"  title="Write Off"></span>
+            </div>
+        </div> -->
+    </div>
+    <div class="filters-wrapper">
+        <pending-collection-filters [userList]="this.userList" (filterChanged)="onFilterChanged()"></pending-collection-filters>
+    </div>
+    <div class="encounter-list">
+        <div id="encounters" class="tab-content">
+            <kendo-grid #encountersGrid id="big-grid" [class.filter-on]="showFilter" class="height-100"
+                [data]="view | async" [pageSize]="gridState.take!" [skip]="gridState.skip!"
+                [pageable]="pagingSettings" [navigable]="false" (pageChange)="onPageChange($event)" kendoGridSelectBy="id"
+                [selectable]="selectableSettings" [selectedKeys]="mySelection"
+                (detailExpand)="onDetailExpand($event)" (detailCollapse)="onDetailCollapse($event)">
+
+                <!-- <kendo-grid-checkbox-column [showSelectAll]="true" [width]="50">
+                    <ng-template kendoGridHeaderTemplate>
+                        <input kendoCheckBox type="checkbox" #checked [checked]="this.selectAllPatients" (change)="selectionLinesChanged($event,0)"/>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <input type="checkbox" [checked]="dataItem.checked"
+                               (change)="selectionLinesChanged($event, dataItem.id)"/>
+                    </ng-template>
+                </kendo-grid-checkbox-column> -->
+
+                <kendo-grid-column  field="clientName"
+                    title="Client" class="border-bottom border-top p-0" [width]="130">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                    field="guarantorName" title="Guarantor" class="border-bottom border-top p-0" [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>                    
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div *ngIf="dataItem.guarantorName == 'Missing Guarantor'" class="missing-Guarantor">"{{dataItem.guarantorName}}"</div>
+                        <div *ngIf="dataItem.guarantorName != 'Missing Guarantor'">{{dataItem.guarantorName}}</div>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="totalBilledAmount"
+                    title="Charge" class="border-bottom border-top p-0" format="{0:c2}" [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="totalInsurancePayments"
+                    title="Insurance Payment" class="border-bottom border-top p-0" format="{0:c2}" [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="totalAdjustments"
+                    title="Adjustment" class="border-bottom border-top p-0" format="{0:c2}" [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="totalAdjustmentsPR"
+                    title="Patient Responsibility" class="border-bottom border-top p-0" format="{0:c2}" [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                    field="totalPatientPayments" title="Patient Payment"
+                    class="border-bottom border-top p-0" format="{0:c2}" [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                    field="totalPatientBalance" title="Patient Balance" class="border-bottom border-top p-0" format="{0:c2}"
+                    [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                        <span kendoTooltip title={{column.title}}>{{column.title}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Actions" [sortable]="false" class="border-bottom border-top p-0" [width]="100">
+                    <ng-template kendoGridHeaderTemplate let-column>
+                    <span kendoTooltip title="Actions">Actions</span>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                    <div class="d-flex justify-content-start">
+                        <div class="d-flex">
+                         <span *ngIf="canEdit && dataItem.totalPatientBalance > 0" class="icon-24 paymentposting-icon mr-2" kendoTooltip title="Post Payment" (click)="openPaymentDialog(dataItem)"></span>
+                        </div>
+                    </div>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <ng-template kendoGridDetailTemplate let-dataItem>
+                    <div class="Body1 mb-1 bold">Invoice Details</div>
+                    <pending-collection-details [clientId]="dataItem.id" [gridData]="dataItem.billingDetails"
+                        (selectedLinesChangeEmitter)="changeLineSelections($event)" 
+                        (allLinesChangeEmitter)="changePatientSelection($event)" 
+                        (GetInvoicePrint)="getInvoicePrint($event)" 
+                        [selectedPatientLines]="getSelectedPatientLines(dataItem.id)"
+                        [selectAllLines]="selectAllClaimLines(dataItem.id)">
+                    </pending-collection-details>
+                </ng-template>
+
+                <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage" let-total="total">
+                    <div style="display:flex; width:100%; justify-content: space-between;">
+                        <div style="margin: auto 0;" *ngIf="(view | async).data.length > 0" class="Body1">
+                            <ng-container *ngIf="!isAllSelected">
+                                Displaying {{getPageStart(total)}}–{{getPageEnd(total)}} of {{total}} items
+                            </ng-container>
+                            <ng-container *ngIf="isAllSelected">
+                                Displaying {{footerRange}} of {{totalInvoiceHeaders}} items
+                            </ng-container>
+                        </div>
+                        <div style="display: flex;" class="customePageator">
+                            <kendo-pager-page-sizes [pageSizes]="gridPageSizes"></kendo-pager-page-sizes>
+                            <kendo-pager-prev-buttons kendoTooltip></kendo-pager-prev-buttons>
+                            <kendo-pager-numeric-buttons [buttonCount]="5"></kendo-pager-numeric-buttons>
+                            <kendo-pager-next-buttons kendoTooltip></kendo-pager-next-buttons>
+                        </div>
+                    </div>
+                </ng-template>
+            </kendo-grid>
+            <pending-collection-payment-dialog *ngIf="showPaymentDialog"
+                [paymentData]="selectedPaymentData"
+                (closeDialog)="closePaymentDialog()">
+            </pending-collection-payment-dialog>
+
+        </div>
+    </div>
+</div>

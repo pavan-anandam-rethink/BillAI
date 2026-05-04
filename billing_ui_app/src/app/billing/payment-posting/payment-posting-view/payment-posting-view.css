@@ -1,0 +1,39 @@
+﻿.errors-count {
+    width: 20px;
+    height: 20px;
+    background: #FF6262;
+    border-radius: 10px;
+    line-height: 20px;
+    color: var(--White-220);
+    margin-left: 10px;
+}
+
+.status {
+    margin: auto auto auto 20px;
+}
+
+.flex-end-css{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.manual-payment-post-buttons > outlined-btn {
+    margin-right: 16px;
+}
+
+.manual-payment-post-buttons > contained-btn {
+    margin-right: 40px;
+}
+
+.legend .header-wrapper {
+    display: flex;
+}
+
+:host ::ng-deep .headerBar,
+:host ::ng-deep mat-toolbar {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+/* .legend {
+    border-bottom: 1px solid var(--Black-96);
+} */

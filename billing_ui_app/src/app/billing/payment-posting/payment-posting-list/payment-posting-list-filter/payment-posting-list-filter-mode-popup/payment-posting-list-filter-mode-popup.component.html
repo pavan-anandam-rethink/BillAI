@@ -1,0 +1,19 @@
+<kendo-popup #popup [anchor]="anchor" class="mode-search-popup" (anchorViewportLeave)="anchorViewportLeave.emit()">
+    <div [style.width.px]="anchor.nativeElement.offsetWidth - 26" style="display: block;">
+        <div [ngClass]="isLoading ? 'mode-list loading mb-2' : 'mode-list mb-2'" *ngIf="reconcileModes.length > 0">
+            <div *ngFor="let mode of reconcileModes" (click)="modeClicked(mode)"  class="mode-item">
+                <input type="checkbox" [checked]="mode.checked"/>
+                <span class="ml-2">{{ mode.modeName }}</span>
+            </div>
+        </div>
+        <ng-template [ngIf]="totalCount">
+            <div *ngIf="totalCount == 1; else notOne">
+                <span>{{totalCount}} item</span>
+            </div>
+            <ng-template #notOne>
+                <span>{{totalCount}} items</span>
+            </ng-template>
+        </ng-template>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+    </div>
+</kendo-popup>

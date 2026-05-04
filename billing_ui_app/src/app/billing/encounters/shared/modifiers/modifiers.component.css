@@ -1,0 +1,16 @@
+.modifiersForm {
+    width: 70px;
+}
+
+
+.inline-edit-modifier {
+    max-width: 30px;
+    height: 24px;
+    margin: 3px 3px 3px 0;
+    /* background-color: #dbdde0; */
+    border-radius: 4px;
+    border-color: #dbdde0;
+    text-align: center;
+    padding: 0px 0px 3px 0px;
+    font-size: 14px;
+}

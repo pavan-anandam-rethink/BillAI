@@ -1,0 +1,35 @@
+<div class="container" *ngFor="let element of responses">
+    <span style="font-weight: bold;">Batch Id:  </span>
+    <a class="batch-id-link" *ngIf="element.batchId && isRethinkAdminUser() && (listingTab !== 2 || (listingTab === 2 && claimStatus === 'Rebill'))" 
+          (click)="downloadEdi837(element.batchId)" 
+          title="Download 837 EDI">{{element.batchId}}</a>
+    <span *ngIf="element.batchId && (!isRethinkAdminUser() || (listingTab === 2 && claimStatus !== 'Rebill'))">{{element.batchId}}</span>
+    <div *ngFor="let item of element.data">
+        <div class="error-frame small-12reg">
+            <div class="w-50">
+                <div class="details">
+                    <div class="property small-12med">Source</div>
+                    <div class="value">{{item.source}}- {{item.fileType}}</div>
+                </div>
+                <div class="download-icon-wrapper" *ngIf="item && item.source && isRethinkAdminUser()"
+                    (click)="onDownloadClick(item)">
+                    <span class="icon-24 download-icon"
+                        [title]="item.fileType === '277' ? 'Download 277 EDI' : item.fileType === '999' ? 'Download 999 EDI' : ''"></span>
+                </div>
+            </div>
+            <div class="w-50 b-l response-date-wrapper">
+                <div class="details">
+                    <div class="property small-12med">Response Date</div>
+                    <div class="value">{{ item.responseDate | date: 'MM/dd/yyyy hh:mm a' }}</div>
+                </div>
+            </div>
+            <div class="w-100 b-t" *ngFor="let description of item.messageDescription">
+                <div class="details">
+                    <div class="property small-12med">Description</div>
+                    <div class="value">{{description.description}}</div>
+                    <div *ngIf="description.message" class="value"><br />{{description.message}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

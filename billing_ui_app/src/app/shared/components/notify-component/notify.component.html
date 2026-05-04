@@ -1,0 +1,20 @@
+﻿<div class="notify-wrapper">
+    <ng-template [ngIf]="type == 'success'">
+        <div class="col-md-12 success-style">
+            <span class="ml-0 mr-2 col-md-1 icon-24 processed-icon"></span>
+            <span>{{notificationText}}</span>
+        </div>
+    </ng-template>
+    <ng-template [ngIf]="type == 'error'">
+        <div class="col-md-12 error-style">
+            <span class="ml-0 mr-2 col-md-1 icon-24 info-red-icon" style="height: 25px"></span>
+            <span>{{notificationText}}</span>
+        </div>
+    </ng-template>
+    <ng-template [ngIf]="type == 'warning'">
+        <div class="col-md-12 warning-style">
+            <span class="ml-0 mr-2 col-md-1 icon-24 info-yellow-icon" style="height: 25px"></span>
+            <span>{{notificationText}}</span>
+        </div>
+    </ng-template>
+</div>

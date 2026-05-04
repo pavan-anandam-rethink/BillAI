@@ -1,0 +1,64 @@
+.selector-popup {
+    background-color: var(--White-220);
+    border: 1px solid var(--Black-88);
+   
+    box-shadow: 0 8px 20px rgba(37, 40, 43, 0.08);
+    border-radius: 8px;
+    padding: 16px 8px;
+    padding-right: 11px;
+    
+    margin-top: 7px;
+    min-width: 225px;
+}
+
+.selector-popup ::ng-deep.k-popup {
+    border: none;
+    margin: 0;
+    padding: 0;
+    background-color: var(--White-220);
+}
+
+.divider {
+    flex-grow: 1;
+    margin-right: -12px;
+    margin-left: -9px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--Black-88);
+}
+
+.option-item {
+    padding: 10px 15px;
+    font-family: DM Sans, serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 140%;
+    color: var(--Black-48);
+}
+
+.option-item:hover {
+    cursor: pointer;
+    background-color: var(--Black-96);
+    border-radius: 8px;
+}
+
+.option-item input[type='checkbox'] {
+    transform: scale(1.5);
+    pointer-events: none;
+}
+
+.selector-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.selection-count {
+    color: var(--Black-60);
+}
+
+.selector-popup {
+    height: 300px;
+    overflow: hidden;
+    overflow-y: scroll;
+}

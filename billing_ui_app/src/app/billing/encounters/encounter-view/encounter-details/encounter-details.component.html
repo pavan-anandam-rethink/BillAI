@@ -1,0 +1,51 @@
+<div class="billing-container">
+    <div class="row mb-4">
+        <div class="col-lg-4">
+            <app-encounter-details-client-info *ngIf="claim" [claim]="claim" [childProfileId]="childProfileId"
+                [claimForm]="claimForm" (onChangeDiagnosicCode)="onChangeDiagnosicCode($event)"></app-encounter-details-client-info>
+        </div>
+        <div class="col-lg-8">
+            <app-encounter-details-additional-info *ngIf="claim" [claim]="claim" [claimForm]="claimForm"
+                [placeOfServices]="locationCodes"></app-encounter-details-additional-info>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <app-encounter-details-providers *ngIf="claim" [renderingProviders]="renderingProviders"
+                [referringProviders]="referringProviders" [serviceProviders]="serviceProviders"
+                [billingProviders]="billingProviders" [claimForm]="claimForm"
+                [claim]="claim" (manualBillingProviderFormChanged)="onManualBillingProviderFormChanged($event)"></app-encounter-details-providers>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <app-encounter-details-charge-detail-summary *ngIf="claim" [claimId]="claim.id" [diagnosisCode]="diagnosisCode"
+                [isManualClaim]="isManualClaim" [billingCodes]="billingCodes" [renderingProviders]="renderingProviders" (isChargeEntryDirty)="checkIfChargeEntryDirty($event)" (isChargeEntryValid)="checkIfChargeEntryValid($event)"></app-encounter-details-charge-detail-summary>
+        </div>
+    </div>
+    <div *ngIf="claim" class="row mt-4">
+        <div class="col-lg-4 d-flex justify-content-start">
+            <contained-btn text="Attachments" (onClick)="attachmentsClick()"></contained-btn>
+            <contained-btn class="ml-2" text="Errors, Alerts & Responses" (onClick)="errosAndAlertsClick()"></contained-btn>
+            <contained-btn class="ml-2" text="Refresh" (onClick)="RefreshClaimData()"></contained-btn>
+        </div>
+        <div class="col-lg-8 d-flex justify-content-end" >
+            <div (keydown.enter)="chargeDetailsSummary.addChargeLine()">
+            <outlined-btn text="Add Service" (click)="chargeDetailsSummary.addChargeLine()">
+            </outlined-btn>
+            </div>
+            <div (keydown.enter)="cancel()">
+            <outlined-btn text="Cancel" (click)="cancel()">
+            </outlined-btn>
+            </div>
+            <div (keydown.enter)="updateClaimDetails()">
+                <contained-btn *ngIf="canEdit" class="ml-2" text="Save" [isDisabled]="(!(isChargeEntryValid && claimForm.valid) || isDisabledSaveBtn)" (onClick)="updateClaimDetails()">
+                </contained-btn>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<confirmation-dialog #cancelConfirmationAlert [confirmDialog]="cancelConfirmation" 
+  (onConfirm)="this.claimChargeDetailsShared.navigateToDashboard()"></confirmation-dialog>

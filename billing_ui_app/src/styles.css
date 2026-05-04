@@ -1,0 +1,527 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+::-webkit-scrollbar {
+    width: 10px;
+    overflow-y: scroll;
+    background: inherit;
+    box-shadow: inset 0 0 4px var(--Black-96);
+}
+
+/* Track */
+/* ::-webkit-scrollbar-track {
+  display: none; 
+} */
+
+::-webkit-scrollbar-thumb {
+  /* display: none; */
+  border-radius: 10px;
+  background: lightgray;
+} 
+/* 
+* {
+  font-family: DM Sans !important;
+} */
+
+
+  
+  :root {
+    /* Colors */
+    --Blue-98: #F0F4FA;
+    --Blue-96: #E1EBF5;
+    --Blue-92: #C5D9EB;
+    --Blue-84: #5E9DD6;
+    --Blue-80: #3182CC;
+    --Blue-72: #1D6EB8;
+    --Black-100: #25282B;
+    --Black-96: #EBEFF5;
+    --Black-94: #E8E8E8;
+    --Black-88: #CED6E0;
+    --Black-80: #B6BFCC;
+    --Black-72: #9AA6B8;
+    --Black-48: #616E7A;
+    --Black-32: #414A52;
+    --Black-60: #A0A4A8;
+    --Black-20: #282E33;
+    --Black-5: #F9F9FA;
+    --Black-10: #E8E8E8;
+    --white-220: #FCFDFF;
+    --White-222: #F9F9FA;
+    --White-220: #FCFDFF;
+    --Warning-98: #E99F30;
+    --warning-48: #f8b971;
+    --Warning-98-20: #E99F3033;
+    --Positive-84: #79C17B;
+    --Positive-84-20: #79C17B33;
+    --Negative-88: #E06C6C;
+    --Negative-88-20: #E06C6C33;
+    --Disable-bg: #F9F9F9;
+    /* Shadows */
+    /* Elements */
+    --prim-text: var(--Black-32);
+    /*#414A52*/
+    /*Title texts, captions, input fields and everywhere else where black is required*/
+    --secd-text: var(--Black-48);
+    /*#616E7A*/
+    /*Secondary text*/
+    --inac-state: var(--Black-80);
+    /*#B6BFCC*/
+    /*Inactive states*/
+    --defl-text: var(--Black-72);
+    /*#9AA6B8*/
+    /*Default texts in text field*/
+    --disb-state: var(--Black-88);
+    /*#CED6E0*/
+    /*Dividers & borders, disabled states*/
+    --background: var(--Black-96);
+    /*#EBEFF5*/
+    /*--Black-96*/
+    /*--background: rgba(255,255,255,0.6);*/
+    --prim-act: var(--Blue-72);
+    /*#1D6EB8*/
+    /*Primary actions, buttons and links*/
+    --error: var(--Warning-98);
+    /*Error*/
+    --warning: var(--Positive-84);
+    /*Warning*/
+    --success: var(--Negative-88);
+    /*success*/
+    --act-state: var(--White-220);
+    /*#FCFDFF*/
+    /*Inactive states*/
+  }
+
+  .billing-container {
+    padding: 20px;
+  }
+
+  .slide
+{
+    -moz-transition: all 0.25s ease-in-out;
+    -ms-transition: all 0.25s ease-in-out;
+    -o-transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    transition: all 0.25s;
+    overflow: hidden;
+}
+  
+  
+  .claim-details-block .title {
+    background-color: white;
+    border-bottom: 1px solid var(--Black-88);
+    padding: 12px 23px;
+    margin: 0 !important;
+  }
+  
+  .claim-details-block {
+    border: 1px solid var(--Black-88);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--White-220);
+    color: black;
+  }
+  
+  .claim-details-block .title {
+    color: var(--Black-98);
+    border-bottom: 1px solid var(--Black-88);
+    padding: 12px 23px;
+    margin: 0 !important;
+  }
+  
+  .claim-details-block .content {
+    padding: 24px 10px;
+  }
+  
+  /* new style improvements */
+  
+  .new-style ::ng-deep.k-picker-wrap ::ng-deep input {
+    height: auto;
+  }
+  
+  .new-style input {
+    text-align: left;
+    font-style: normal;
+    font-weight: normal !important;
+    font-size: 14px !important;
+    line-height: 140% !important;
+  }
+  
+  .new-style ::ng-deep.k-picker-wrap,
+  .new-style .k-dropdown ::ng-deep.k-dropdown-wrap {
+    border-color: var(--Black-88);
+  }
+  
+  .new-style .k-picker-wrap .k-select {
+    background-color: transparent;
+  }
+  
+  .new-style .k-dropdown ::ng-deep.k-icon {
+    content: url(/core/images/chevron-down.svg);
+  }
+  
+  .new-style .k-dropdown .k-input {
+    text-align: left;
+    font-style: normal;
+    font-weight: normal !important;
+    font-size: 14px !important;
+    line-height: 140% !important;
+  
+    padding: 0 15px;
+  }
+  
+  input::placeholder { font-size: 14px; color: #757575; } 
+ 
+
+  .dropdown-default {
+    color: #757575;
+    font-size: 14px;
+  }
+
+  .dropdown-selection {
+    color: #757575;
+    font-size: 14px;
+  }
+  
+  .k-dropdown.ng-invalid.ng-touched,
+  .form-line-input.ng-invalid.ng-touched {
+    border-color: var(--Negative-88);
+  }
+  
+  .new-style .k-datepicker.ng-invalid.ng-touched ::ng-deep.k-picker-wrap,
+  .new-style .k-dropdown.ng-invalid.ng-touched ::ng-deep.k-dropdown-wrap,
+  .new-style input.ng-invalid.ng-touched {
+    border-color: var(--Negative-88);
+  }
+  
+  .new-style .ng-invalid.ng-touched+label {
+    color: var(--Negative-88);
+  }
+  
+  .new-style .k-datepicker.ng-invalid.ng-touched ::ng-deep.k-picker-wrap ::ng-deep.k-icon {
+    background-color: var(--Negative-88);
+  }
+  
+  .disabled-text-color {
+    color: #8f8f8f;
+  }
+  
+  .new-style .k-input-solid {
+    background-color: none !important;
+    color: black;
+  }
+
+  .new-style .k-input-solid:disabled, .k-input-solid .k-disabled {
+    background-color: none !important;
+    color: black;
+  }
+  
+  .new-style kondo-combobox .k-dropdown-wrap {
+    display: flex;
+  }
+  
+  
+  .new-style-popup {
+    border: 1px solid var(--Black-88);
+    box-shadow: 0 8px 20px rgba(37, 40, 43, 0.08);
+    border-radius: 8px;
+    color: var(--Black-48);
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  /*for default items*/
+  .new-style-popup .k-list-optionlabel {
+    margin: 8px;
+    margin-bottom: -8px;
+    height: 40px;
+    line-height: 34px;
+  }
+  
+  .new-style-popup .k-list-optionlabel:hover {
+    border-radius: 8px;
+    color: var(--Black-48);
+    background-color: #f2f2f2;
+  }
+  
+  .new-style-popup .k-list-optionlabel.k-state-selected {
+    border-radius: 8px;
+    color: #fff;
+    background-color: #007bff;
+  }
+  
+  .new-style-popup .k-list-optionlabel.k-state-selected:hover {
+    border-radius: 8px;
+    color: #fff;
+  }
+  
+  .new-style-popup .k-list-optionlabel.k-state-focused:hover,
+  .new-style-popup .k-list-optionlabel.k-state-focused,
+  .new-style-popup .k-list-optionlabel:focus {
+    box-shadow: none;
+  }
+  
+  
+  /*for other items*/
+  .new-style-popup .k-list {
+    padding: 8px;
+  }
+  
+  .new-style-popup .k-list .k-item {
+    height: 40px;
+  }
+  
+  .new-style-popup .k-list .k-item:hover {
+    border-radius: 8px;
+    color: var(--Black-48);
+  }
+  
+  .new-style-popup .k-list .k-item.k-state-selected {
+    border-radius: 8px;
+  }
+
+  .new-style-popup .k-list .k-item.k-state-selected:hover {
+    border-radius: 8px;
+    color: #fff;
+  }
+  
+  .new-style-popup .k-list .k-item.k-state-focused:hover,
+  .new-style-popup .k-list .k-item.k-state-focused,
+  .new-style-popup .k-list .k-item:focus {
+    box-shadow: none;
+  }
+  
+  .new-style-popup .k-input-inner {
+    background: #fff;
+  }
+
+
+  
+.row {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+.sticky {
+    position: fixed;
+}
+
+.d-flex div {
+    display: flex;
+    /* flex-grow: 1; */
+}
+body {
+    overflow: hidden; /* Hide scrollbars */
+  }
+.d-flex span {
+    display:  flex;
+    align-items: center;
+    /*margin-left: 0.75rem;*/
+    /* margin-right: 0.4rem; */
+}
+
+.k-flex-col-reverse, .k-flex-column-reverse {
+    -ms-flex-direction: column-reverse;
+        flex-direction: column-reverse;
+}
+
+.modifier {
+    max-width: 25%;
+    width: 25%;
+}
+
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: #fff;
+  }
+  ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    border-radius: 4px;
+    padding: 0.75em 0.75em 0 0.75em;
+    border: 1px solid #f94747;
+  }
+  .flex-end-css {
+    display: flex;
+    justify-content: flex-end;
+}
+.example-full-width {
+  width: 100%;
+}
+
+a {
+  color: var(--Blue-72);
+}
+
+.new-style input.k-input:disabled, input.k-input[disabled], textarea.k-textarea:disabled, textarea.k-textarea[disabled] {
+    cursor: default;
+    background-color: -internal-light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3));
+    color: -internal-light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
+    border-color: rgba(118, 118, 118, 0.3);
+}
+
+.textarea-wrapper {
+  border: 1px solid;
+  border-color: var(--Black-88);
+  border-radius: 10px;
+
+  background-color: white;
+  padding: 2px;
+}
+
+.textarea-wrapper textarea {
+  border: none;
+  border-radius: 0;
+}
+
+.font-bold {
+  font-weight: 600 !important;
+}
+
+.m-0 {
+  margin: 0 !important;
+}
+
+textarea.form-control {
+  border: 1px solid #ced4da !important;
+  background-image: none !important;
+  padding: 10px;
+  height: auto;
+}
+
+.k-radio:checked,
+.k-radio.k-checked {
+    color: #0d6efd !important;
+}
+
+.headerBar {
+  height: 80px;
+  position: sticky;
+  position: -webkit-sticky; /* For macOS/iOS Safari */
+  top: 0; /* Sets the sticky toolbar to be on top */
+  z-index: 1000;
+  
+  background-color: white !important;
+  color: var(--Black-98);
+  z-index: 10;
+  border-bottom: 1px solid var(--Black-96);
+}
+mat-toolbar-row {
+  padding: 10px 16px 0px 0px;
+  height: 80px !important;
+}
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+}
+.mat-toolbar {
+  /* height: 80px; */
+  font-size: 16px;
+}
+.header-position {
+  position: fixed;
+  display: contents;
+}
+.BH-logo {
+  margin: 15px 10px 14px 16px;
+}
+.Header-2 {
+  margin-top: -7px;
+}
+img {
+  height: 50px;
+}
+
+.k-icon {
+  content: url(/assets/img/svg/chevron-down.svg);
+  width: 20px !important;
+  height: 20px !important;
+  display: inherit;
+}
+
+kendo-grid .k-plus, .k-svg-i-plus {
+  content: url(/assets/img/svg/chevron-down.svg);
+}
+
+kendo-grid .k-minus,.k-svg-i-minus {
+  content: url(/assets/img/svg/chevron-up.svg);
+}
+
+.mat-mdc-progress-spinner {
+  height: 30px !important;
+  width: 30px !important;
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--Blue-72);
+}
+
+.k-grid .k-column-title {
+  white-space: normal;
+}
+
+.clear-filter {
+  width: auto !important;
+  padding: 0 !important;
+}
+
+.clear-filter button {
+  height: 46px;
+  background-color: white;
+  border-radius: 0 24px 24px 0 !important;
+  border: none;
+}
+
+.clear-filter button:hover {
+  background-color: var(--Black-96);
+}
+
+.filters-wrapper {
+  padding: 0px 10px 0px 10px;
+}
+
+
+
+.filter-item {
+  height: 48px;
+  border: 1px solid var(--Black-10);
+  width: 100%;
+  padding: 0 16px;
+  
+  font-size: 14px;
+  color: var(--Black-20);
+  background-color: white;
+  
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.filter-item.active {
+  border-color: var(--primary);
+  background-color: var(--Black-5);
+}
+
+.filter-item:first-child {
+  border-radius: 24px 0 0 24px;
+}
+.filter-item:last-child {
+  border-radius: 0 24px 24px 0;
+}
+
+.width-80 {
+  width: 80% !important;
+}
+
+.ngx-toastr {
+    width: 700px !important;
+}
+
+.k-picker-solid {
+  background-color:  var(--White-220) !important;
+}
+
+button.k-button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}

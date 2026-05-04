@@ -1,0 +1,19 @@
+label {
+    margin-bottom: 0rem;
+}
+
+.rebill-control {
+    padding-top: 5px;
+    font-size: 13px;
+}
+
+.notes-header {
+    font-size: 12px;
+    color:  var(--Black-60);
+}
+
+.k-button.k-disabled{
+    background-color: #dee2e6;
+    border-color: #dee2e6;
+    /* color: ; */
+}

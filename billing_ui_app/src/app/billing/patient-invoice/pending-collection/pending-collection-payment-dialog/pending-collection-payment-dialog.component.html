@@ -1,0 +1,96 @@
+<kendo-dialog class="new-style dialog-wrapper" (close)="close()" [minWidth]="250" [width]="560">
+  <div kendoDialogContainer class="dialog-body">
+    <div class="title">Create Payment</div>
+    <div class="body" style="display: block;">
+      <form class="k-form" [formGroup]="paymentInfo" style="padding:0;">
+        <div class="row justify-content-between mb-3">
+          <div class="col-md-6">
+            <label for="paymentMethodType">Method*</label>
+            <kendo-dropdownlist id="paymentMethodType" formControlName="paymentMethod" class="w-100"
+                                [data]="paymentMethods" (valueChange)="methodChanged($event)"
+                                [popupSettings]="{popupClass: 'new-style-popup'}">
+              <ng-template kendoDropDownListValueTemplate let-dataItem>
+                <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                <span *ngIf="dataItem">{{dataItem}}</span>
+              </ng-template>
+            </kendo-dropdownlist>
+          </div>
+          <div class="col-md-6 input-style" style="display: block; margin: auto;">
+            <label for="referenceNumber" class="d-flex">Reference Number<span *ngIf="isReferenceNumberRequired">*</span></label>
+            <input kendoTextBox id="referenceNumber" formControlName="referenceNumber"
+                   class="w-100" placeholder="Enter Reference Number" style="height: 40px;" />
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-md-6 datepicker-style">
+            <label for="postDate">Date Posted*</label>
+            <kendo-datepicker id="postDate" #postDate formControlName="postDate"
+                              [navigation]="false"
+                              [min]="datePickerMinDate" (close)="onDatePickerClose(postDate)"
+                              placeholder="Select">
+            </kendo-datepicker>
+          </div>
+          <div class="col-md-6 datepicker-style">
+            <label for="depositDate">Deposit Date*</label>
+            <kendo-datepicker id="depositDate" #depositDate formControlName="depositDate"
+                              [navigation]="false"
+                              [min]="datePickerMinDate" (close)="onDatePickerClose(depositDate)"
+                              placeholder="Select">
+            </kendo-datepicker>
+          </div>
+        </div>
+        <div class="row justify-content-between mb-3">
+
+          <div class="col-md-6 input-style" style="display: block; margin-top: 25px;">
+            <label for="unallocatedAmount" class="d-flex">
+              Unallocated Amount <span *ngIf="isReferenceNumberRequired">*</span>
+            </label>
+            <input kendoTextBox
+                   #unallocatedAmountInput
+                   id="unallocatedAmount"
+                   formControlName="unallocatedAmount"
+                   placeholder="Enter Amount"
+                   (input)="onUnallocatedAmountChange($event)" />
+          </div>
+          <span class="icon-24 notes-r-icon"
+                (click)="openNoteDialog()"
+                [title]="'Enter note here'">
+          </span>
+        </div>
+      </form>
+    </div>
+    <div class="d-flex mt-3 mb-1 justify-content-end">
+      <outlined-btn text="Cancel" (click)="close()"></outlined-btn>
+      <contained-btn [isDisabled]="paymentInfo.invalid || startedParsingLoading || isLoading"
+                     text="Create"
+                     (click)="createPayment()"
+                     class="ml-3">
+      </contained-btn>
+    </div>
+  </div>
+</kendo-dialog>
+<kendo-dialog *ngIf="showNoteDialog"
+              title="Claim Notes"
+              [width]="500"
+              (close)="cancelNote()">
+
+  <div [formGroup]="formGroup">
+    <textarea class="form-control text-area"
+              formControlName="note"
+              placeholder="Type Here"
+              (input)="checkTextArea($event)">
+    </textarea>
+  </div>
+
+  <kendo-dialog-actions>
+    <outlined-btn text="Cancel" (click)="cancelNote()"></outlined-btn>
+    <contained-btn text="Add Note"
+                   (click)="addNote()"
+                   [isDisabled]="AddNote">
+    </contained-btn>
+  </kendo-dialog-actions>
+
+</kendo-dialog>
+
+
+

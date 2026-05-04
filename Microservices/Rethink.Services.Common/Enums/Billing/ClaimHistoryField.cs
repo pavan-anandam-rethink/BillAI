@@ -1,0 +1,28 @@
+﻿namespace Rethink.Services.Common.Enums.Billing
+{
+    public enum ClaimHistoryField : short
+    {
+        RenderingProvider = 1,
+        BillingProvider = 2,
+        ReferringProvider = 3,
+        ServiceFacility = 4,
+        PlaceOfService = 5,
+        DiagnosisCodes = 6,
+        SubmissionReason = 7,
+        BenefitsAssignmentCertificationIndicator = 8,
+        AuthorizedReleaseOfInfo = 9,
+        AuthorizePayment = 10,
+        OriginalClaim = 11,
+        Note = 12,
+        FrequencyCode = 13,
+        Units = 14,
+        PerUnitsCharge = 15,
+        Modifier1 = 16,
+        Modifier2 = 17,
+        Modifier3 = 18,
+        Modifier4 = 19,
+        Attachments = 20,
+        Amount = 21,
+        ReasonCode = 22
+    }
+}

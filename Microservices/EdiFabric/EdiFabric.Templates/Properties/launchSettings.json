@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "EdiFabric.Templates": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:58514;http://localhost:58515"
+    }
+  }
+}

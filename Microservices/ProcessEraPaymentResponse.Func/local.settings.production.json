@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "ServiceBusConnectionString": "Endpoint=sb://rta-billing-prd-sbns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ni26T22QDYwsR3dlqJAOMbkRLikBlzN7V+ASbIHb8yA=;",
+    "QueueName": "rt-billing-queue-era-file-process",
+    "ApiUrl": "https://rta-billing-prd-app-ch-svc.graysmoke-c0bdd691.eastus2.azurecontainerapps.io/api/ClearingHouseProcessor/processclearinghouseresponse",
+    "XApiKey": "A1A32167-18BB-4A05-BB3B-0F97BDEBFF30",
+    "BillingXApiKey": "6F0D7BB1-93E9-49BE-987B-1EF92436D7F9",
+    "BillingApiUrl": "https://rta-billing-prd-app-claim-svc.graysmoke-c0bdd691.eastus2.azurecontainerapps.io/",
+    "BillingServiceBusConnectionString": "Endpoint=sb://rta-billing-prd-sbns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ni26T22QDYwsR3dlqJAOMbkRLikBlzN7V+ASbIHb8yA=;EndpointSuffix=core.windows.net"
+  }
+}

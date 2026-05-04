@@ -1,0 +1,25 @@
+﻿<div class="note-details  mt-4">
+    <div *ngFor="let note of notes">
+        <div class="container small-12reg">
+            <div class="note-header d-flex">
+                <div class="w-50">
+                    <div class="details">
+                        <div class="property small-12med">{{note.createdByName}}</div>
+                        <div class="value date">&nbsp;&nbsp;{{note.remindDate | date: 'MM/dd/yyyy'}}</div>
+                    </div>
+                </div>
+                <div class="w-50 d-flex justify-content-end">
+                    <div class="type"></div>
+                    <div class="icon-24 note-completed pointer" style="margin: auto 0;"
+                         *ngIf="canDelete()"
+                         (click)="markCompleted(note)">
+                    </div>
+                    <!-- <ng-template #completedNotes> 
+                        <div class="icon-24 note-completed" style="margin: auto 0;"></div>
+                    </ng-template> -->
+                </div>
+            </div>
+            <nline-text [text]="note.note" [nlines]="3" textClass="Body2"></nline-text>
+        </div>
+    </div>
+</div>

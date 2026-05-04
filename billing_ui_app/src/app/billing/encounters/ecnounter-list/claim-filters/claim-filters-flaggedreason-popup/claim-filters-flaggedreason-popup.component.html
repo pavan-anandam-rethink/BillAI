@@ -1,0 +1,24 @@
+<div class="location-search-popup">
+  <!--<div class="mb-3 d-flex w-100 location-search-input">
+    <span class="ml-2 icon-24 search-icon"></span>-->
+    <!--<input #searchInput placeholder="Search" (keyup)="reasonSearchValueChanged($event)" />-->
+  <!--</div>-->
+
+  <div [ngClass]="isLoading ? 'locations-list loading mb-2' : 'locations-list mb-2'" *ngIf="locations.length > 0">
+    <div *ngFor="let location of locations" (click)="onReasonClicked(location)" class="location-item">
+      <input type="checkbox" readonly [checked]="location.checked" />
+      <span class="ml-2">{{location.reasonName}}</span>
+    </div>
+  </div>
+  <div>
+    <ng-template [ngIf]="locations.length">
+      <div *ngIf="locations.length == 1; else notOne">
+        <span>{{locations.length}} item</span>
+      </div>
+      <ng-template #notOne>
+        <span>{{locations.length}} items</span>
+      </ng-template>
+    </ng-template>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+  </div>
+</div>

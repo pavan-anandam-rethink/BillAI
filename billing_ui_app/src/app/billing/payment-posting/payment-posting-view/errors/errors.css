@@ -1,0 +1,50 @@
+﻿#errors-info-print {
+    display: none;
+}
+
+@media print {
+    ::ng-deep app {
+        display: flex !important;
+        min-height: initial !important;
+    }
+    
+    ::ng-deep html {
+        zoom: 100% !important;
+    }
+
+    ::ng-deep .route-content {
+        min-height: initial !important;
+    }
+
+    ::ng-deep mat-tab-header {
+        display: none !important;
+    }
+
+    ::ng-deep .legend {
+        display: none !important;
+    }
+
+    #errors-info {
+        display: none !important;
+    }
+
+    #errors-info-print {
+        display: block !important;
+    }
+
+    ::ng-deep .mat-tab-group {
+        padding: 0 !important;
+    }
+    
+    ::ng-deep .mat-tab-body-content {
+        background-color: white;
+    }
+
+    ::ng-deep #errors-info-print div.claim-container {
+        break-inside: avoid;
+    }
+
+    ::ng-deep .customePageator .k-input-inner{
+        padding: 7px;
+    }
+}

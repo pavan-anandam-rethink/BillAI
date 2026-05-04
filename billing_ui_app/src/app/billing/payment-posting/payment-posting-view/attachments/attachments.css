@@ -1,0 +1,57 @@
+﻿/*#claims .k-grid-header .k-header:last-child,
+#claims .k-grid td:last-child {
+    text-overflow: clip;
+}*/
+
+.main {
+    display: flex;
+    padding-top: 20px;
+    padding-left: 10px;
+}
+
+.grid-area {
+    padding-left: 24px;
+}
+
+.header-actions-wrapper {
+    display: flex;
+}
+
+.attachments-list {
+    margin-top: 16px;
+}
+
+input.inline-edit {
+    border: none;
+    outline: none;
+    background: transparent;
+
+    width: 100%;
+    
+    font-size: 14px !important;
+    display: flex;
+    letter-spacing: 0.1px;
+}
+
+.denied-icon {
+    background-color: red;
+}
+
+.passed-icon {
+    background-color: green;
+}
+
+::ng-deep .customePageator .k-input-inner{
+  padding: 7px;
+}
+
+@media only screen and (min-width: 992px) {
+    .attachments-list #attachments-grid {
+        height: calc(100vh - 279px);
+    }
+}
+
+::ng-deep #attachments-grid .k-grid-header th.k-header {
+    vertical-align: top !important;
+    white-space: normal;
+}

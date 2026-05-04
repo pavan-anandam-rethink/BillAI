@@ -1,0 +1,29 @@
+{
+  "profiles": {
+    "SftpResponseDownload.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7110",
+      "launchBrowser": false
+    },
+    "Development.SftpResponseDownload.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7110",
+      "launchBrowser": false
+    },
+    "QA.SftpResponseDownload.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7110",
+      "launchBrowser": false
+    },
+    "Staging.SftpResponseDownload.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7110",
+      "launchBrowser": false
+    },
+    "Production.SftpResponseDownload.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7110",
+      "launchBrowser": false
+    }
+  }
+}

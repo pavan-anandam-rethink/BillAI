@@ -1,0 +1,151 @@
+<div class="d-flex w-100 justify-content-between filter" [class.opened]="opened">
+
+  <div #ClientAnchor [class.active]="selectedFilterId == 0" class="filter-item"
+       (click)="selectFilter(0, ClientAnchor)">
+    <div class="d-flex">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Client</div>
+        <div class="filter-info" *ngIf="selectedPatients.length">
+          {{selectedPatients.length}}
+          {{selectedPatients.length == 0 ? 'item' : 'items'}}
+        </div>
+      </div>
+      <span [class.active]="selectedFilterId == 0 || selectedPatients.length"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #FunderAnchor [class.active]="selectedFilterId == 1" class="filter-item"
+       (click)="selectFilter(1, FunderAnchor)">
+    <div class="d-flex">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Funder</div>
+        <div class="filter-info" *ngIf="selectedfunders.length">
+          {{selectedfunders.length}}
+          {{selectedfunders.length == 1 ? 'item' : 'items'}}
+        </div>
+      </div>
+      <span [class.active]="selectedFilterId == 1 || selectedfunders.length"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #ClosingDate [class.active]="selectedFilterId == 5" class="filter-item"
+       (click)="selectFilter(5, ClosingDate)">
+    <div class="d-flex" style="padding: 6px;">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Date of Service</div>
+        <div class="filter-info" *ngIf="(dateFromString != undefined || dateFromString != undefined)">{{dateFromString}} - {{dateToString}}</div>
+      </div>
+      <span [class.active]="selectedFilterId == 5 || (dateFromString != undefined || dateFromString != undefined)"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #StaffAnchor [class.active]="selectedFilterId == 2" class="filter-item"
+       (click)="selectFilter(2, StaffAnchor)">
+    <div class="d-flex">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Staff</div>
+        <div class="filter-info" *ngIf="selectedStaff.length">
+          {{selectedStaff.length}}
+          {{selectedStaff.length == 0 ? 'item' : 'items'}}
+        </div>
+      </div>
+      <span [class.active]="selectedFilterId == 2 || selectedStaff.length"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #LocationAnchor [class.active]="selectedFilterId == 3" class="filter-item"
+       (click)="selectFilter(3, LocationAnchor)">
+    <div class="d-flex">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Location</div>
+        <div class="filter-info" *ngIf="selectedLocation.length">
+          {{selectedLocation.length}}
+          {{selectedLocation.length == 0 ? 'item' : 'items'}}
+        </div>
+      </div>
+      <span [class.active]="selectedFilterId == 3 || selectedLocation.length"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #PlaceOfServiceAnchor [class.active]="selectedFilterId == 4" class="filter-item"
+       (click)="selectFilter(4, PlaceOfServiceAnchor)">
+    <div class="d-flex">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Place of Service</div>
+        <div class="filter-info" *ngIf="selectedPlaceOfService.length">
+          {{selectedPlaceOfService.length}}
+          {{selectedPlaceOfService.length == 0 ? 'item' : 'items'}}
+        </div>
+      </div>
+      <span [class.active]="selectedFilterId == 4 || selectedPlaceOfService.length"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <kendo-popup #popup [anchor]="selectedAnchor" *ngIf="selectedFilterId != undefined" class="new-popup">
+    <div [ngSwitch]="selectedFilterId" class='content'>
+      <div *ngSwitchCase="0" class="filter-body">
+        <client-filter-popup [selectedPatients]="selectedPatients"
+                             [userList]="userList"
+                             (patientClicked)="onFilterChange()">
+        </client-filter-popup>
+      </div>
+      <div *ngSwitchCase="1" class="filter-body">
+        <funder-filter-popup [selectedfunders]="selectedfunders"
+                             [funderList]="funderList"
+                             (funderClicked)="onFilterChange()">
+        </funder-filter-popup>
+      </div>
+      <div *ngSwitchCase="2" class="filter-body">
+        <staff-filter-popup [selectedStaff]="selectedStaff"
+                            [userList]="staffList"
+                            (StaffClicked)="onFilterChangeForStaff($event)">
+        </staff-filter-popup>
+      </div>
+      <div *ngSwitchCase="3" class="filter-body">
+        <location-filter-popup [selectedLocation]="selectedLocation"
+                               [locationList]="locationList"
+                               (locationClicked)="onFilterChange()">
+        </location-filter-popup>
+      </div>
+      <div *ngSwitchCase="4" class="filter-body">
+        <placeofservice-filter-popup [selectedPlaceOfService]="selectedPlaceOfService"
+                                     [userList]="placeOfServiceList"
+                                     (posClicked)="onFilterChange()">
+        </placeofservice-filter-popup>
+      </div>
+      <div class="filter-body" *ngSwitchCase="5">
+        <calendar-popup *ngIf="showDatePopup" [anchor]="this.dateAnchor" (anchorViewportLeave)="showDatePopup = false"
+                        [range]="{
+                    start:dateFrom ,
+                    end: dateTo
+                }" (selectedDateEmitter)="setDatePeriod($event)" (onFilterLeave)="onDateFilterLeave()"></calendar-popup>
+
+      </div>
+    </div>
+  </kendo-popup>
+
+  <div class="clear-filter filter-item">
+    <div *ngIf="!showClearFilter;else filtersNotApplied">
+      <button kendoButton (click)="applyFilters()"
+              [disabled]="selectedPatients.length == 0
+                && selectedfunders.length == 0
+                && selectedStaff.length == 0
+                && selectedLocation.length == 0
+                && selectedPlaceOfService.length == 0
+                && !(dateFromString && dateToString)">
+        Apply Filters
+      </button>
+    </div>
+    <ng-template #filtersNotApplied>
+      <button kendoButton [disabled]="isClearFilterDisabled" (click)="clearFilters()">
+        Clear Filters
+      </button>
+    </ng-template>
+  </div>
+</div>

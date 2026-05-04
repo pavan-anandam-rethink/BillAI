@@ -1,0 +1,60 @@
+﻿.print-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    overflow: auto;
+}
+
+.print-modal .print-modal-body {
+    padding: 20px;
+    background: #FCFDFF;
+    margin: 40px auto;
+    max-width: 1000px;
+    border-color: black;
+}
+
+.print-modal-background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #282E33;
+    opacity: 0.95;
+    z-index: 900;
+}
+
+::ng-deep body.print-modal-open {
+    overflow: hidden;
+}
+
+::ng-deep print-modal {
+    display: none;
+}
+
+.print-modal .head {
+    color: white;
+    height: 64px;
+    line-height: 64px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.print-modal .back {
+    background-color: #FCFDFF;
+    vertical-align: middle;
+    margin: 0 10px;
+}
+
+.print-modal .action-icons {
+    margin-right: 10px;
+}
+
+.print-modal .action-icons div {
+    margin: auto 10px;
+    background-color: #FCFDFF;
+    cursor: pointer;
+}

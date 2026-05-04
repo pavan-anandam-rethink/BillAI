@@ -1,0 +1,16 @@
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\bin\Debug\net8.0\Billing.FolderStructure.Core.deps.json
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\bin\Debug\net8.0\Billing.FolderStructure.Core.dll
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\bin\Debug\net8.0\Billing.FolderStructure.Core.pdb
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\bin\Debug\net8.0\Rethink.Services.Common.dll
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\bin\Debug\net8.0\Rethink.Services.Common.pdb
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.csproj.AssemblyReference.cache
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.AssemblyInfoInputs.cache
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.AssemblyInfo.cs
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.csproj.CoreCompileInputs.cache
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.sourcelink.json
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing..07E4D817.Up2Date
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.dll
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\refint\Billing.FolderStructure.Core.dll
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\Billing.FolderStructure.Core.pdb
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\BillingService\Rethink.Billing.FolderStructure.Core\obj\Debug\net8.0\ref\Billing.FolderStructure.Core.dll

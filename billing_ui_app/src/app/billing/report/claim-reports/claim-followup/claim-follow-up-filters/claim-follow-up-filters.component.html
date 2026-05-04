@@ -1,0 +1,79 @@
+<div class="d-flex w-100 justify-content-between filter" [class.opened]="opened">
+  <div #FunderAnchor [class.active]="selectedFilterId == 0" class="filter-item"
+       (click)="selectFilter(0, FunderAnchor)">
+    <div class="d-flex" style="padding: 6px;">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Funder</div>
+        <div class="filter-info" *ngIf="selectedFunder.length">
+          {{selectedFunder.length}}
+          {{selectedFunder.length == 1 ? 'item' : 'items'}}
+        </div>
+      </div>
+      <span [class.active]="selectedFilterId == 0 || selectedFunder.length"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #ClosingDate [class.active]="selectedFilterId == 1" class="filter-item"
+       (click)="selectFilter(1, ClosingDate)">
+    <div class="d-flex" style="padding: 6px;">
+      <div class="d-flex flex-column">
+        <div class="filter-name">Follow-up Date Range</div>
+        <div class="filter-info" *ngIf="(dateFromString != undefined || dateFromString != undefined)">{{dateFromString}} - {{dateToString}}</div>
+      </div>
+      <span [class.active]="selectedFilterId == 1 || (dateFromString != undefined || dateFromString != undefined)"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #dataRangeType [class.active]="selectedFilterId == 2" class="filter-item" style="padding: 0px !important;"
+       (click)="selectFilter(2, dataRangeType)">
+    <kendo-dropdownlist id="rangeType"
+                        [class.default-item-style]="isDefaultDateSelected"
+                        #dataRangeType
+                        [popupSettings]="{popupClass: 'new-style-popup'}"
+                        [data]="dataRangeOption"
+                        [(ngModel)]="dataRangeTypeInput"
+                        (valueChange)="rangeTypeChanged($event)"
+                        (open)="excludeDefault()" style="padding: 6px;">
+
+      <ng-template kendoDropDownListValueTemplate let-dataItem>
+        <div class="dropdown-default" *ngIf="!dataItem">Follow-up Status</div>
+        <div *ngIf="dataItem">{{dataItem}}</div>
+      </ng-template>
+    </kendo-dropdownlist>
+    <input kendoTextBox type="hidden" />
+  </div>
+  <kendo-popup #popup [anchor]="selectedAnchor" *ngIf="selectedFilterId != undefined" class="new-popup">
+    <div [ngSwitch]="selectedFilterId" class='content'>
+      <div *ngSwitchCase="0" class="filter-body">
+        <Funder-popup [userList]="this.userList" [selectedFunder]="selectedFunder"
+                      (fundersClicked)="onFilterChange()"></Funder-popup>
+      </div>
+      <div *ngSwitchCase="1" class="filter-body">
+        <calendar-popup *ngIf="showDatePopup" [anchor]="this.dateAnchor" (anchorViewportLeave)="showDatePopup = false"
+                        [range]="{
+                    start:dateFrom ,
+                    end: dateTo
+                }" (selectedDateEmitter)="setDatePeriod($event)" (onFilterLeave)="onDateFilterLeave()"></calendar-popup>
+      </div>
+
+    </div>
+  </kendo-popup>
+
+  <div class="clear-filter filter-item">
+    <div *ngIf="isFiltersApplied;else filtersNotApplied">
+      <button kendoButton (click)="clearFilters()"
+              [disabled]="this.dateFromString == undefined || this.dateToString == undefined || selectedFunder.length == 0 || dataRangeTypeInput == undefined">
+        Clear Filters
+      </button>
+    </div>
+    <ng-template #filtersNotApplied>
+      <button kendoButton (click)="applyFilters()"
+              [disabled]="this.dateFromString == undefined || this.dateToString == undefined || dataRangeTypeInput == undefined">
+        Apply Filters
+      </button>
+    </ng-template>
+
+  </div>
+</div>

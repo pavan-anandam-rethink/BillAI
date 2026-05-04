@@ -1,0 +1,21 @@
+﻿<div class="mb-3">
+    Filter by range
+</div>
+<div class="d-flex">
+    <div class="d-flex flex-column mr-2">
+        <label class="filter-input-label" for="patientRespFrom">From</label>
+        <div class="filter-input-wrapper">
+            <span>$</span>
+            <input class="filter-input" id="patientRespFrom" [(ngModel)]="patientResponsibilityFrom"
+            (keyup)="setValue()" type="number">
+        </div>
+    </div>
+    <div class="d-flex flex-column ml-2">
+        <label class="filter-input-label" for="patientRespTo">To</label>
+        <div class="filter-input-wrapper">
+            <span>$</span>
+            <input class="filter-input" id="patientRespTo" [(ngModel)]="patientResponsibilityTo"
+                (keyup)="setValue()" type="number">
+        </div>
+    </div>
+</div>

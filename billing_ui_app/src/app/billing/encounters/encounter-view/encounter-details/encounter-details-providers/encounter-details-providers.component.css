@@ -1,0 +1,34 @@
+.editclaimcontrol {
+    padding: 6px 16px;
+}
+
+/* Manual Billing Provider Section */
+.manual-billing-provider-section {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 16px;
+}
+
+.provider-type-section {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.provider-type-section label.small-12med {
+    margin-bottom: 0;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 6px;
+}

@@ -1,0 +1,91 @@
+<div *ngIf="!loading">
+    <router-outlet></router-outlet>
+    <div [hidden]="!displayValidateLoader" class="loaderStyles">        
+            <kendo-dialog class="kendo-dialog-loader">
+                <div class="d-flex" style="padding: 10px;">
+                    <div class="loader"></div>
+                    <span style="padding: 20px; font-weight: 600; font-family: inherit;">{{validationMessageStr}}</span>
+                </div>
+
+                <div>
+                    <contained-btn class="yes-btn pointer" style="float: right;" (click)="close()" primary="true" text="Cancel"></contained-btn>
+                </div>
+            </kendo-dialog>
+    </div>
+    <div [hidden]="!displayLoader || displayValidateLoader" class="loaderStyles">
+            <kendo-dialog class="kendo-dialog-loader">
+                <div class="loader"></div>
+            </kendo-dialog>       
+    </div>
+    <div [hidden]="!displayError">
+        <kendo-dialog class="kendo-dialog-loader">
+            <div class="d-flex" style="padding: 10px;">
+                <div class="loader"></div>
+                <span style="padding: 20px; font-weight: 600; font-family: inherit;">{{errorMessage}}</span>
+            </div>
+        </kendo-dialog>
+        <!-- <kendo-dialog class="errorpopup" [minWidth]="250" (close)="close()" [width]="450">
+            <kendo-dialog-titlebar>
+                <div style="font-size: 18px; line-height: 1.3em;display:flex">
+                <mat-icon>error_circle</mat-icon>
+                &nbsp;&nbsp;<span class="">The error has occurred</span>
+            </div>
+            </kendo-dialog-titlebar>
+            <p style="height: 50px;overflow: auto;">{{errorMessage}}</p>
+                <div class="d-flex flex-row-reverse">
+                    <outlined-btn text="Ok" class="pointer" (onClick)="close()"></outlined-btn>
+                </div>
+            </kendo-dialog> -->
+
+    </div>
+</div>
+<div kendoDialogContainer></div>
+<style>
+    .loader {
+        border: 4px solid #f3f3f3;
+        /* Light grey */
+        border-top: 4px solid #3498db;
+        /* Blue */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: auto;
+        background: transparent;
+    }
+
+    #TrainingVideosComponent {
+        margin: 0px !important;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .app-main-container {
+        width: calc(100% - 70px);
+    }
+
+    @media (min-width: 1024px) {
+        .app-main-container {
+            width: calc(100% - 70px);
+            margin-left: 70px !important;
+        }
+    }
+
+    .errorpopup ::ng-deep.k-dialog {
+        /* margin-bottom: 400px !important; */
+        width: 700px !important;
+        height: 200px !important;
+    }
+
+    .errorpopup ::ng-deep.k-dialog-titlebar {
+        background-color: #ccc;
+    }
+</style>

@@ -1,0 +1,24 @@
+<header-toolbar class="header-position" [headerTitle]="headerTitle" [isBackBtnShow]="false"
+    [isProfileShow]="false" [breadcrumbs]="breadcrumbs"></header-toolbar>
+<div class="encounter-tabs">
+    <mat-tab-group mat-align-tabs="start" disableRipple [(selectedIndex)]="tabIndex" (selectedTabChange)="onTabChanged($event)" #reportingListingTabGroup>
+        <mat-tab *ngFor="let report of all_Reports" label="{{report.report_name}}">
+            <div class="row billing-container">
+                <div *ngFor="let individual_report of report.reports" class="col-lg-4 mb-4">
+                    <div class="claim-details-block">
+                        <div class="title Header-5">{{individual_report.name}}</div>
+
+                        <div class="content new-style">
+                            <div class="col-12 mb-4" kendoTooltip [title]="individual_report.description">
+                                {{ individual_report.description | slice:0:180 }}<ng-container
+                                    *ngIf="individual_report.description?.length > 180">...</ng-container>
+                            </div>
+                            <contained-btn text="View" [isDisabled]="!individual_report.link?.length"
+                                (onClick)="navigateToReport(individual_report)"></contained-btn>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

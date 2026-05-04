@@ -1,0 +1,45 @@
+
+#spinner {
+	-webkit-animation: frames 1s infinite linear;
+	animation: frames 1s infinite linear;
+	background: transparent;
+	border: 6px solid #FFF;
+	border-radius: 100%;
+	border-top-color: var(--Blue-72);
+	width: 50px;
+	height: 50px;
+	opacity: 1;
+	padding: 0;
+	position: absolute;
+	z-index: 9999 !important;
+}
+@keyframes frames {
+  0% {
+	-webkit-transform: rotate(0deg);
+	transform: rotate(0deg);
+  }
+  100% {
+	-webkit-transform: rotate(359deg);
+	transform: rotate(359deg);
+  }
+}
+
+#pause {
+	display: block;
+	background:
+		rgba(0, 0, 0, 0.66)
+		no-repeat
+		0 0;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 1000;
+}
+
+.loadermsg {
+	margin-top: 90px;
+	font-weight: bolder;
+	color: white;
+}

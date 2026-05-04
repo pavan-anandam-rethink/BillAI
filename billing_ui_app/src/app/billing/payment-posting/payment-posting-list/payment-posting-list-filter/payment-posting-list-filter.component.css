@@ -1,0 +1,172 @@
+﻿#paymentGridFilterColumns {
+    height: 0;
+    display: block;
+}
+
+#paymentGridFilterColumns.opened {
+    height: 64px;
+}
+
+.form-group label {
+    color: rgba(33, 37, 41, 0.5);
+}
+
+.form-group:focus-within label {
+    color: #00b0ff;
+}
+
+
+.datePickerInput {
+    display: none;
+}
+
+.filter-line {
+    min-height: 48px;
+    max-height: 48px;
+    display: flex;
+    border: 1px solid var(--Black-88);
+    border-radius: 24px;
+}
+
+.f-control {
+    width: 25%;
+}
+
+.f-control>#paymentMethod {
+    border-radius: 23px 0px 0px 23px;
+    border: 0;
+}
+
+.k-searchbar {
+    height: 45px;
+}
+
+/*multiselect coltrol*/
+.f-control .k-multiselect-wrap {
+    height: 46px;
+}
+
+.f-control:first-child .k-multiselect-wrap:first-child {
+    height: 46px;
+    border: none;
+    border-right: 1px solid var(--Black-88);
+    border-radius: 23px 0 0 23px;
+}
+
+.f-control .k-multiselect-wrap {
+    border: none;
+    border-radius: 0;
+    border-right: 1px solid var(--Black-88);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.k-multiselect-wrap ul {
+    display: flex;
+    overflow: hidden;
+    line-height: 16px;
+}
+
+.k-multiselect-wrap li {
+    height: 38px;
+}
+
+.f-control:first-child .k-multiselect-wrap:first-child ul li:first-child {
+    border-radius: 19px .25rem .25rem 19px;
+}
+
+.k-multiselect-wrap .k-clear-value {
+    bottom: 23px;
+}
+
+.k-multiselect-wrap .k-i-close:before {
+    line-height: 19px;
+}
+
+.k-multiselect-wrap kendo-searchbar input {
+    font-size: 16px !important;
+    margin-left: 19px;
+    height: 46px !important;
+}
+
+/*dropdown control*/
+.f-control kendo-dropdownlist {
+    border-right: 1px solid var(--Black-88);
+    width: 100%;
+}
+
+.f-control kendo-dropdownlist span {
+    border: none;
+    height: 46px;
+    border-radius: 0;
+}
+
+.f-control kendo-dropdownlist span span.k-input {
+    margin: auto;
+    font-size: 16px !important;
+}
+
+.f-control kendo-dropdownlist .k-i-arrow-s:before {
+    line-height: 46px;
+}
+
+/*input control*/
+.f-control input {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 0;
+    border-right: 1px solid var(--Black-88);
+}
+
+#funderId {
+    font-family: DM Sans;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-size: 16px !important;
+    line-height: 128% !important;
+    letter-spacing: 0.1px;
+
+    padding: 0 15px !important;
+}
+
+.adjust-height {
+    border: 1px solid var(--Black-10) !important;
+}
+
+/*Dropdown default item style*/
+.default-item-style span span.k-input {
+    color: #757575;
+}
+
+.k-dropdown .k-icon {
+    content: url(/core/images/chevron-down.svg);
+}
+
+.hide-input .k-searchbar {
+    /*display: none !important;*/
+    height: 0 !important;
+    overflow: hidden;
+}
+
+#reconcileStatus {
+    border-radius: 0;
+    border: 0;
+}
+
+#reconcileStatus>.k-input-values {
+    border-radius: 0;
+}
+
+#reconcileStatus>.k-input-values>.k-searchbar {
+    border-radius: 0;
+}
+
+::ng-deep > .k-searchbar {
+    display: none;
+  }
+
+  .filter-info {
+    font-size: 12px;
+    color: var(--Black-60);
+}

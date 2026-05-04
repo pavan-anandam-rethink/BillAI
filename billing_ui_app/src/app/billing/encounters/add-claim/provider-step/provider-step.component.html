@@ -1,0 +1,227 @@
+<div class="claim-details-block">
+    <div class="title Header-5">Provider</div>
+    <div class="content new-style">
+        <form [formGroup]="parentForm">
+            <div formArrayName="formData">
+                <ng-container [formGroupName]="1">
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-dropdownlist id="renderingProvider" formControlName="renderingProviderId"
+                                [valuePrimitive]="true" [popupSettings]="{popupClass: 'new-style-popup'}"
+                                [data]="renderingProviders" [textField]="'name'"
+                                class="w-100 k-component" [disabled]="isRenderingProviderDisabled"
+                                (selectionChange)="renderingProviderChanged($event)" [valueField]="'staffMemberId'">
+                                <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                    <span *ngIf="!dataItem">Select Rendering Provider</span>
+                                    <span *ngIf="dataItem">{{dataItem.name}}</span>
+                                </ng-template>
+                            </kendo-dropdownlist>
+                        </div>
+                        <label for="clientName" class="small-13bld">
+                            Rendering Provider*
+                        </label>
+                    </div>
+
+                    <div class="col-12 mb-4">
+                        <div class="d-flex flex-column-reverse">
+                            <div id="clientName" class="client-name">
+                                <kendo-combobox id="billingProvider" class="w-100 k-component" placeholder="Select Billing Provider"
+                                    formControlName="billingProviderId" [valuePrimitive]="true"
+                                    [readonly]="selectedServiceLine && selectedServiceLine.billingProviderOptionId === billingProviderOption.IndividualOnly"
+                                    [disabled]="isBillingProviderDisabled || (selectedServiceLine && selectedServiceLine.billingProviderOptionId === billingProviderOption.IndividualOnly)"
+                                    [popupSettings]="{popupClass: 'new-style-popup'}" [data]="billingProviders"
+                                    textField="name" valueField="id"
+                                    (selectionChange)="onBillingProviderChange($event)">
+                                    <ng-template kendoComboBoxItemTemplate let-dataItem>
+                                        <span *ngIf="dataItem">{{dataItem.name}}</span>
+                                    </ng-template>
+                                </kendo-combobox>
+                            </div>
+                            <label for="clientName" class="small-13bld">
+                                <div style="display: flex;">Billing Provider<span *ngIf="selectedFunder?.funderType === 1">*</span></div>
+                            </label>
+                        </div>
+
+                        <!-- Manual Billing Provider Section - Shown when "Other" is selected -->
+                        <div class="manual-billing-provider-section new-style" *ngIf="showManualBillingProvider" [formGroup]="manualBillingProviderForm">
+                        <div class="provider-type-section">
+                            <label class="small-12med">Type*</label>
+                            <label class="radio-option">
+                                <input type="radio" name="providerType" value="Entity" 
+                                       [checked]="providerType === 'Entity'" 
+                                       (change)="onProviderTypeChange('Entity')">
+                                <span class="radio-label">Entity</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="providerType" value="Person" 
+                                       [checked]="providerType === 'Person'" 
+                                       (change)="onProviderTypeChange('Person')">
+                                <span class="radio-label">Person</span>
+                            </label>
+                        </div>
+
+                        <div class="row">
+                            <!-- Facility Name (Entity) -->
+                            <div class="col-lg-12 mb-3" *ngIf="providerType === 'Entity'">
+                                <label for="facilityLastName" class="small-12med">
+                                    Facility Name*
+                                </label>
+                                <input type="text" id="facilityLastName" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="facilityLastName">
+                            </div>
+
+                            <!-- First Name (Person) -->
+                            <div class="col-lg-6 mb-3" *ngIf="providerType === 'Person'">
+                                <label for="firstName" class="small-12med">
+                                    First Name*
+                                </label>
+                                <input type="text" id="firstName" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="firstName">
+                            </div>
+
+                            <!-- Last Name (Person) -->
+                            <div class="col-lg-6 mb-3" *ngIf="providerType === 'Person'">
+                                <label for="facilityLastName" class="small-12med">
+                                    Last Name*
+                                </label>
+                                <input type="text" id="facilityLastName" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="facilityLastName">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- NPI -->
+                            <div class="col-lg-4 mb-3">
+                                <label for="npi" class="small-12med">NPI*</label>
+                                <input type="text" id="npi" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="npi" placeholder="10 digits"
+                                       maxlength="10">
+                            </div>
+
+                            <!-- Tax ID -->
+                            <div class="col-lg-4 mb-3">
+                                <label for="taxId" class="small-12med">Tax ID</label>
+                                <input type="text" id="taxId" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="taxId">
+                            </div>
+
+                            <!-- Taxonomy Code -->
+                            <div class="col-lg-4 mb-3">
+                                <label for="taxonomyCode" class="small-12med">Taxonomy Code</label>
+                                <input type="text" id="taxonomyCode" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="taxonomyCode">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Address Line 1 -->
+                            <div class="col-lg-6 mb-3">
+                                <label for="addressLine1" class="small-12med">Address Line 1*</label>
+                                <input type="text" id="addressLine1" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="addressLine1">
+                            </div>
+
+                            <!-- Address Line 2 -->
+                            <div class="col-lg-6 mb-3">
+                                <label for="addressLine2" class="small-12med">Address Line 2</label>
+                                <input type="text" id="addressLine2" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="addressLine2">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- City -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="city" class="small-12med">City*</label>
+                                <input type="text" id="city" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="city">
+                            </div>
+
+                            <!-- State -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="state" class="small-12med">State*</label>
+                                <kendo-dropdownlist id="state"
+                                    [popupSettings]="{ popupClass: 'new-style-popup' }"
+                                    [data]="states"
+                                    formControlName="state"
+                                    textField="stateName"
+                                    valueField="stateId"
+                                    [valuePrimitive]="true"
+                                    class="w-100 k-component">
+                                    <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                        <span *ngIf="!dataItem">Select State</span>
+                                        <span *ngIf="dataItem">{{ dataItem.stateName || dataItem }}</span>
+                                    </ng-template>
+                                </kendo-dropdownlist>
+                            </div>
+
+                            <!-- Zip -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="zip" class="small-12med">Zip*</label>
+                                <input type="text" id="zip" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="zip" placeholder="5 digits"
+                                       maxlength="5">
+                            </div>
+
+                            <!-- Zip Ext -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="zipExt" class="small-12med">Zip Ext*</label>
+                                <input type="text" id="zipExt" kendoTextBox
+                                       class="w-100 k-component editclaimcontrol"
+                                       formControlName="zipExt" placeholder="4 digits"
+                                       maxlength="4">
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-combobox id="serviceFacilityLocation" class="w-100 k-component"
+                                placeholder="Select Service Facility Location" [disabled]="isServiceFacilityLocationDisabled"
+                                formControlName="serviceFacilityLocationId" [valuePrimitive]="true"
+                                [popupSettings]="{popupClass: 'new-style-popup'}" [data]="serviceProviders"
+                                textField="name" valueField="id">
+                                <ng-template kendoComboBoxItemTemplate let-dataItem>
+                                    <span *ngIf="dataItem">{{dataItem.name}}</span>
+                                </ng-template>
+                            </kendo-combobox>
+                        </div>
+                        <label for="clientName" class="small-13bld">
+                            Service Facility
+                        </label>
+                    </div>
+
+                    <div class="col-12 mb-4 d-flex flex-column-reverse">
+                        <div id="clientName" class="client-name">
+                            <kendo-combobox id="referringProvider" class="w-100 k-component" placeholder="Select Referring Provider"
+                                formControlName="referringProviderId" [valuePrimitive]="true"
+                                [disabled]="isReferringProviderDisabled"
+                                [popupSettings]="{popupClass: 'new-style-popup'}" [data]="clientReferringProviders"
+                                textField="providerName" valueField="id">
+                                <ng-template kendoComboBoxItemTemplate let-dataItem>
+                                    <span *ngIf="dataItem">{{dataItem.providerName}}</span>
+                                </ng-template>
+                            </kendo-combobox>
+                        </div>
+                        <label for="clientName" class="small-13bld">
+                            <div style="display: flex;">Referring Provider <span *ngIf="isReferringRequired">*</span></div>
+                            
+                        </label>
+                    </div>
+                </ng-container>
+            </div>
+        </form>
+    </div>
+</div>

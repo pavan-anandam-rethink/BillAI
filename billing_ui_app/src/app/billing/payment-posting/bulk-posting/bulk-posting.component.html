@@ -1,0 +1,172 @@
+<header-toolbar class="header-position"  [headerTitle]="'Bulk Posting'"   [isBackBtnShow]="false" [isProfileShow]="true" [breadcrumbs]="breadcrumbs"></header-toolbar>
+<div style="display: flex; justify-content: flex-end; margin: 8px 16px;">
+  <button type="button" class="btn-add" (click)="addAdjustmentCol()" [disabled]="adjustments.length >= 100">
+    + Adjustment
+  </button>
+</div>
+<form #takeoverForm="ngForm" (ngSubmit)="save()">
+  <div class="bulk-posting-scroll-container">
+    <div style="overflow-x: auto; width: 100%; height: calc(100vh - 260px);">
+      <kendo-grid id="bulk-grid" [data]="(view | async)"
+                  [pageSize]="gridState.take"
+                  [skip]="gridState.skip"
+                  [sort]="gridState.sort"
+                  [pageable]="pagingSettings"
+                  [navigable]="true"
+                  [class]="'bulk-posting-view-height'"
+                  [style.minWidth.px]="calcGridMinWidth()"
+                  (dataStateChange)="onGridStateChange($event)"
+                  (pageChange)="onPageChange($event)">
+
+        <kendo-grid-column field="clientName" title="Client Name" [locked]="true" [width]="170"></kendo-grid-column>
+        <kendo-grid-column field="claimIdentifier" title="Claim Identifier" [locked]="true" [width]="170"></kendo-grid-column>
+        <kendo-grid-column [width]="110" field="serviceDate" title="Date of Service" [locked]="true">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.serviceDate | date:'MM/dd/yyyy' }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="procedureCode" title="Procedure Code" [locked]="true" [width]="110"></kendo-grid-column>
+
+        <kendo-grid-column field="modifiers" title="Modifiers(s)" [locked]="true" [width]="120"></kendo-grid-column>
+
+        <kendo-grid-column field="billedAmount" title="Billed Amount" [locked]="true" [width]="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.billedAmount | number:'1.2-2' }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="allowedAmount" title="Allowed Amount" [locked]="true" [width]="150">
+          <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+            <kendo-numerictextbox [(ngModel)]="dataItem.allowedAmount"
+                                  [step]="0.01"
+                                  [name]="'allowed' + rowIndex"
+                                  [spinners]="false"
+                                  (valueChange)="allowedAmountChange(dataItem, rowIndex)"
+                                  required>
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="paymentAmount" title="Payment Amount" [locked]="true" [width]="150">
+          <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+            <kendo-numerictextbox [(ngModel)]="dataItem.paymentAmount"
+                                  [step]="0.01"
+                                  [name]="'pay' + rowIndex"
+                                  [spinners]="false"
+                                  (valueChange)="paymentAmountchange(dataItem, rowIndex)"
+                                  required>
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column *ngFor="let _ of [].constructor(adjArray[0]); let j = index" [width]="430">
+          <ng-template kendoGridHeaderTemplate>
+            <span class="adjustment-header-wrapper">
+              <span>Adjustments {{ j + 1}}</span>
+            </span>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+            <div class="adjustments-row-scroll">
+              <div class="adjustment-group" *ngIf="dataItem.adjustments[j]">
+
+                <kendo-combobox [data]="allowedReasonCodes"
+                                [ngModel]="getGroupReasonCode(dataItem.adjustments[j])"
+                                (ngModelChange)="onReasonCodeChange($event, dataItem.adjustments[j])"
+                                placeholder="Select code"
+                                [filterable]="true"
+                                name="groupReasonCode{{rowIndex}}_{{j}}"
+                                (valueChange)="markRequiredReasonCode(dataItem, j, dataItem.adjustments[j], $event)"
+                                (filterChange)="reasonCodesSearchValueChanged($event, j, dataItem)"
+                                [allowCustom]="true"
+                                (open)="onOpenDropdown()"
+                                [ngClass]="{
+                                  'invalid-field': !!dataItem.adjustments[j].amount && !getGroupReasonCode(dataItem.adjustments[j])
+                                }">
+                  <span>{{ getGroupReasonCode(dataItem.adjustments[j]) }}</span>
+                  <ng-template kendoDropDownListValueTemplate let-dataItem>
+                    <span class="dropdown-value">{{ dataItem }}</span>
+                  </ng-template>
+                </kendo-combobox>
+
+                <kendo-numerictextbox [(ngModel)]="dataItem.adjustments[j].amount"
+                                      [name]="'adjAmt' + rowIndex + '_' + j"
+                                      [spinners]="false"
+                                      placeholder="Amount"
+                                      [min]="0"
+                                      [ngClass]="{
+                                      'invalid-field' : getGroupReasonCode(dataItem.adjustments[j]) && (!dataItem.adjustments[j].amount || dataItem.adjustments[j].amount <= 0)
+                                      }"
+                                      style="height: 47px !important">
+                </kendo-numerictextbox>
+
+                <div class="radio-vertical-group">
+                  <label class="radio-inline" kendoTooltip [title]="'Apply As Positive Adjustment'">
+                    <input type="radio" kendoRadioButton [value]="true"
+                           [name]="'paymentType' + rowIndex + '_' + j"
+                           (ngModelChange)="checkboxClick($event, dataItem.adjustments[j])"
+                           [(ngModel)]="dataItem.adjustments[j].isPositive" />
+                    <span class="symbol plus-icon">+</span>
+                  </label>
+
+                  <label class="radio-inline" kendoTooltip [title]="'Apply As Negative Adjustment'">
+                    <input type="radio" kendoRadioButton [value]="false"
+                           [name]="'paymentType' + rowIndex + '_' + j"
+                           (ngModelChange)="checkboxClick($event, dataItem.adjustments[j])"
+                           [(ngModel)]="dataItem.adjustments[j].isPositive" />
+                    <span class="symbol minus-icon">−</span>
+                  </label>
+                </div>
+                <button type="button"
+                        class="btn-remove-adj"
+                        (click)="removeAdjustmentRow(dataItem, j)"
+                        aria-label="Remove Adjustment"
+                        kendoTooltip
+                        [title]="'Remove Adjustment'">
+                  <mat-icon class="delete-icon">delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column title="Balance Amount" [width]="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ calcBalance(dataItem) | number:'1.2-2' }}
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <ng-template kendoPagerTemplate let-totalPages="totalPages" let-total="total">
+          <div style="display:flex; width:100%; justify-content: space-between;">
+            <div style="margin: auto 0;" *ngIf="total > 0" class="Body1">
+              <ng-container *ngIf="!isAllSelected; else allModeFooter">
+                Displaying {{getPageStart(total)}}–{{getPageEnd(total)}} of {{total}} items
+              </ng-container>
+              <ng-template #allModeFooter>
+                Displaying {{ getAllModeFooterRange() }} items
+              </ng-template>
+            </div>
+            <div style="display: flex;" class="customePageator">
+              <kendo-pager-page-sizes [pageSizes]="gridPageSizes"></kendo-pager-page-sizes>
+              <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+              <kendo-pager-numeric-buttons [buttonCount]="5"></kendo-pager-numeric-buttons>
+              <kendo-pager-next-buttons></kendo-pager-next-buttons>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid>
+    </div>
+  </div>
+
+  <div class="actions" style="margin-top:16px;">
+    <button kendoButton type="submit" [disabled]="takeoverForm.invalid">Save</button>
+    <button kendoButton type="button" class="cancel" (click)="confirmCancel()">Cancel</button>
+  </div>
+</form>
+
+<confirmation-dialog *ngIf="confirmDialog.opened"
+                     [confirmDialog]="confirmDialog"
+                     (onConfirm)="cancel()"
+                     (onClose)="confirmDialog.opened = false"></confirmation-dialog>

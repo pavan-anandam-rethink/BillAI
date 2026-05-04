@@ -1,0 +1,15 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "ApiUrl": "https://rta-billing-prd-app-claim-svc.graysmoke-c0bdd691.eastus2.azurecontainerapps.io",
+    "TopicName": "claim-submission-topic",
+    "ClaimApprovalTopic": "claim-approval-topic",
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "ServiceBusConnectionString": "Endpoint=sb://rta-billing-prd-sbns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ni26T22QDYwsR3dlqJAOMbkRLikBlzN7V+ASbIHb8yA=;EndpointSuffix=core.windows.net",
+    "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=24e6f2cc-fdca-4b93-b6ab-ddc9d92262b4;IngestionEndpoint=https://eastus2-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus2.livediagnostics.monitor.azure.com/;ApplicationId=4a4d46e4-5954-4ed8-8025-f59aae5110fa",
+    "XApiKey": "6F0D7BB1-93E9-49BE-987B-1EF92436D7F9",
+    "MaxRetryAttempts": 3,
+    "InitialDelayMilliseconds": 2000
+  }
+}

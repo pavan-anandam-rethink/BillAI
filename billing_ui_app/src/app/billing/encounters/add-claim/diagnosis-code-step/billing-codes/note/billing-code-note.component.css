@@ -1,0 +1,29 @@
+.k-grid-header .k-header:last-child,
+.k-grid td:last-child {
+    text-overflow: clip;
+}
+
+.notes-header {
+    font-size: 14px;
+}
+
+.add-note-dialog-wrapper {
+    padding: 20px;
+}
+
+.note-textarea {
+    width: 100%;
+}
+
+.types-container {
+    padding: 10px 0 10px 0;
+}
+
+.textinput {
+    width: 100%;
+    border: none;
+}
+
+.Body1 {
+    width:  100%;   
+}

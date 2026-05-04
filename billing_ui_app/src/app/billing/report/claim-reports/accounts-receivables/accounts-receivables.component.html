@@ -1,0 +1,343 @@
+<app-loader *ngIf="isLoading">{{ isLoading }}</app-loader>
+<app-loader *ngIf="isSubjectLoading$ | async">{{
+  isSubjectLoading$
+}}</app-loader>
+<header-toolbar
+  class="header-position"
+  [headerTitle]="'Account Receivables - Claim Level'"
+  [isBackBtnShow]="false"
+  [isProfileShow]="false"
+  [breadcrumbs]="breadcrumbs"
+></header-toolbar>
+<div class="encounter-main-container">
+  <div
+    class="encounter-actions-wrapper d-flex justify-content-between flex-wrap"
+  >
+    <div class="d-flex mt-2 ml-2">
+      <!-- <outlined-btn text="Filter" iconClass="icon-24 filter-icon" [flip]="true"(onClick)="toggleFilter($event)" ></outlined-btn> -->
+    </div>
+
+    <div class="encounter-actions flex-wrap">
+      <div class="d-flex mt-2 ml-2">
+        <span
+          *ngIf="canEdit"
+          #printButton
+          class="icon-24 download-icon"
+          [ngClass]="(view | async)?.data?.length > 0 ? '' : 'disabled'"
+          (click)="exportToExcel()"
+          kendoTooltip
+          title="Export to Excel"
+        ></span>
+      </div>
+    </div>
+  </div>
+  <div class="filters-wrapper">
+    <accounts-receivables-filters
+      [userList]="this.userList"
+      (requestData)="applyFilter($event)"
+      (clearFilter)="clearFilter()"
+      (filterChanged)="onFilterChanged()"
+    ></accounts-receivables-filters>
+  </div>
+  <div class="encounter-list">
+    <div id="encounters" class="tab-content">
+      <kendo-grid
+        #encountersGrid
+        id="big-grid"
+        [class.filter-on]="showFilter"
+        class="height-100 accounts-receivables"
+        [data]="view | async"
+        [pageSize]="gridState.take!"
+        [skip]="gridState.skip!"
+        [pageable]="pagingSettings"
+        [navigable]="false"
+        (sortChange)="onSortChange($event)"
+        [sortable]="{ mode: 'single' }"
+        [sort]="gridState.sortingModels!"
+        (pageChange)="onPageChange($event)"
+        kendoGridSelectBy="id"
+        [selectable]="selectableSettings"
+        [selectedKeys]="mySelection"
+        [resizable]="true"
+      >
+        <kendo-grid-column
+          field="funderName"
+          title="Payer/Funder"
+          class="border-bottom border-top p-0"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="clientId"
+          title="Client ID"
+          class="border-bottom border-top p-0"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="clientFirstName"
+          title="Client First Name"
+          class="border-bottom border-top p-0"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="clientLastName"
+          title="Client Last Name"
+          class="border-bottom border-top p-0"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="claimFrom"
+          title="Claim From"
+          class="border-bottom border-top p-0"
+          format="d"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-column>
+            {{ column.claimFrom | date : "MM/dd/yyyy" }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="claimThrough"
+          title="Claim Through"
+          class="border-bottom border-top p-0"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-column>
+            {{ column.claimThrough | date : "MM/dd/yyyy" }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="claimStatus"
+          title="Claim Status"
+          class="border-bottom border-top p-0"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="billedDate"
+          title="Billed Date"
+          class="border-bottom border-top p-0"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-column>
+            {{ column.billedDate | date : "MM/dd/yyyy" }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="billedAmount"
+          title="Billed Amount"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="adjustments"
+          title="Adjustments"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="adjustedClaimAmount"
+          title="Adjusted Claim Amount"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="paymentsReceived"
+          title="Payments Received"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="netReceivable"
+          title="Net Receivables"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="oneToThirty"
+          title="1-30"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="thirtyOneToSixty"
+          title="31-60"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="sixtyOneToNinty"
+          title="61-90"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="nintyOneToOneHundredTwenty"
+          title="91-120"
+          class="border-bottom border-top p-0"
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{ column.title }}">{{
+              column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="moreThanOneHundredTwenty"
+          title=">120" 
+          class="border-bottom border-top p-0" 
+          format="{0:c2}"
+        >
+          <ng-template kendoGridHeaderTemplate let-column>
+            <span kendoTooltip title="{{column.title}}">{{
+                column.title
+            }}</span>
+          </ng-template>
+        </kendo-grid-column>
+                
+ <ng-template
+  kendoPagerTemplate
+  let-totalPages="totalPages"
+  let-currentPage="currentPage"
+  let-total="total"
+>
+  <div style="display:flex; width:100%; justify-content: space-between;">
+
+    <!-- Footer text -->
+    <div
+      style="margin: auto 0;"
+      *ngIf="total > 0"
+      class="Body1"
+    >
+      <!-- When Select All = TRUE -->
+      <ng-container *ngIf="isAllSelected; else normalPagination">
+        Displaying {{ getFooterRange() }} of {{ total }} items
+      </ng-container>
+
+      <!-- When Select All = FALSE -->
+      <ng-template #normalPagination>
+        Displaying {{ getPageStart(total) }}–{{ getPageEnd(total) }} of {{ total }} items
+      </ng-template>
+    </div>
+
+    <!-- Pager controls -->
+    <div style="display: flex;" class="customePageator">
+      <kendo-pager-page-sizes
+        [pageSizes]="gridPageSizes"
+      ></kendo-pager-page-sizes>
+      <kendo-pager-prev-buttons kendoTooltip></kendo-pager-prev-buttons>
+
+      <kendo-pager-numeric-buttons
+        [buttonCount]="5"
+      ></kendo-pager-numeric-buttons>
+      <kendo-pager-next-buttons kendoTooltip></kendo-pager-next-buttons>
+    </div>
+  </div>
+</ng-template>
+  
+                <kendo-grid-excel></kendo-grid-excel>
+            </kendo-grid>
+        </div>
+    </div>
+</div>

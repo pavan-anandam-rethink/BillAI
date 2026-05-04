@@ -1,0 +1,47 @@
+<div class="rebill-dialog-wrapper">
+    <div class="header body">
+        <!-- {{ mode === billingMode.BillNextFunder ? 'Do you want to bill next funder?' : 'Do you want to rebill the secondary funder?' }} -->
+      </div>
+
+        <div class="row mb-3">
+            <div class="col-12 bill-control">
+                <label for="funder">Funder*</label>
+                <kendo-dropdownlist id="funder" class="w-100" [formControl]="funderId" [value]="funderId.value"
+                    [popupSettings]="{popupClass: 'new-style-popup'}" [data]="funders" textField="name" valueField="id">
+                    <ng-template kendoDropDownListValueTemplate let-dataItem>
+                        <span *ngIf="dataItem">{{dataItem.name}}</span>
+                    </ng-template>
+                </kendo-dropdownlist>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12 bill-control">
+                <label>Control Number*</label>
+                <input kendoTextBox class="form-control" type="text" placeholder="Enter control Number"
+                    [value]="controlNumber.value" [formControl]="controlNumber">
+                <span *ngIf="controlNumber.invalid && controlNumber.touched" class="small-12reg error-message">Control
+                    number length should be between 1 to 50 characters</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 bill-control">
+                <label>Adjustment Level*</label>
+                <div class="types-container">
+                    <input type="radio" id="claim-level" [value]="true"
+                        [formControl]="isClaimLevelAdjustment" class="k-radio" />
+                    <label class="k-radio-label" for="claim-level" kendoRadioLabel>Claim</label>
+                    <input type="radio" id="serviceLine-level" [value]="false"
+                        [formControl]="isClaimLevelAdjustment" class="k-radio" />
+                    <label class="k-radio-label" for="serviceLine-level">Service Line</label>
+                </div>
+            </div>
+        </div>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="cancel()">Cancel</button>
+        <button kendoButton [primary]="true" [disabled]="!(funderId.valid) || !(controlNumber.valid)"
+            (click)="reRunValidation()">Validate</button>
+        <button kendoButton [primary]="true" [disabled]="!(funderId.valid) || !(controlNumber.valid)"
+            (click)="submit()">Submit</button>
+    </kendo-dialog-actions>
+</div>

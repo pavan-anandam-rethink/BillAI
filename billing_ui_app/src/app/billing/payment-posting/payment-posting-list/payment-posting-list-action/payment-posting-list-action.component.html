@@ -1,0 +1,37 @@
+<ng-container *ngIf="canEdit">
+    <ng-container *ngIf="!dataItem.isAppointmentDeleted">
+        <button type="button" class="k-button payment-button" title="Add Payment" kendoTooltip
+                *ngIf="dataItem.status === encounterStatus.Submitted && dataItem.encounterChargeInfoItems.length > 0"
+                (click)="showPaymentEditor()">
+            <i class="fa fa-dollar white"></i>
+        </button>
+
+        <button type="button" class="k-button action-button" [title]="dataItem.status === encounterStatus.Approved ? 'Unapprove' : 'Approve'" kendoTooltip
+                *ngIf="canApprove
+		        && (dataItem.status === encounterStatus.Approved || dataItem.status === encounterStatus.PendingReview || dataItem.status === encounterStatus.Flagged)"
+                (click)="saveEncounterStatus(dataItem.status === encounterStatus.Approved ? encounterStatus.PendingReview : encounterStatus.Approved)">
+            <i class="fa fa-check-circle" [ngClass]="{grey: dataItem.status === encounterStatus.Approved, green: dataItem.status !== encounterStatus.Approved}"></i>
+        </button>
+
+        <button type="button" class="k-button action-button" [title]="dataItem.status === encounterStatus.Flagged ? 'Unflag' : 'Flag'" kendoTooltip
+                *ngIf="dataItem.status === encounterStatus.Flagged || dataItem.status === encounterStatus.PendingReview || dataItem.status === encounterStatus.Approved || dataItem.status === encounterStatus.Submitted"
+                (click)="saveEncounterStatus(dataItem.status === encounterStatus.Flagged ? encounterStatus.PendingReview : encounterStatus.Flagged)">
+            <i class="fa" [ngClass]="{'red fa-flag': dataItem.status === encounterStatus.Flagged, 'fa-flag-o': dataItem.status !== encounterStatus.Flagged}"></i>
+        </button>
+    </ng-container>
+
+    <!-- <button type="button" class="k-button action-button" (click)="openNoteEditor(dataItem.note)"> -->
+    <button type="button" class="k-button action-button" (click)="openNoteEditor()">
+        <i class="fa fa-sticky-note-o" title="Add note" kendoTooltip></i>
+    </button>
+</ng-container>
+
+<button type="button" [routerLink]="['/billing/claims/view', dataItem.id]" class="k-button action-button" title="View" kendoTooltip>
+    <i class="fa fa-pencil-square-o"></i>
+</button>
+
+<button type="button" class="k-button action-button" title="Close" kendoTooltip
+        *ngIf="canClose && dataItem.status !== encounterStatus.Closed"
+        (click)="saveEncounterStatus(encounterStatus.Closed)">
+    <i class="fa fa-times-circle-o"></i>
+</button>

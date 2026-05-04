@@ -1,0 +1,58 @@
+﻿<div id="claimHistoryGridFilterColumns" class="slide claim-history-filter">
+    <form class="k-form" [formGroup]="filterForm" style="padding:0;">
+        <div class="filter-line">
+            <div class="f-control" formGroupName="changeDate">
+                <div class="filter-sort-actions">
+                    <span #dateAnchorEl class="icon-24 down-icon pointer filter-actions-icon" (click)="dateToggle($event)" [class.active]="isDateActive"></span>
+                    <input kendoTextBox id="changeDate" placeholder="Date" readonly />
+                </div>
+            </div>
+            <div class="f-control" formGroupName="changeBy">
+                <div class="filter-sort-actions">
+                    <span #userAnchorEl class="icon-24 down-icon pointer filter-actions-icon" (click)="userToggle($event)" [class.active]="isUserActive"></span>
+                    <input kendoTextBox id="changeBy" placeholder="User" readonly/>
+                </div>
+                <input kendoTextBox type="hidden" formControlName="field" />
+            </div>
+            <div class="f-control" formGroupName="action">
+                <div class="filter-sort-actions">
+                    <span #actionAnchorEl class="icon-24 down-icon pointer filter-actions-icon" (click)="actionToggle($event)" [class.active]="isActionActive"></span>
+                    <input kendoTextBox id="action" placeholder="Action" readonly/>
+                </div>
+                <input kendoTextBox type="hidden" formControlName="field" />
+            </div>
+            <div class="f-control" formGroupName="mode">
+                <div class="filter-sort-actions">
+                    <span #modeAnchorEl class="icon-24 down-icon pointer filter-actions-icon" (click)="modeToggle($event)" [class.active]="isModeActive"></span>
+                    <input kendoTextBox id="mode" placeholder="Mode" readonly/>
+                </div>
+                <input kendoTextBox type="hidden" formControlName="field" />
+            </div>
+            <div class="clear-filter filter-item">
+                <div *ngIf="isFiltersApplied;else filtersNotApplied">
+                    <button kendoButton [disabled]="isFilterButtonDisabled" (click)="resetForm()">
+                        Clear Filters
+                    </button>
+                </div>
+                <ng-template #filtersNotApplied>
+                    <button kendoButton [disabled]="isFilterButtonDisabled" (click)="applyFilters()">
+                        Apply Filters
+                    </button>
+                </ng-template>
+                
+            </div>           
+        </div>
+    </form>
+</div>
+<calendar-popup  [anchor]="this.dateAnchor" (anchorViewportLeave)="showDatePopup = false"
+                *ngIf="showDatePopup"  (selectedDateEmitter)="setDatePeriod($event)" (onFilterLeave)="onFilterLeave($event, 'date')"></calendar-popup>
+
+<search-popup [anchor]="this.userAnchor" [field]="'user'" (anchorViewportLeave)="showUserPopup = false" [historyFilterModels]="historyFilterModels"
+              *ngIf="showUserPopup" (onFilterLeave)="onFilterLeave($event, 'user')" (searchItemClickedEmmiter)="searchItemClicked($event, 'user')" [selectedItems]="selectedItems"></search-popup>
+
+<search-popup [anchor]="this.actionAnchor" [field]="'action'" (anchorViewportLeave)="showActionPopup = false" [historyFilterModels]="historyFilterModels"
+              *ngIf="showActionPopup" (onFilterLeave)="onFilterLeave($event, 'action')" (searchItemClickedEmmiter)="searchItemClicked($event, 'action')" [selectedItems]="selectedItems"></search-popup>
+
+<search-popup [anchor]="this.modeAnchor" [field]="'mode'" (anchorViewportLeave)="showModePopup = false" [historyFilterModels]="historyFilterModels"
+              *ngIf="showModePopup" (onFilterLeave)="onFilterLeave($event, 'mode')" (searchItemClickedEmmiter)="searchItemClicked($event, 'mode')" [selectedItems]="selectedItems"></search-popup>
+           

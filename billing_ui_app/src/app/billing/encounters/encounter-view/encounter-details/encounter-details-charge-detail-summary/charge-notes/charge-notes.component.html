@@ -1,0 +1,66 @@
+<div style="height: 85%">
+    <div class="title">
+        <span class="title-icon icon-24 notes-r-icon"></span>
+        <div class="title-text">Line Notes</div>
+    </div>
+    
+    <div class="body" *ngIf="chargeEntry">
+        <div class="patient-header d-flex mb-4">
+            <div class="Header-5 mb-2 mt-2 patient-name">Billing Code {{chargeEntry.billingCode}}</div>
+        </div>
+    
+        <div class="new-note-title d-flex justify-content-between mb-1" *ngIf="isInEditMode">
+            <div class="font-bold">New Note</div>
+        </div>
+
+        <div class="note-details" *ngIf="!isInEditMode && chargeEntry !== null 
+            && chargeEntry.noteText !== null && chargeEntry.noteText.length > 0">
+            <div class="small-12reg">
+                <div class="note-header d-flex">
+                    <div style="width: 85%">
+                        <div class="details">
+                            <div class="property small-12med">{{chargeEntry.noteCreatorName}}</div>
+                            <div class="value date">{{chargeEntry.noteCreatedDate | date: 'MM/dd/yyyy'}}</div>
+                        </div>
+                    </div>
+                    <div class="w-50 d-flex justify-content-end">
+                        <div class="type"></div>
+                        <div class="icon-24 trash-icon pointer" style="margin: auto 0;" (click)="openDeleteNoteDialog()"></div>
+                    </div>
+                </div>
+                <nline-text [text]="chargeEntry.noteText" [nlines]="3" textClass="Body2"></nline-text>
+            </div>
+        </div>
+        
+        <div class="w-100 add-wrap" *ngIf="isInEditMode">
+            <form [formGroup]="noteForm">
+                <div class="row">
+                    <div class="w-100 col-md-12">
+                        <div class="label">Note</div>
+                        <div class="Input new-style">
+                                <div class="textarea-wrapper">
+                                <textarea class="w-100 k-textarea" formControlName="note" 
+                                          placeholder="Type Here" (change)="checkTextArea()" maxlength="80"
+                                          [ngClass]="{FieldError: showErrors && noteForm.controls['note'].invalid}"></textarea>
+                                        </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-12 d-flex" style="position: absolute; bottom: 0;">
+            <div class="mb-4 justify-content-end">
+                <outlined-btn *ngIf="!isInEditMode && canEdit" text="Add a note" iconClass="icon-24 add-circle-icon" (onClick)="isInEditMode = true"></outlined-btn>
+                <outlined-btn *ngIf="isInEditMode" text="Cancel" style="margin-right:16px;" (onClick)="clearNoteForm()"></outlined-btn>
+                <contained-btn *ngIf="isInEditMode && canEdit" text="Save" [isDisabled]="buttonOn" (onClick)="openAddNoteDialog()"></contained-btn>
+        </div>
+        </div>
+    </div>
+
+</div>
+
+<confirmation-dialog [confirmDialog]="confirmDeleteNoteDialog" (onConfirm)="deleteNote()"></confirmation-dialog>
+<confirmation-dialog [confirmDialog]="confirmAddNoteDialog" (onConfirm)="addNote()"></confirmation-dialog>

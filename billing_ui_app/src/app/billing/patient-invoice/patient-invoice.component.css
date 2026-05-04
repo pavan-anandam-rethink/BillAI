@@ -1,0 +1,34 @@
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .breadcrumb-container {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+:host ::ng-deep #big-grid .k-grid-header span[title] {
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.2;
+  display: inline-block;
+}
+
+:host ::ng-deep #big-grid .k-grid-header th {
+  vertical-align: top !important;
+}
+
+:host #serviceLinesGrid .k-grid-header th {
+  vertical-align: top !important;
+}
+
+:host ::ng-deep #serviceLinesGrid .k-grid-header span[title] {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  line-height: 1.2;
+  display: inline-block;
+  padding: 4px;
+}

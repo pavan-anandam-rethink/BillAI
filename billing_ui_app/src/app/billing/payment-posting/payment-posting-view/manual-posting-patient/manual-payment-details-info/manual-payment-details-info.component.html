@@ -1,0 +1,91 @@
+﻿<div class="payment-details Body2">
+    <div class="light head">
+        <div class="details">
+            <div class="property">Payment ID</div>
+            <div class="value">{{paymentIdentifier}}</div>
+        </div>
+    </div>
+    
+    <div class="light head">
+        <div class="details">
+            <div class="payment-header">Payment Amount</div>
+            <div class="d-flex mr-1">
+                <div *ngIf="!isEditMode && canEdit && isRevSpringPayment === false" class="icon-wrapper pointer" (click)="openEdit()">
+                    <span class="icon-24 edit-icon"></span>
+                </div>
+                <span *ngIf="isEditMode" (click)="updatePayment()"
+                      class="icon-24 tasks-icon pointer" style="margin-right:0;float:right"></span>
+                <span *ngIf="isEditMode" (click)="restoreDefault()"
+                      class="icon-24 denied-icon pointer" style="margin-right:0;float:right"></span>
+            </div>
+        </div>
+        <div class="details payment-total Header-1">{{payment?.paymentAmount || 0 | currency}}</div>
+    </div>
+    <div class="light bottom">
+        <div class="details">
+            <div class="property">Posted</div>
+            <div class="value">{{payment?.postedAmount || 0 | currency}}</div>
+        </div>
+        <div class="details">
+            <div class="property">Remaining</div>
+            <div class="value">{{payment?.remainingAmount || 0 | currency}}</div>
+        </div>
+        <div class="details">
+            <div class="property">Date Posted</div>
+            <div class="value">{{payment?.postDate || currentDate | date: 'MM/dd/yyyy'}}</div>
+        </div>
+
+        <div class="dark small-12reg">
+            <div class="w-100">
+                <div class="details">
+                    <div class="property small-12med">Method</div>
+                    <div *ngIf="!isEditMode; else editPaymentMethod">
+                        <span>{{this.updateModel.paymentMethodEntity.displayName}}</span>
+                    </div>
+                    <ng-template #editPaymentMethod>
+                        <kendo-dropdownlist class="dropdown-small" [readonly]="!isEditMode" [(value)]="this.updateModel.paymentMethodEntity"
+                                            [data]="this.paymentMethodsLoaded" [valuePrimitive]="false"
+                                            [valueField]="'enumValue'" [textField]="'displayName'">
+
+                            <ng-template kendoDropDownListItemTemplate let-dataItem>
+                                <span>{{ dataItem.displayName }}</span>
+                            </ng-template>
+                        </kendo-dropdownlist> 
+                    </ng-template>
+                </div>
+            </div>
+            <div class="w-50 b-t">
+                <div class="details">
+                    <div class="property small-12med">Deposit Date</div>
+                    <div *ngIf="!isEditMode; else editDepositDate">
+                        <span id="depositeDate">{{this.updateModel.depositDate | date:'MM/dd/yyyy'}}</span>
+                    </div>
+                    <ng-template #editDepositDate>
+                        <kendo-dateinput class="dateinput-small" [readonly]="!isEditMode" [(value)]="this.updateModel.depositDate">
+                        </kendo-dateinput>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="w-50 b-t b-l">
+                <div class="details">
+                    <div class="property small-12med">Reference Number</div>
+                    <div class="value">
+                        <div *ngIf="!isEditMode; else editReferenceNumber">
+                            <span>{{this.updateModel.referenceNumber}}</span>
+                        </div>
+                        <ng-template #editReferenceNumber>
+                            <input kendoTextBox type="number" class="text-box-payment-identifier" 
+                            [value]="this.updateModel.referenceNumber" 
+                            [readonly]="!isEditMode"/>
+                        </ng-template>
+                            <!-- [(value)]="this.updateModel.referenceNumber"  -->
+                        </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<info-edit-dialog #editInfoDialog [paymentSummary]="payment" [paymentMethods]="paymentMethodsLoaded"
+                  (onSaveChanges)="loadPaymentSummary(payment.id, true)">
+</info-edit-dialog>

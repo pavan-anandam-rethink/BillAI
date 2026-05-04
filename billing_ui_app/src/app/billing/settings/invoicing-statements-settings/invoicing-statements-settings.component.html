@@ -1,0 +1,166 @@
+<div class="encounter-main-container" [formGroup]="form">
+
+  <!-- Content -->
+  <div class="filters-wrapper padding">
+
+    <!-- VIEW MODE -->
+    <div *ngIf="!isEditMode" class="view-mode">
+
+      <div class="encounter-actions-wrapper d-flex justify-content-between">
+        <h3>Invoicing and Statements</h3>
+        <button kendoButton themeColor="primary" (click)="edit()">
+          Edit
+        </button>
+      </div>
+      <br/>
+      <div class="summary-row">
+        <label>Pay To Address Override</label>
+        <span>{{ form?.value?.payToOverride }}</span>
+      </div>
+
+      <div class="summary-row">
+        <label>Company Name</label>
+        <span>{{ form?.value?.companyName }}</span>
+      </div>
+
+      <div class="summary-row">
+        <label>Address</label>
+        <span>
+          {{ form?.value?.address1 }}<br *ngIf="form?.value?.address1" />
+          {{ form?.value?.address2 }}<br *ngIf="form?.value?.address2" />
+          {{ form?.value?.city }}, {{ form?.value?.state }} {{ form?.value?.zip }}
+        </span>
+      </div>
+
+      <div class="summary-row">
+        <label>Global Statement Message</label>
+        <span>{{ form?.value?.globalMessage }}</span>
+      </div>
+
+      <div class="summary-row">
+        <label>Dunning Message</label>
+        <span>{{ form?.value?.dunningMessage }}</span>
+      </div>
+    </div>
+
+    <ng-container *ngIf="isEditMode">
+
+      <div class="payto-wrapper">
+
+        <!-- Pay To Override -->
+        <div class="form-row mb-3">
+          <h3>Invoicing and Statements</h3>
+          <br/>
+          <label class="k-label highlight-label">Pay To Address Override</label>
+          <kendo-dropdownlist [data]="payToOptions"
+                              textField="text"
+                              valueField="value"
+                              formControlName="payToOverride"
+                              [valuePrimitive]="true">
+          </kendo-dropdownlist>
+        </div>
+
+        <!-- Address Section -->
+        <div>
+          <div class="k-form-field">
+            <span>
+              <label class="k-label">Company Name <span class="required">*</span> </label>
+              <input kendoTextBox
+                     formControlName="companyName"
+                     placeholder="Enter company name" />
+            </span>
+          </div>
+          <br />
+          <div class="k-form-field k-form">
+            <span class="half-width">
+
+              <label class="k-label">Address Line 1 <span class="required">*</span> </label>
+              <input kendoTextBox
+                     formControlName="address1"
+                     placeholder="Enter address line 1" />
+            </span>
+
+            <span class="half-width">
+
+              <label class="k-label">Address Line 2</label>
+              <input kendoTextBox
+                     formControlName="address2"
+                     placeholder="Enter address line 2" />
+            </span>
+
+          </div>
+          <br />
+
+          <div class="k-form-field k-form-horizontal">
+
+            <!-- City -->
+            <span class="k-form1">
+              <label class="k-label">City <span class="required">*</span> </label>
+              <input kendoTextBox formControlName="city" placeholder="City" />
+            </span>
+
+            <!-- State -->
+            <span class="k-form1">
+              <label class="k-label">State <span class="required">*</span> </label>
+              <kendo-dropdownlist class="input-height"
+                                  *ngIf="isOtherSelected; else stateText"
+                                  [data]="states"
+                                  textField="stateCode"
+                                  valueField="stateCode"
+                                  formControlName="state"
+                                  [valuePrimitive]="true">
+
+              </kendo-dropdownlist>
+
+              <ng-template #stateText>
+                <input class="k-form1" kendoTextBox formControlName="state" />
+              </ng-template>
+            </span>
+
+            <!-- Zip -->
+            <span class="k-form1">
+              <label class="k-label">Zip <span class="required">*</span> </label>
+              <input kendoTextBox formControlName="zip" placeholder="Zip" />
+            </span>
+
+            <span class="k-form1">
+              <span class="k-form1">
+                <label class="k-label">Zip-Ext</label>
+                <input kendoTextBox formControlName="zipExtension" placeholder="Zip Ext" />
+              </span>
+            </span>
+          </div>
+
+        </div>
+      </div>
+      <div class="mt-4 half-width">
+        <label class="k-label highlight-label">Global Statement Message</label>
+        <kendo-textarea #globalMessageTextarea 
+                        formControlName="globalMessage" 
+                        [rows]="4"></kendo-textarea>
+      </div>
+
+      <div class="mt-4 half-width">
+        <label class="k-label highlight-label">Dunning Message</label>
+        <kendo-textarea #dunningMessageTextarea 
+                        formControlName="dunningMessage" 
+                        [rows]="4"></kendo-textarea>
+      </div>
+
+      <!-- Save Button -->
+      <div class="mt-4 half-width action-buttons">
+        <button kendoButton themeColor="primary"
+                class="mr-12"
+                (click)="save()"
+                [disabled]="form.invalid || this.isDefaultAddressEmpty">
+          Save
+        </button>
+        <button kendoButton themeColor="primary" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
+
+    </ng-container>
+  </div>
+
+</div>

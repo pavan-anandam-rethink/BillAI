@@ -1,0 +1,167 @@
+<div id="payment-details-GridFilterColumns" class="payment-filter-wrapper slide" [class.opened]="opened">
+  <div class="filter-line">  
+  <div #ClientAnchor [class.active]="selectedFilterId == 0" class="filter-item"
+        (click)="selectFilter(0, ClientAnchor)">
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div class="filter-name">Client Name</div>
+                <div class="filter-info" *ngIf="selectedPatients.length">{{selectedPatients.length}}
+                    {{selectedPatients.length == 0 ? 'item' : 'items'}}</div>
+            </div>
+            <span [class.active]="selectedFilterId == 0 || selectedPatients.length"
+                class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+        </div>
+    </div>
+    <div class="f-control">
+                <input kendoTextBox
+                       class="adjust-height"
+                       id="claimId"
+                       #ClaimIDAnchorEl
+                       placeholder="Claim Id"
+                       [(ngModel)]="claimId"
+                       (ngModelChange)="onFilterChange()" />
+                <input kendoTextBox type="hidden" formControlName="operator" />
+    </div>
+    
+    <div #paymentAnchor [class.active]="selectedFilterId == 1" class="filter-item"
+        (click)="selectFilter(1, paymentAnchor)">
+    <div class="d-flex">
+        <div class="d-flex flex-column" [style.width.px]="120">
+        <div class="filter-name">Payment</div>
+        <div class="filter-info" *ngIf="(paymentFrom != undefined || paymentTo != undefined)">
+            ${{paymentFrom}} - ${{paymentTo}}
+        </div>
+        </div>
+        <span [class.active]="selectedFilterId == 1 || (paymentFrom != undefined || paymentTo != undefined)"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+    </div>
+
+    <div #balanceAnchor [class.active]="selectedFilterId == 2" class="filter-item"
+       (click)="selectFilter(2, balanceAnchor)">
+    <div class="d-flex">
+      <div class="d-flex flex-column" [style.width.px]="120">
+        <div class="filter-name">Balance</div>
+                <div class="filter-info" *ngIf="(balanceFrom != undefined || balanceTo != undefined)">${{balanceFrom}} -
+                    ${{balanceTo}}</div>
+        </div>
+      <span [class.active]="selectedFilterId == 2 || (balanceFrom != undefined || balanceTo != undefined)"
+            class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+    </div>
+  </div>
+
+  <div #paidStatusAnchor [class.active]="selectedFilterId == 3" class="filter-item"
+     (click)="selectFilter(3, paidStatusAnchor)">
+  <div class="d-flex">
+    <div class="d-flex flex-column" [style.width.px]="120">
+      <div class="filter-name">Paid Status</div>
+      <div class="filter-info" *ngIf="paidStatus">
+        {{ paidStatus | titlecase }}
+      </div>
+    </div>
+    <span [class.active]="selectedFilterId == 3 || paidStatus"
+          class="mr-0 icon-24 down-icon pointer filter-actions-icon"></span>
+  </div>
+</div>
+
+    <kendo-popup #popup [anchor]="selectedAnchor" *ngIf="selectedFilterId != undefined" class="new-popup">
+  <div [ngSwitch]="selectedFilterId" class="content" (click)="$event.stopPropagation()">
+    <div *ngSwitchCase="0" class="filter-body">
+            <client-filter-popup 
+              [paymentId]="paymentId"
+              [selectedPatients]="selectedPatients" 
+              (patientClicked)="onFilterChange()">
+            </client-filter-popup>
+        </div>
+        <div *ngSwitchCase="1" class="filter-body">
+            <div class="mb-3">
+            Filter by Payment range
+        </div>
+  <div class="d-flex">
+    <div class="d-flex flex-column mr-2">
+      <label class="filter-input-label" for="paymentAmountFrom">From</label>
+      <div class="filter-input-wrapper">
+        <span>$</span>
+        <input class="filter-input" id="paymentAmountFrom" type="number"
+       [(ngModel)]="paymentFrom"
+       (ngModelChange)="onFilterChange()" />
+      </div>
+    </div>
+    <div class="d-flex flex-column ml-2">
+      <label class="filter-input-label" for="paymentAmountTo">To</label>
+      <div class="filter-input-wrapper">
+        <span>$</span>
+        <input class="filter-input" id="paymentAmountTo" type="number"
+       [(ngModel)]="paymentTo"
+       (ngModelChange)="onFilterChange()" />
+      </div>
+    </div>
+  </div>
+</div>
+
+        <div *ngSwitchCase="2" class="filter-body">
+            <div class="mb-3">
+                Filter by Balance range
+            </div>
+            <div class="d-flex">
+                <div class="d-flex flex-column mr-2">
+                    <label class="filter-input-label" for="balanceAmountFrom">From</label>
+                    <div class="filter-input-wrapper">
+                        <span>$</span>
+                        <input class="filter-input" id="balanceAmountFrom" type="number"
+                               [(ngModel)]="balanceFrom"
+                               (ngModelChange)="onFilterChange()" />
+                    </div>
+                </div>
+                <div class="d-flex flex-column ml-2">
+                    <label class="filter-input-label" for="balanceAmountTo">To</label>
+                    <div class="filter-input-wrapper">
+                        <span>$</span>
+                        <input class="filter-input" id="balanceAmountTo" type="number"
+                               [(ngModel)]="balanceTo"
+                               (ngModelChange)="onFilterChange()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngSwitchCase="3" class="filter-body">
+      <div class="mb-3">Filter by Paid Status</div>
+      <div class="filter-info">
+        <label>
+          <input type="checkbox"
+                 [checked]="paidStatus === 'paid'"
+                 (change)="onPaidStatusChange(paidStatus === 'paid' ? undefined : 'paid')" />
+          Paid
+        </label>
+        <label style="margin-left: 16px;">
+          <input type="checkbox"
+                 [checked]="paidStatus === 'unpaid'"
+                 (change)="onPaidStatusChange(paidStatus === 'unpaid' ? undefined : 'unpaid')" />
+          Unpaid
+        </label>
+        <label style="margin-left: 16px;">
+          <input type="checkbox"
+                 [checked]="paidStatus === 'both'"
+                 (change)="onPaidStatusChange(paidStatus === 'both' ? undefined : 'both')" />
+          Both
+        </label>
+      </div>
+    </div>
+    </div>
+</kendo-popup>
+
+
+    <div class="clear-filter filter-item">
+    <div *ngIf="!showClearFilter;else filtersNotApplied">
+        <button kendoButton (click)="applyFilters()">
+            Apply Filters
+        </button>
+    </div>
+    <ng-template #filtersNotApplied>
+        <button kendoButton (click)="clearFilters()">
+            Clear Filters
+        </button>
+    </ng-template>        
+</div>
+</div>  
+</div>

@@ -1,0 +1,776 @@
+{
+    "renderingProviders": [
+        {
+            "name": "Provider Assigned to Appointment",
+            "id": 2,
+            "staffMemberId": -2
+        },
+        {
+            "name": "Agency",
+            "id": 1,
+            "staffMemberId": -1
+        },
+        {
+            "name": "AAAAAA BBBBBBB - 6114/484/7",
+            "id": 3,
+            "staffMemberId": 515022
+        },
+        {
+            "name": "Automation Test - 1234",
+            "id": 3,
+            "staffMemberId": 482580
+        },
+        {
+            "name": "BCBAStaff19 BCBAStaff19 - 1321231",
+            "id": 3,
+            "staffMemberId": 181466
+        },
+        {
+            "name": "bisambar bisambar - 2152625969",
+            "id": 3,
+            "staffMemberId": 255298
+        },
+        {
+            "name": "BugStaff1! BugStaff1! - 21412321",
+            "id": 3,
+            "staffMemberId": 481817
+        },
+        {
+            "name": "DataProp1 DataProp1 - 343434",
+            "id": 3,
+            "staffMemberId": 192955
+        },
+        {
+            "name": "dataprop13 dataprop13 - 39858345",
+            "id": 3,
+            "staffMemberId": 219635
+        },
+        {
+            "name": "DataProp2 DataProp2 - Test34343",
+            "id": 3,
+            "staffMemberId": 196328
+        },
+        {
+            "name": "Dec20Staff Dec20Staff - 322122",
+            "id": 3,
+            "staffMemberId": 147157
+        },
+        {
+            "name": "dwhstaff staff1 - 21332131",
+            "id": 3,
+            "staffMemberId": 473867
+        },
+        {
+            "name": "Elza Teacher - YT1234567",
+            "id": 3,
+            "staffMemberId": 412456
+        },
+        {
+            "name": "First name last name - 1313313",
+            "id": 3,
+            "staffMemberId": 502388
+        },
+        {
+            "name": "First staff Last - 23123123",
+            "id": 3,
+            "staffMemberId": 309907
+        },
+        {
+            "name": "HealthCare_010815 HealthCare_010815 - 1962911578",
+            "id": 3,
+            "staffMemberId": 105815
+        },
+        {
+            "name": "Julia Teacher - 98765432QW",
+            "id": 3,
+            "staffMemberId": 403968
+        },
+        {
+            "name": "Kiran Gupta - 1122111",
+            "id": 3,
+            "staffMemberId": 138738
+        },
+        {
+            "name": "KStaffember1 KStaffember1 - 123123",
+            "id": 3,
+            "staffMemberId": 136537
+        },
+        {
+            "name": "KTStaff KTStaff - 43425",
+            "id": 3,
+            "staffMemberId": 452692
+        },
+        {
+            "name": "location staff - 123213123",
+            "id": 3,
+            "staffMemberId": 359896
+        },
+        {
+            "name": "Location1 Location1 - 13231",
+            "id": 3,
+            "staffMemberId": 338760
+        },
+        {
+            "name": "MAStaff  F MAStaff L - 12345",
+            "id": 3,
+            "staffMemberId": 516088
+        },
+        {
+            "name": "may03 may - divya",
+            "id": 3,
+            "staffMemberId": 450825
+        },
+        {
+            "name": "May22Staff May22Staff - 34343",
+            "id": 3,
+            "staffMemberId": 160171
+        },
+        {
+            "name": "MDStaff MDStaff - 430580348",
+            "id": 3,
+            "staffMemberId": 203714
+        },
+        {
+            "name": "midterms midterms - 123452345345",
+            "id": 3,
+            "staffMemberId": 212705
+        },
+        {
+            "name": "NatalliAR NatalliAR - 1962911578",
+            "id": 3,
+            "staffMemberId": 511725
+        },
+        {
+            "name": "NEStaff NEStaff - 12345",
+            "id": 3,
+            "staffMemberId": 512787
+        },
+        {
+            "name": "NewStaff15 NewStaff15 - 13123",
+            "id": 3,
+            "staffMemberId": 270529
+        },
+        {
+            "name": "NewStaff25 NewStaff25 - 233123",
+            "id": 3,
+            "staffMemberId": 271454
+        },
+        {
+            "name": "NewStaff26 NewStaff26 - 13124234",
+            "id": 3,
+            "staffMemberId": 271456
+        },
+        {
+            "name": "NYStaff NYStaff - 44332223",
+            "id": 3,
+            "staffMemberId": 141832
+        },
+        {
+            "name": "PStaff1 PStaff1 - 1312313",
+            "id": 3,
+            "staffMemberId": 311169
+        },
+        {
+            "name": "Psych1 Psych1 - 333",
+            "id": 3,
+            "staffMemberId": 174750
+        },
+        {
+            "name": "RBTStaffF RBTStaffL - 232",
+            "id": 3,
+            "staffMemberId": 181465
+        },
+        {
+            "name": "Role1Staff Role1Staff - 3333",
+            "id": 3,
+            "staffMemberId": 159290
+        },
+        {
+            "name": "Role3Staff Role3Staff - 232123",
+            "id": 3,
+            "staffMemberId": 159328
+        },
+        {
+            "name": "Safari 6.11 - 1321412414",
+            "id": 3,
+            "staffMemberId": 125770
+        },
+        {
+            "name": "SriStaff2016 SriStaff2016 - 233666",
+            "id": 3,
+            "staffMemberId": 138499
+        },
+        {
+            "name": "Staff Member1 - 1231231",
+            "id": 3,
+            "staffMemberId": 105840
+        },
+        {
+            "name": "staff P - 121323",
+            "id": 3,
+            "staffMemberId": 107544
+        },
+        {
+            "name": "Staff6561 Staff6561 - 22433",
+            "id": 3,
+            "staffMemberId": 163643
+        },
+        {
+            "name": "StaffAdmin StaffAdmin - 1231234",
+            "id": 3,
+            "staffMemberId": 129030
+        },
+        {
+            "name": "StaffMar20 StaffMar20 - 1",
+            "id": 3,
+            "staffMemberId": 182703
+        },
+        {
+            "name": "StaffThWe StaffThWe - 1231231",
+            "id": 3,
+            "staffMemberId": 305619
+        },
+        {
+            "name": "Test One - 1313132",
+            "id": 3,
+            "staffMemberId": 326298
+        },
+        {
+            "name": "Test Tatsiana - 12345678",
+            "id": 3,
+            "staffMemberId": 468768
+        },
+        {
+            "name": "testish kya - 44544545",
+            "id": 3,
+            "staffMemberId": 354732
+        },
+        {
+            "name": "TestPatch1 TestPatch1 - 131233",
+            "id": 3,
+            "staffMemberId": 425354
+        },
+        {
+            "name": "TheraWestaff TheraWestaff - 1222",
+            "id": 3,
+            "staffMemberId": 302817
+        },
+        {
+            "name": "TherWe23 TherWe23 - 131231",
+            "id": 3,
+            "staffMemberId": 303702
+        },
+        {
+            "name": "TherWe33 TherWe33 - 123213",
+            "id": 3,
+            "staffMemberId": 303788
+        },
+        {
+            "name": "TotalABA Demo - 1235262171",
+            "id": 3,
+            "staffMemberId": 436718
+        },
+        {
+            "name": "Welcome1 Welcome1 - 112332111",
+            "id": 3,
+            "staffMemberId": 253139
+        }
+    ],
+    "billingCodes": [
+        {
+            "billingCodeId": 93804,
+            "billingCodeName": "0364T",
+            "billingCodeName2": null,
+            "billingCodeDescription": null,
+            "frequencyTypeId": null,
+            "funderId": 145617,
+            "serviceLineId": 15846,
+            "unitTypeId": 12,
+            "unitTypeId2": null,
+            "providerServiceId": 5726,
+            "inactive": null,
+            "noAuthRequired": false,
+            "serviceName": "N/A",
+            "rate": 2.50,
+            "rate2": null,
+            "renderingProviderStaffId": null
+        },
+        {
+            "billingCodeId": 93807,
+            "billingCodeName": "0464T",
+            "billingCodeName2": null,
+            "billingCodeDescription": null,
+            "frequencyTypeId": null,
+            "funderId": 145617,
+            "serviceLineId": 15846,
+            "unitTypeId": 12,
+            "unitTypeId2": null,
+            "providerServiceId": 5726,
+            "inactive": null,
+            "noAuthRequired": true,
+            "serviceName": "N/A",
+            "rate": 2.50,
+            "rate2": null,
+            "renderingProviderStaffId": null
+        },
+        {
+            "billingCodeId": 94006,
+            "billingCodeName": "92506",
+            "billingCodeName2": null,
+            "billingCodeDescription": null,
+            "frequencyTypeId": null,
+            "funderId": 145617,
+            "serviceLineId": 15846,
+            "unitTypeId": 12,
+            "unitTypeId2": null,
+            "providerServiceId": 5726,
+            "inactive": null,
+            "noAuthRequired": true,
+            "serviceName": "N/A",
+            "rate": 2.50,
+            "rate2": null,
+            "renderingProviderStaffId": null
+        },
+        {
+            "billingCodeId": 94235,
+            "billingCodeName": "92507",
+            "billingCodeName2": null,
+            "billingCodeDescription": null,
+            "frequencyTypeId": null,
+            "funderId": 145617,
+            "serviceLineId": 15846,
+            "unitTypeId": 5,
+            "unitTypeId2": null,
+            "providerServiceId": 5726,
+            "inactive": null,
+            "noAuthRequired": true,
+            "serviceName": "N/A",
+            "rate": 0.00,
+            "rate2": null,
+            "renderingProviderStaffId": null
+        }
+    ],
+    "locations": [
+        {
+            "id": 3851,
+            "accountInfoId": 18421,
+            "name": "1",
+            "phone": "",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 611142,
+                "street1": "<script>alert(1);</script>",
+                "street2": "",
+                "city": "3",
+                "stateId": 1,
+                "zip": "12542-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 3852,
+            "accountInfoId": 18421,
+            "name": "2",
+            "phone": "",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": "11223344",
+            "locationNumber": null,
+            "address": {
+                "id": 611143,
+                "street1": "4",
+                "street2": "4",
+                "city": "5",
+                "stateId": 35,
+                "zip": "25653-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 5,
+            "accountInfoId": 18421,
+            "name": "Central",
+            "phone": "(123) 412-3123 x121",
+            "email": "",
+            "fax": "(231) 321-3221 x231",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 14,
+                "street1": "500 Lexington Avenue",
+                "street2": "",
+                "city": "New York",
+                "stateId": 2,
+                "zip": "10021-0000",
+                "countryId": 1,
+                "town": "",
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 3336,
+            "accountInfoId": 18421,
+            "name": "July15 address",
+            "phone": "(786) 876-7876 x87",
+            "email": "",
+            "fax": "(897) 987-9897",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 542355,
+                "street1": "july15",
+                "street2": "",
+                "city": "englishtown",
+                "stateId": 35,
+                "zip": "08862-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 65,
+            "accountInfoId": 18421,
+            "name": "Location name long Location name longLocation name longLocation name longLo",
+            "phone": "(123) 132-1221 x212",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 711,
+                "street1": "350 Madison Avenue",
+                "street2": "",
+                "city": "New Yo",
+                "stateId": 35,
+                "zip": "10033-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 4723,
+            "accountInfoId": 18421,
+            "name": "Location1512",
+            "phone": "",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 727923,
+                "street1": "1234 Main St.",
+                "street2": "Suite 5555",
+                "city": "City",
+                "stateId": 2,
+                "zip": "21208-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 3691,
+            "accountInfoId": 18421,
+            "name": "new jersery",
+            "phone": "",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": "ishanyoot@gmail.com",
+            "address": {
+                "id": 592866,
+                "street1": "jains",
+                "street2": "",
+                "city": "jains",
+                "stateId": 2,
+                "zip": "50001-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 3,
+            "accountInfoId": 18421,
+            "name": "North Region",
+            "phone": "(123) 123-1231 x231",
+            "email": "",
+            "fax": "(123) 213-2144 x",
+            "isMainLocation": true,
+            "isBillingLocation": true,
+            "agencyName": "Test name",
+            "federalTaxId": "23-1231231",
+            "npiNumber": "1871860924",
+            "taxonomyCode": "",
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": "14321321231",
+            "locationNumber": null,
+            "address": {
+                "id": 10,
+                "street1": "200 Lexington Avenue",
+                "street2": "",
+                "city": "New York",
+                "stateId": 1,
+                "zip": "10010-0000",
+                "countryId": 1,
+                "town": "",
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 4,
+            "accountInfoId": 18421,
+            "name": "Southern region",
+            "phone": "(123) 123-1231 x231",
+            "email": "",
+            "fax": "(212) 312-3123 x",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 13,
+                "street1": "250 Madison Avenue",
+                "street2": "",
+                "city": "New York",
+                "stateId": 2,
+                "zip": "10022-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 4856,
+            "accountInfoId": 18421,
+            "name": "Sprint Release_7/2/2022_",
+            "phone": "(123) 456-789",
+            "email": "",
+            "fax": "(123) 456-789",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": "123456789",
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 750171,
+                "street1": "Main Street",
+                "street2": "Main Street 2",
+                "city": "Bronx",
+                "stateId": 2,
+                "zip": "12345-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 3140,
+            "accountInfoId": 18421,
+            "name": "Taxonomy",
+            "phone": "(121) 241-2312 x123",
+            "email": "test@streetaddrees1.com",
+            "fax": "(212) 312-3123 x123",
+            "isMainLocation": false,
+            "isBillingLocation": true,
+            "agencyName": "Beacon Test",
+            "federalTaxId": "12-1421212",
+            "npiNumber": "6876767867",
+            "taxonomyCode": "TAX123-123",
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": "1142314231",
+            "address": {
+                "id": 521619,
+                "street1": "Address street1",
+                "street2": "Street address 2",
+                "city": "City",
+                "stateId": 2,
+                "zip": "21423-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 5804,
+            "accountInfoId": 18421,
+            "name": "TEST",
+            "phone": "",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 862007,
+                "street1": "11 street",
+                "street2": "",
+                "city": "New York",
+                "stateId": 35,
+                "zip": "10021",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 4112,
+            "accountInfoId": 18421,
+            "name": "Testing",
+            "phone": "",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": "testid",
+            "address": {
+                "id": 654043,
+                "street1": "19 W. 21 Street, west",
+                "street2": "west",
+                "city": "New York City",
+                "stateId": 2,
+                "zip": "07734-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        },
+        {
+            "id": 4588,
+            "accountInfoId": 18421,
+            "name": "testmay03",
+            "phone": "",
+            "email": "",
+            "fax": "",
+            "isMainLocation": false,
+            "isBillingLocation": false,
+            "agencyName": null,
+            "federalTaxId": null,
+            "npiNumber": null,
+            "taxonomyCode": null,
+            "effectiveDate": null,
+            "providerCommercialNumber": null,
+            "stateLicenseNumber": null,
+            "locationNumber": null,
+            "address": {
+                "id": 713339,
+                "street1": "jains",
+                "street2": "",
+                "city": "jains",
+                "stateId": 2,
+                "zip": "08862-0000",
+                "countryId": 1,
+                "town": null,
+                "state": null,
+                "country": null
+            }
+        }
+    ],
+    "referringProviders": []
+}

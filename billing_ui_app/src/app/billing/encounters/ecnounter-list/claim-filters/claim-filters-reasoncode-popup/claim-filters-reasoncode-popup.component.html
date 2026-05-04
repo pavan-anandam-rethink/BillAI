@@ -1,0 +1,31 @@
+<div class="reasoncode-search-popup">
+  <div class="mb-3 d-flex w-100 reasoncode-search-input">
+    <span class="ml-2 icon-24 search-icon"></span>
+    <input #searchInput
+           placeholder="Search"
+           (keyup)="reasonCodesSearchValueChanged($event)" />
+  </div>
+
+  <div [ngClass]="isLoading ? 'reasoncodes-list loading mb-2' : 'reasoncodes-list mb-2'"
+       style="display: block !important;"
+       *ngIf="filteredReasonCodes.length > 0">
+    <div *ngFor="let reasonCode of filteredReasonCodes"
+         (click)="onReasonCodeClicked(reasonCode)"
+         class="reasoncode-item">
+      <input type="checkbox" [checked]="reasonCode.checked" style="margin-right: 8px;" />
+      <span>{{ reasonCode.code }} - {{ reasonCode.description }}</span>
+    </div>
+  </div>
+
+  <div>
+    <ng-template [ngIf]="filteredReasonCodes.length > 0">
+      <div *ngIf="filteredReasonCodes.length === 1; else notOne">
+        <span>{{ filteredReasonCodes.length }} item</span>
+      </div>
+      <ng-template #notOne>
+        <span>{{ filteredReasonCodes.length }} items</span>
+      </ng-template>
+    </ng-template>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+  </div>
+</div>

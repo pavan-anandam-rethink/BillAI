@@ -1,0 +1,65 @@
+.appointment-search-input {
+    border: 1px solid var(--Black-88);
+    border-radius: 20px;
+    height: 40px;
+    font-size: 15px;
+    color: var(--Black-48);
+}
+
+.appointment-search-input .search-icon{
+    margin: auto 0;
+}
+
+.appointment-search-input input {
+    background: transparent;
+    border: none;
+    height: auto;
+    width: 100%;
+    font-size: 14px !important;
+}
+
+.appointments-block {
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    font-family: DM Sans !important;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+
+}
+
+.appointment-item {
+    /*height: 69px;*/
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-just {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: space-between;
+}
+
+.staff-name {
+    margin: 5px;
+    font-size: 16px;
+}
+
+.time-range {
+    margin: 5px;
+    font-size: 14px;
+}
+
+.icon-text {
+    margin: 5px;
+    font-size: 14px;
+    color: var(--Black-72);
+}
+
+
+.no-appts-text{
+    font-family: DM Sans !important;
+    font-size: 1rem;
+    line-height: 1.5;
+}

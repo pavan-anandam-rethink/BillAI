@@ -1,0 +1,76 @@
+﻿<ng-container>
+    <!-- <div class="Body1 mb-1">CLAIMS - Chetan Mali - Linked Charges</div> -->
+    <div id="serviceLinesDetails">
+        <kendo-grid #LinkServiceLinesGrid id="LinkServiceLinesGrid" class="Body2 patientChargeGrid"
+            [data]="view | async" [navigable]="false" [selectable]="{enabled: true, checkboxOnly: true}"
+            kendoGridSelectBy="id" [skip]="gridState.skip" [sort]="gridState.sortingModels"
+            [sortable]="{mode: 'single'}" (sortChange)="onSortChange($event)" [selectedKeys]="mySelection">
+            <ng-template kendoGridNoRecordsTemplate>
+                No linked charges present
+            </ng-template>
+
+            <kendo-grid-column field="dateOfService" title="Date of Service">
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dateItem>
+                    <span>{{dateItem.dateOfService | date: 'MM/dd/yyyy'}}</span>
+                </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="procedure" title="Procedure" class="border-bottom border-top p-0" >
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <div class="nav-link" (click)="adjustmentClicked(dataItem)">{{dataItem.procedure}}</div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="billedAmount" title="Charge" format="{0:c2}">
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="insurancePayment" title="Insurance Payment" format="{0:c2}">
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="adjustment" title="Adjustment" format="{0:c2}" >
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="patientResponsibility" title="Patient Responsibility" format="{0:c2}">
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="patientPayment" title="Patient Payment" format="{0:c2}">
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="patientResponsibilityBalance" title="Patient Balance" format="{0:c2}">
+                <ng-template kendoGridHeaderTemplate let-column>
+                    <span title={{column.title}}>{{column.title}}</span>
+                </ng-template>
+            </kendo-grid-column>
+
+
+            <kendo-grid-checkbox-column [showSelectAll]="true" [width]="50">
+                <ng-template kendoGridHeaderTemplate>
+                    <input kendoCheckBox type="checkbox" [checked]="this._selectAllLines && _isDataItemChecked"
+                        (change)="selectAllLinesChanged($event)" />
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <input type="checkbox" (change)="rowSelectionClick($event, dataItem)"
+                        [checked]="dataItem.checked" />
+                </ng-template>
+            </kendo-grid-checkbox-column>
+        </kendo-grid>
+    </div>
+
+
+</ng-container>

@@ -1,0 +1,140 @@
+<!--<div class="payment-details Body2">
+
+  <div class="dark small-12reg">
+    <div class="w-50">
+      <div class="details">
+        <div class="property small-12med">{{payment?.isManual ? 'Funder' : 'Payee'}}</div>
+        <div class="value">{{payment?.isManual ? payment?.funderName : payment?.payee}}</div>
+      </div>
+    </div>
+    <div class="w-50 b-l">
+      <div class="details">
+        <div class="property small-12med">Method</div>
+        <div class="value">{{payment?.paymentMethod}}</div>
+      </div>
+    </div>
+    <div class="w-50 b-t">
+      <div class="details">
+        <div class="property small-12med">Deposit Date</div>
+        <div class="value">{{payment?.depositDate | date: 'MM/dd/yyyy'}}</div>
+      </div>
+    </div>
+    <div class="w-50 b-t b-l">
+      <div class="details">
+        <div class="property small-12med">Reference Number</div>
+        <div class="value">{{payment?.referenceNumber}}</div>
+      </div>
+    </div>
+    <div class="w-100 b-t" *ngIf="payment && !payment.isManual">
+      <div class="details">
+        <div class="property small-12med">Funder</div>
+        <div class="value">{{payment?.funderName}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="light head">
+    <div class="details">
+      <div class="payment-header">Payment Amount</div>
+      <span *ngIf="isManual && canEdit" (click)="openEdit()" class="icon-24 edit-icon pointer" style="margin-right:0;"></span>
+    </div>
+    <div class="details payment-total Header-1">{{payment?.paymentAmount || 0 | currency}}</div>
+  </div>
+
+  <div class="light bottom">
+    <div class="details">
+      <div class="property">Posted</div>
+    </div>
+    <div class="value">{{payment?.postedAmount || 0 | currency}}</div>
+  </div>
+
+  <div class="light bottom">
+    <div class="details">
+      <div class="property">Remaining</div>
+    </div>
+    <div class="value">{{payment?.remainingAmount || 0 | currency}}</div>
+  </div>
+
+  <div class="bottom">
+    <div class="details">
+      <div class="property">Date Posted</div>
+    </div>
+    <div class="value">{{payment?.postDate || currentDate | date: 'MM/dd/yyyy'}}</div>
+  </div>
+
+  <div class="edit-details-wrapper">
+    <button class="edit-details-button" *ngIf="isManual && canEdit" (click)="openEdit()">
+      Edit Details
+      <span *ngIf="isManual && canEdit" (click)="openEdit()" class="icon-24 edit-icon pointer"></span>
+    </button>
+  </div>
+
+</div>
+
+<payment-details-info-edit-dialog [paymentSummary]="payment" (onSaveChanges)="onEditChangeSave()"></payment-details-info-edit-dialog>-->
+
+
+<div class="payment-details Body2">
+  <div class="light head">
+    <div class="details">
+      <div class="property">Payment ID</div>
+      <div class="value">{{paymentIdentifier}}</div>
+    </div>
+  </div>
+  <div class="light head">
+    <div class="details">
+      <div class="payment-header">Payment Amount</div>
+      <span *ngIf="canEdit" (click)="openEdit()" class="icon-24 edit-icon pointer" style="margin-right:0;"></span>
+    </div>
+    <div class="details payment-total Header-1">{{payment?.paymentAmount || 0 | currency}}</div>
+  </div>
+  <div class="light bottom">
+    <div class="details">
+      <div class="property">Posted</div>
+      <div class="value">{{payment?.postedAmount || 0 | currency}}</div>
+    </div>
+    <div class="details">
+      <div class="property">Remaining</div>
+      <div class="value">{{payment?.remainingAmount || 0 | currency}}</div>
+    </div>
+    <div class="details">
+      <div class="property">Date Posted</div>
+      <div class="value">{{payment?.postDate || currentDate | date: 'MM/dd/yyyy'}}</div>
+    </div>
+
+    <div class="dark small-12reg">
+      <div class="w-50">
+        <div class="details">
+          <div class="property small-12med">{{payment?.isManual ? 'Funder' : 'Payee'}}</div>
+          <div class="value">{{payment?.isManual ? payment?.funderName : payment?.payee}}</div>
+        </div>
+      </div>
+      <div class="w-50 b-l">
+        <div class="details">
+          <div class="property small-12med">Method</div>
+          <div class="value">{{payment?.paymentMethod}}</div>
+        </div>
+      </div>
+      <div class="w-50 b-t">
+        <div class="details">
+          <div class="property small-12med">Deposit Date</div>
+          <div class="value">{{payment?.depositDate | date: 'MM/dd/yyyy'}}</div>
+        </div>
+      </div>
+      <div class="w-50 b-t b-l">
+        <div class="details">
+          <div class="property small-12med">Reference Number</div>
+          <div class="value">{{payment?.referenceNumber}}</div>
+        </div>
+      </div>
+      <div class="w-100 b-t" *ngIf="payment && !payment.isManual">
+        <div class="details">
+          <div class="property small-12med">Funder</div>
+          <div class="value">{{payment?.funderName}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<payment-details-info-edit-dialog [paymentSummary]="payment" (onSaveChanges)="onEditChangeSave()"></payment-details-info-edit-dialog>

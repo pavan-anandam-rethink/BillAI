@@ -1,0 +1,236 @@
+<div class="claim-details-block">
+    <div class="title Header-5">Billing Codes</div>
+    <div class="">
+        <div [formGroup]="stepForm">
+            <!-- <div class="Header-5">Billing Codes*</div> -->
+            <div class="billing-codes-block">
+                <div class="content" formGroupName="billingCodes">
+                    <div class="col-12 scroll">
+
+                        <div class="lines-block" *ngFor="let control of billingCodesArrayForm.controls; index as i">
+                            <div class="row mb-3">
+                                <div class="service-wrapper">
+                                    <div class="line">
+
+                        <div class="w3">
+                            <label *ngIf="i===0" class="small-13bld">Rendering Provider*</label>
+                            <div class="s-control"
+                                [class.ng-invalid]="isMarkedAsInvalid(i, 'renderingProviderStaffId')">
+
+                                <div class="line-style">
+                                    <kendo-dropdownlist
+                                        [data]="renderingProviders"
+                                        textField="name"
+                                        valueField="staffMemberId"
+                                        [valuePrimitive]="true"
+                                        class="w-100"
+                                        (open)="loadRenderingProviders()"
+                                        [formControl]="getFormControl(i, 'renderingProviderStaffId')">
+
+                                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                            <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                                            <span *ngIf="dataItem">{{dataItem.name}}</span>
+                                        </ng-template>
+
+                                    </kendo-dropdownlist>
+                                </div>
+                            </div>
+</div>
+
+                                        <div class="w1">
+                                            <label *ngIf="i===0" class="small-13bld">Individual Date of Service*</label>
+                                            <div class="s-control"
+                                                [class.ng-invalid]="isMarkedAsInvalid(i, 'individualDateOfService')">
+                                                <div class="line-style">
+                                                    <kendo-datepicker format="{{locale.userDateFormat}}"
+                                                        placeholder="Select Date"  id="IndividualDos{{i}}"
+                                                        (valueChange)="onIndividualDateOfServiceChanged(i)"
+                                                        [incompleteDateValidation]="true" class="w-100 k-diagnosis"
+                                                        [formControl]="getFormControl(i, 'individualDateOfService')">
+                                                        <ng-template kendoDropDownListItemTemplate let-dataItem>
+                                                            <span class="template">{{dataItem | date:
+                                                                'MM/dd/yyyy'}}</span>
+                                                        </ng-template>
+                                                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                                            <span class="dropdown-default" *ngIf="!dataItem">Select
+                                                                Date</span>
+                                                            <span *ngIf="dataItem">{{dataItem | date:
+                                                                'MM/dd/yyyy'}}</span>
+                                                        </ng-template>
+                                                    </kendo-datepicker>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="w2">
+                                            <label *ngIf="i===0" class="small-13bld">Service - Billing Code*</label>
+                                            <div class="s-control"
+                                                [class.ng-invalid]="isMarkedAsInvalid(i, 'billingCodeId')">
+                                                <div class="line-style">
+                                                    <kendo-dropdownlist [data]="billingCodes"
+                                                        [popupSettings]="{popupClass: 'new-style-popup'}"
+                                                        textField="serviceName" valueField="billingCodeId"
+                                                        class="w-100 k-diagnosis" [valuePrimitive]="true"
+                                                        (selectionChange)="billingCodeChanged($event, i)"
+                                                        [formControl]="getFormControl(i, 'billingCodeId')">
+                                                        <ng-template kendoDropDownListItemTemplate let-dataItem>
+                                                            <span
+                                                                class="template">{{getBillingCodeFullName(dataItem)}}</span>
+                                                        </ng-template>
+                                                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                                            <span class="dropdown-default"
+                                                                *ngIf="!dataItem">Select</span>
+                                                            <span *ngIf="dataItem">{{getBillingCodeName(dataItem,
+                                                                i)}}</span>
+                                                        </ng-template>
+                                                    </kendo-dropdownlist>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modifier">
+                                            <label *ngIf="i===0">
+                                                <div class="info-icon-block" kendoTooltip filter="span" style="display: inline-block;">
+                                                    <span class="icon-24 info-icon" style=" margin-bottom: -6px;"
+                                                          kendoTooltip title="any modifier field must have two characters">
+                                                    </span>
+                                                </div>
+                                                <div  class="small-13bld" style="margin: auto 0 auto 5px; display: inline-block;" kendoTooltip title=Modifiers>Modifiers</div>
+                                            </label>
+                                            <div class="d-flex">
+                                                <div class="s-control"
+                                                    [class.ng-invalid]="isMarkedAsInvalid(i, 'modifier1')">
+                                                    <div class="line-style">
+                                                        <input kendoTextBox type="text" id="modifier1" maxlength="2" minlength="2"
+                                                            alfanumericOnly autocomplete="off" placeholder="M1"
+                                                            (keydown.space)="$event.preventDefault();"
+                                                            [formControl]="getFormControl(i, 'modifier1')" />
+                                                    </div>
+                                                </div>
+                                                <div class="s-control"
+                                                    [class.ng-invalid]="isMarkedAsInvalid(i, 'modifier2')">
+                                                    <div class="line-style">
+                                                        <input kendoTextBox type="text" id="modifier2" maxlength="2" minlength="2"
+                                                            alfanumericOnly autocomplete="off" placeholder="M2"
+                                                            (keydown.space)="$event.preventDefault();"
+                                                            [formControl]="getFormControl(i, 'modifier2')" />
+                                                    </div>
+                                                </div>
+                                                <div class="s-control"
+                                                    [class.ng-invalid]="isMarkedAsInvalid(i, 'modifier3')">
+                                                    <div class="line-style">
+                                                        <input kendoTextBox type="text" id="modifier3" maxlength="2" minlength="2"
+                                                            alfanumericOnly autocomplete="off" placeholder="M3"
+                                                            (keydown.space)="$event.preventDefault();"
+                                                            [formControl]="getFormControl(i, 'modifier3')" />
+                                                    </div>
+                                                </div>
+                                                <div class="s-control"
+                                                    [class.ng-invalid]="isMarkedAsInvalid(i, 'modifier4')">
+                                                    <div class="line-style">
+                                                        <input kendoTextBox type="text" id="modifier4" maxlength="2" minlength="2"
+                                                            alfanumericOnly autocomplete="off" placeholder="M4"
+                                                            (keydown.space)="$event.preventDefault();"
+                                                            [formControl]="getFormControl(i, 'modifier4')" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="w4">
+                                            <label *ngIf="i===0" class="small-13bld">Unit Type</label>
+                                            <div class="s-control"
+                                                [class.ng-invalid]="isMarkedAsInvalid(i, 'unitTypeId')">
+                                                <div class="line-style">
+                                                    <kendo-dropdownlist [data]="unitTypes"
+                                                        [popupSettings]="{popupClass: 'new-style-popup no-max-height'}"
+                                                        textField="name" class="w-100 k-diagnosis" valueField="id"
+                                                        [valuePrimitive]="true" [disabled]="true"
+                                                        [formControl]="getFormControl(i, 'unitTypeId')">
+                                                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                                            <span class="dropdown-default" *ngIf="!dataItem">Unit
+                                                                Type</span>
+                                                            <span *ngIf="dataItem">{{dataItem.name}}</span>
+                                                        </ng-template>
+                                                    </kendo-dropdownlist>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="w5">
+                                            <label *ngIf="i===0" class="small-13bld">Units*</label>
+                                            <div class="s-control"
+                                                [class.ng-invalid]="isMarkedAsInvalid(i, 'noOfUnits')">
+                                                <div class="line-style">
+                                                    <input #unitInput type="text" step="any" placeholder="Enter" (keypress)="decimalFilter($event)"
+                                                        (focus)="unitInput.select()"
+                                                        (keyup)="onControlChange($event, i, 'noOfUnits')"
+                                                        (focusout)="markAsTouched(i, 'noOfUnits')" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="w6">
+                                            <label *ngIf="i===0" class="small-13bld">Unit Rate*</label>
+                                            <div class="s-control"
+                                                [class.ng-invalid]="isMarkedAsInvalid(i, 'rate')">
+                                                <div class="line-style">
+                                                    <input #unitRateInput type="text" step="any" placeholder="Enter" (keypress)="decimalFilter($event)"
+                                                    [formControl]="getFormControl(i, 'rate')"
+                                                    (focus)="unitRateInput.select()"
+                                                    [attr.disabled]="!isServiceBillingCodeSelected(i) ? true : null"
+                                                        (keyup)="onControlChange($event, i, 'rate')"
+                                                        (focusout)="markAsTouched(i, 'rate')" />
+                                                </div>
+                                            </div>
+                                        </div> 
+
+                                        <div class="w7">
+                                            <label *ngIf="i===0" class="small-13bld">Total Charges</label>
+                                            <div class="s-control" [class.ng-invalid]="isMarkedAsInvalid(i, 'totalCharges')">
+                                                <div class="line-style">
+                                                    <input readonly type="number" step="any" placeholder="Total Charges"
+                                                        [disabled]="true"
+                                                        [formControl]="getFormControl(i, 'totalCharges')" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class=" trash-control">
+                                            <label *ngIf="i===0">&nbsp;</label>
+                                            <div class="s-control">
+                                                <div class="line-style">
+                                                    <div class="actionicons">
+                                                        <span class="icon-24 notes-r-icon pointer"
+                                                            (click)="openAddNotePopup(i)">
+                                                        </span>
+                                                        <span style="height: 20px;" class="icon-24 trash-icon pointer"
+                                                            (click)="removeHandler(i)">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 add-claim-tab-btns flex-end-css">
+                            <div class="plain-text" *ngIf="this.billingCodesArrayForm.controls.length > 0">Total
+                                Claim Charges: $ {{totalClaimCharges}}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 add-claim-tab-btns flex-end-css" id="AddField" (keydown.enter)="addHandler()">
+                            <outlined-btn text="Save" (onClick)="addHandler()" text="Add Service"></outlined-btn>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div kendoDialogContainer></div>
+        </div>
+    </div>
+</div>

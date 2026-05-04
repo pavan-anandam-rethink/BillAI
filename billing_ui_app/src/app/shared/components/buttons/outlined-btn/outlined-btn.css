@@ -1,0 +1,56 @@
+﻿.outlined-btn {
+    background: var(--White-220);
+    border: 1px solid var(--Black-88);
+    color: var(--Black-32);
+    width: auto;
+    height: 40px;
+    border-radius: 20px;
+    align-items: center;
+    display: flex;
+    padding: 1px;
+    cursor: pointer;
+    justify-content: center;
+}
+
+    .outlined-btn .text {
+        display: inline-block;
+        padding-left: 16px;
+    }
+
+    .outlined-btn:hover {
+        border-color: var(--Blue-72);
+    }
+
+    .outlined-btn:active {
+        border-color: var(--Blue-72);
+    }
+    .outlined-btn:focus {
+        border-color: var(--Blue-72);
+    }
+    .outlined-btn.active {
+        padding: 0px;
+        background-color: var(--Black-96);
+        border: 2px solid var(--Blue-72);
+    }
+
+    .outlined-btn.isDisabled {
+        color: gray;
+        border: 1px solid gray;
+        cursor: not-allowed;
+    }
+
+.outlined-icon {
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+@media only screen and (min-width: 322.01px) {
+    .outlined-btn .text {
+    }
+}
+
+@media only screen and (max-width: 322px) {
+    .outlined-btn .text {
+        line-height: 15px;
+    }
+}

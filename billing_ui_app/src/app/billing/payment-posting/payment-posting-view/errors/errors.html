@@ -1,0 +1,69 @@
+<!--<confirmation-dialog [confirmDialog]="confirmDialog" (onConfirm)="onConfirmSave($event)"></confirmation-dialog>-->
+<div id="errors-info">
+    <div class="d-flex justify-content-end">
+        <div>
+            <span (click)="download()" class="icon-24 download-icon pointer" style="margin:auto 10px auto auto"></span>
+        </div>
+        <div>
+            <span (click)="print()" class="icon-24 printer-icon pointer" style="margin:auto 10px auto auto"></span>
+        </div>
+    </div>
+
+    <kendo-grid [data]="view"
+                [pageSize]="gridState.take" [skip]="gridState.skip" [sort]="gridState.sortingModels"
+                [pageable]="pagingSettings" [sortable]="{mode: 'single'}" (sortChange)="onSortChange($event)"
+                [selectable]="true"
+                (pageChange)="onPageChange($event)"
+                [kendoGridSelectBy]="'id'"
+                (selectedKeysChange)="changeSelection($event)">
+        <kendo-grid-column field="patientName" title="Patient Name" [width]="300" class="border-bottom border-top p-0">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="nav-link" (click)="showClientInfo(dataItem.patientId)">{{dataItem.patientName}}</div>
+            </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column title="Error Message" class="border-bottom border-top p-0">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div>{{dataItem.errorMessage}}</div>
+            </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="claimIdentifier" title="Claim ID" [width]="120" class="border-bottom border-top p-0">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="expectedAmount" title="Expected" class="border-bottom border-top p-0" [width]="120"
+                           format="{0:c2}">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="allowedAmount" title="Allowed" class="border-bottom border-top p-0" [width]="120"
+                           format="{0:c2}">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="balance" title="Balance" class="border-bottom border-top p-0" [width]="120"
+                           format="{0:c2}">
+        </kendo-grid-column>
+
+        <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40">
+        </kendo-grid-checkbox-column>
+
+        <ng-template kendoGridDetailTemplate let-dataItem>
+            <div class="Body1 mb-1 bold">Service Line Details</div>
+            <payment-posting-adjustments [claimId]="dataItem.claimId" [paymentClaimId]="dataItem.id" [isErrors]="true"></payment-posting-adjustments>
+        </ng-template>
+
+        <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage" let-total="total">
+            <div class="d-flex w-100 justify-content-between">
+                <div style="margin: auto 0;"
+                     *ngIf="view.data.length > 0" class="Body1">
+                    Displaying {{view.data.length}} of {{total}} items
+                </div>
+                <div class="d-flex" class="customePageator">
+                    <kendo-pager-page-sizes [pageSizes]="gridPageSizes"></kendo-pager-page-sizes>
+                    <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                    <kendo-pager-numeric-buttons [buttonCount]="5"></kendo-pager-numeric-buttons>
+                    <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                </div>
+            </div>
+        </ng-template>
+    </kendo-grid>
+</div>

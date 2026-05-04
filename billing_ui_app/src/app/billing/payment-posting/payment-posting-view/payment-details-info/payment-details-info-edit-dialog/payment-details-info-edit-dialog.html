@@ -1,0 +1,60 @@
+﻿<kendo-dialog *ngIf="isOpened" class="dialog-wrapper new-style" width="600">
+    <div kendoDialogContainer class="dialog-body">
+        <div class="title">
+            Edit payment summary
+        </div>
+
+        <div class="mt-3 mb-2">
+            <div class="row mb-2">
+                <div class="col-md-6 col-12">
+                    <label class="small-12med">Deposit Date</label>
+                    <kendo-datepicker
+                            class="w-100"
+                            [(ngModel)]="depositDate"
+                            (valueChange)="checkValues()"
+                    ></kendo-datepicker>
+                </div>
+                <div class="col-md-6 col-12">
+                    <label class="small-12med">Post Date</label>
+                    <kendo-datepicker
+                            class="w-100"
+                            [(ngModel)]="postDate"
+                            (valueChange)="checkValues()"
+                    ></kendo-datepicker>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label class="small-12med">Payment Method</label>
+                    <kendo-dropdownlist
+                            class="w-100"
+                            [(value)]="editedSummary.paymentMethodId"
+                            [popupSettings]="{popupClass: 'new-style-popup'}"
+                            [data]="paymentMethodValues"
+                            (valueChange)="checkValues()">
+                        <ng-template kendoDropDownListItemTemplate let-dataItem>
+                            <span class="dropdown-value">{{ getPaymentName(dataItem) }}</span>
+                        </ng-template>
+                        <ng-template kendoDropDownListValueTemplate let-dataItem>
+                            <span class="dropdown-default" *ngIf="!dataItem">Select</span>
+                            <span *ngIf="dataItem">{{getPaymentName(dataItem)}}</span>
+                        </ng-template>
+                    </kendo-dropdownlist>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label class="small-12med">Payment Amount</label>
+                    <kendo-numerictextbox id="paymentAmount" [(ngModel)]="paymentAmount"
+                        [spinners]="false" [format]="'c2'" [maxlength]="12" class="w-100"
+                        placeholder="Enter Amount" (valueChange)="checkValues()">
+                    </kendo-numerictextbox>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-row-reverse mt-4">
+            <contained-btn class="pointer ml-3" text="Save" [isDisabled]="!isUpdated" (onClick)="save()"></contained-btn>
+            <outlined-btn class="pointer" text="Close" (onClick)="close()"></outlined-btn>
+        </div>
+    </div>
+</kendo-dialog>

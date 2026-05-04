@@ -1,0 +1,294 @@
+th {
+    align-content: center;
+    width: 15%;
+}
+
+.service-wrapper {
+    width: 100%;
+}
+
+.line {
+    display: flex;
+    position: relative;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+.small-13bld {
+    white-space: nowrap;
+}
+.w1 {
+    width: 18%;
+}
+
+.w2 {
+    width: 14%;
+}
+
+.w3 {
+    width: 16%;
+}
+
+.modifier {
+    width: 21%;
+}
+
+.w4 {
+    width: 13%;
+}
+
+.w5 {
+    width: 8%;
+}
+
+.w6 {
+    width: 12%;
+}
+
+.w7 {
+    width: 12%;
+}
+
+
+.trash-control {
+    width: 5%;
+    overflow: hidden;
+}
+
+.trash-control .line-style div {
+    display: flex;
+    background-color: var(--Blue-98);
+    height: 40px;
+}
+
+.trash-control .line-style div span {
+    line-height: 140% !important;
+}
+
+.line-style input {
+    border: none;
+    border: 1px solid var(--Black-88);
+    border-left: none;
+    background-color: var(--Blue-98);
+    padding: 0 15px !important;
+    border-radius: 0;
+}
+
+.line-style kendo-dropdownlist {
+    width: 100%;
+}
+
+.line-style kendo-dropdownlist .k-dropdown-wrap span {
+    margin: auto 0;
+}
+
+.line-style .k-dropdown ::ng-deep.k-dropdown-wrap {
+    border-radius: 0;
+    height: 44px;
+    border: none;
+    border: 1px solid var(--Black-88);
+    border-left: none;
+    background-color: var(--Blue-98);
+}
+
+.line-style .k-dropdown ::ng-deep.k-icon {
+    content: url(/core/images/chevron-down.svg);
+}
+
+.line-style input[type=number]::-webkit-outer-spin-button,
+.line-style input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.line-style input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.line-style .k-dropdown ::ng-deep.k-input,
+.line-style input {
+    width: 100%;
+    height: 40px;
+    text-align: left;
+    font-style: normal;
+    font-weight: normal !important;
+    font-size: 14px !important;
+    line-height: 140% !important;
+    padding: 0 15px;
+}
+
+.actionicons {
+    height: 40px;
+}
+
+::ng-deep.new-style-popup.no-max-height  ::ng-deep.k-list-scroller {
+    max-height: unset !important;
+}
+
+.s-control:first-child ::ng-deep.k-dropdown-wrap:first-child {
+    border: 1px solid var(--Black-88);
+    border-radius: 8px 0 0 8px;
+}
+
+.billing-codes-buttons > outlined-btn {
+    margin-right: 16px;
+}
+
+.billing-codes-buttons:last-child > outlined-btn {
+    margin-right: 24px;
+}
+
+.lines-labels {
+    margin-top: 11px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.flex-end-css {
+    display: flex;
+    justify-content: flex-end;
+}
+.flex-start-css {
+    justify-content: flex-start;
+}
+
+.billing-codes-buttons {
+    margin-top: 14px;
+}
+
+.billing-codes-buttons > outlined-btn {
+    margin-right: 16px;
+}
+
+.billing-codes-buttons > contained-btn {
+    margin-right: 24px;
+}
+
+.s-control input,
+.s-control .k-dropdown ::ng-deep.k-dropdown-wrap {
+    border: none !important;
+}
+
+.s-control {
+    border: 1px solid var(--Black-88);
+}
+
+.s-control.ng-invalid + .s-control {
+    border-left: none;
+}
+
+.s-control.ng-invalid {
+    border-color: var(--red);
+    border-right: 1px solid var(--red) !important;
+}
+
+.s-control ~ .s-control {
+    border-right: none;
+}
+
+.s-control.ng-invalid:first-child {
+    border-right: 1px solid var(--red);
+}
+
+.s-control:first-child {
+    border-right: none;
+    /* border-radius: 8px 0 0 8px; */
+}
+
+.s-control:last-child {
+    /* border-radius: 0 8px 8px 0; */
+    border-right: 1px solid var(--Black-88) !important;
+}
+
+.billing-codes-block {
+    margin-top: 8px;
+    /* border: 1px solid var(--Black-88); */
+    border-radius: 8px;
+}
+
+.billing-codes-block .content {
+    padding: 15px 5px;
+}
+
+.k-dropdown {
+    background-color: transparent !important;
+}
+
+.line-style input[disabled] {
+    opacity: .65;
+}
+
+.icon-trash-disabled {
+    cursor: not-allowed !important;
+}
+
+.icon-trash-disabled:hover {
+    background-color: var(--Black-72) !important;
+}
+
+.modifier {
+    max-width: 20%;
+}
+
+.modifier-wrapper {
+    max-width: 20%;
+}
+
+.modifiers {
+    width: 16%;
+}
+
+.plain-text {
+    border-color: var(--Black-88);
+    background: var(--White-220);
+    border-width: 1px;
+    border-style: solid;
+    font-size: 14px;
+    color: var(--Black-32);
+    border: 1px solid var(--Black-88);
+    width: auto;
+    height: 40px;
+    /* border-radius: 20px; */
+    align-items: center;
+    display: flex;
+    padding: 16px;
+    justify-content: center;
+    font-style: normal;
+    font-weight: normal;
+    /* margin-right: 24px; */
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.scrollbar {
+    max-width: 100%;
+    max-height: 100%;
+    background: whitesmoke;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  .lines-labels {
+    width: 1313px;
+  }
+  .lines-block {
+    width: fit-content;
+  }
+
+  .scroll {
+    word-wrap: normal;
+    overflow: auto !important;
+  }
+
+
+  @media screen and (min-width: 600px) and (max-width: 1336px) {
+    .lines-block {
+        width: 1313px !important;
+      }
+  }
+  @media screen and (max-width: 600px) {
+    .lines-block {
+        width: 1313px !important;
+      }
+  }

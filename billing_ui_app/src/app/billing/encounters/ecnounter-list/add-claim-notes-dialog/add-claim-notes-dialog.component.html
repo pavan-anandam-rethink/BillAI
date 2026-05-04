@@ -1,0 +1,39 @@
+<div>
+    <div [formGroup]="formGroup">
+        <div class="row">
+            <div class="col-12 claim-notes-control">
+                <label for="followUp">Follow Up*</label>
+               <div class="Input new-style">
+                            <kendo-datepicker format="{{locale.userDateFormat}}"
+                            placeholder="Select Date"
+                            formControlName="remindDate"
+                            [ngClass]="{'date-picker-error': showErrors && noteForm.controls['remindDate'].invalid}"
+                            [incompleteDateValidation]="true" class="w-100 k-diagnosis dateInput" (valueChange)="checkTextAndDateArea()"
+                            >
+                            <ng-template kendoDropDownListItemTemplate let-dataItem>
+                                <span class="template">{{dataItem | date:
+                                    'MM/dd/yyyy'}}</span>
+                            </ng-template>
+                            <ng-template kendoDropDownListValueTemplate let-dataItem>
+                                <span class="dropdown-default" *ngIf="!dataItem">Select
+                                    Date</span>
+                                <span *ngIf="dataItem">{{dataItem | date:
+                                    'MM/dd/yyyy'}}</span>
+                            </ng-template>
+                        </kendo-datepicker>
+                        </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 notes-container">
+                <div class="notes-header">Claim Notes</div>
+                <textarea class="form-control text-area" formControlName="note" placeholder="Type Here" (keyup)="checkTextAndDateArea()"
+                          [ngClass]="{FieldError: formGroup.controls['note'].touched && formGroup.controls['note'].invalid}"></textarea>
+            </div>
+        </div>
+    </div>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="cancel()">Cancel</button>
+        <button kendoButton [primary]="true" [disabled]="AddNote" (click)="addNote()">Add Note</button>
+    </kendo-dialog-actions>
+</div>

@@ -1,0 +1,367 @@
+<header-toolbar
+  class="header-position"
+  [headerTitle]="headerText"
+  [isBackBtnShow]="false"
+  [isProfileShow]="false"
+  [breadcrumbs]="breadcrumbs"
+></header-toolbar>
+
+<div class="d-flex flex-column">
+  <div class="header-actions-wrapper">
+    <div style="display: flex">
+      <outlined-btn
+        text="Filter"
+        class="filter-btn"
+        id="toggleButton"
+        iconClass="icon-24 filter-icon"
+        [flip]="true"
+        (onClick)="toggleFilter($event)"
+      ></outlined-btn>
+      <contained-btn
+        *ngIf="canEdit"
+        text="Add Payment"
+        iconClass="icon-24 add-circle-icon"
+        (click)="addPaymentDialogToggle()"
+        style="margin-left: 12px"
+      ></contained-btn>
+    </div>
+    <div
+      style="position: relative"
+      *ngIf="canEdit"
+      class="d-flex posting-actions flex-wrap"
+    >
+      <div class="d-flex mt-2 ml-2 mr-2">
+        <span
+          *ngIf="canEdit"
+          class="icon-24 notes-r-icon"
+          (click)="addNoteBulk()"
+          kendoTooltip
+          title="Notes"
+          [ngClass]="{ disabled: selectedIds.length === 0 }"
+        ></span>
+        <span
+          *ngIf="canEdit"
+          class="icon-24 trash-icon"
+          (click)="openDeletePaymentDialogBulk()"
+          kendoTooltip
+          title="Delete"
+          [ngClass]="{ disabled: selectedIds.length === 0 }"
+        ></span>
+        <span
+          *ngIf="canEdit"
+          class="icon-24 reconcile-icon mr-6"
+          (click)="openReconcileDialogBulk()"
+          kendoTooltip
+          title="Reconcile"
+          [ngClass]="{ disabled: selectedIds.length === 0 }"
+        ></span>
+      </div>
+    </div>
+  </div>
+
+  <payment-posting-list-filter
+    [filterForm]="filterForm"
+    (filterChanged)="onFilterChanged()"
+  ></payment-posting-list-filter>
+  <div class="payment-list">
+    <kendo-grid
+      #paymentPostingGrid
+      id="big-grid"
+      class="slide"
+      [class.filter-on]="showFilter"
+      [data]="view | async"
+      [pageSize]="gridState.take!"
+      [skip]="gridState.skip!"
+      [sort]="gridState.sortingModels!"
+      [pageable]="pagingSettings"
+      [sortable]="{ mode: 'single' }"
+      (sortChange)="onSortChange($event)"
+      [navigable]="true"
+      kendoGridSelectBy="id"
+      [selectable]="selectableSettings"
+      [selectedKeys]="selectedKeysArray"
+      (selectionChange)="onSelectChange($event)"
+      (pageChange)="onPageChange($event)"
+    >
+      <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40">
+      </kendo-grid-checkbox-column>
+      <kendo-grid-column
+        field="paymentIdentifier"
+        [width]="150"
+        class="border-bottom border-top p-0"
+        title="Payment ID"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Payment ID">Payment ID</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="payment-id-cell" width="150">
+            <!-- <span *ngIf="!canEdit">{{ dataItem.paymentIdentifier || 'link' }}</span> -->
+
+            <a
+              class="nav-link"
+              [routerLink]="['/billing/paymentposting/edit', dataItem.id]"
+            >
+              {{ dataItem.paymentIdentifier || "link" }}
+            </a>
+
+            <span
+              kendoTooltip
+              class="pill"
+              [ngClass]="{
+                'pill-electronic': !dataItem.isManual,
+                'pill-manual': dataItem.isManual
+              }"
+              [title]="getPaymentIndicatorTitle(dataItem)"
+            >
+              {{ getPaymentIndicator(dataItem) }}
+            </span>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="paymentMethodName"
+        title="Method"
+        class="border-bottom border-top p-0"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Method">Method</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="receivedDate"
+        title="Received"
+        class="border-bottom border-top p-0"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Received">Received</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dateItem>
+          {{ dateItem.receivedDate | date : "MM/dd/yyyy" }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="funderName"
+        title="Funder"
+        class="border-bottom border-top p-0"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Funder">Funder</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="reference"
+        title="Reference Number"
+        class="border-bottom border-top p-0"
+        [width]="200"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Reference Number">Reference Number</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="paymentAmount"
+        title="Amount"
+        class="border-bottom border-top p-0"
+        format="{0:c2}"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Amount">Amount</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="appliedAmount"
+        title="Applied"
+        class="border-bottom border-top p-0"
+        format="{0:c2}"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Applied">Applied</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="claimsCount"
+        title="Claims"
+        class="border-bottom border-top p-0"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Claims">Claims</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="deniedClaimsCount"
+        title="Denials"
+        class="border-bottom border-top p-0"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Denials">Denials</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="reconcileStatus"
+        class="border-bottom border-top p-0"
+        title="Status"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Status">Status</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div>
+            <div class="payment-status status-wrapper">
+              <span
+                class="small-12bld"
+                [ngClass]="
+                  'status-name ' + dataItem.reconcileStatus.toLowerCase()
+                "
+                >{{ dataItem.reconcileStatus }}</span
+              >
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        *ngIf="canEdit"
+        title="Actions"
+        [sortable]="false"
+        class="border-bottom border-top p-0"
+        [width]="130"
+      >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span kendoTooltip title="Actions">Actions</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div class="d-flex justify-content-start">
+            <div class="d-flex" style="gap: 10px">
+              <span
+                *ngIf="canEdit"
+                class="icon-24 notes-r-icon"
+                (click)="paymentNotes(dataItem)"
+                kendoTooltip
+                title="Notes"
+              ></span>
+              <ng-template [ngIf]="dataItem.isManual && canEdit">
+                <span
+                  class="icon-24 trash-icon"
+                  (click)="openDeletePaymentDialog(dataItem)"
+                  kendoTooltip
+                  title="Delete"
+                ></span>
+              </ng-template>
+              <ng-template [ngIf]="dataItem.isManual && canEdit">
+                <ng-template
+                  [ngIf]="dataItem.appliedAmount < dataItem.paymentAmount"
+                >
+                  <span
+                    class="icon-24 reconcile-icon"
+                    (click)="openReconcileDialog(dataItem.id)"
+                    kendoTooltip
+                    title="Reconcile"
+                  ></span>
+                </ng-template>
+              </ng-template>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <ng-template
+        kendoPagerTemplate
+        let-totalPages="totalPages"
+        let-total="total"
+      >
+        <div style="display: flex; width: 100%; justify-content: space-between">
+          <div
+            style="margin: auto 0"
+            *ngIf="(view | async).data.length > 0"
+            class="Body1"  >
+         
+              <ng-container *ngIf="isAllSelected">
+              Displaying {{getFooterRange()}} items
+            </ng-container>
+            <ng-container *ngIf="!isAllSelected">
+               Displaying {{ getPageStart(total) }}–{{ getPageEnd(total) }} of
+            {{ total }} items
+            </ng-container>
+
+          </div>
+          <div style="display: flex" class="customePageator">
+            <kendo-pager-page-sizes
+              [pageSizes]="gridPageSizes"
+            ></kendo-pager-page-sizes>
+            <kendo-pager-prev-buttons kendoTooltip></kendo-pager-prev-buttons>
+            <kendo-pager-numeric-buttons
+              [buttonCount]="5"
+            ></kendo-pager-numeric-buttons>
+            <kendo-pager-next-buttons kendoTooltip></kendo-pager-next-buttons>
+          </div>
+        </div>
+      </ng-template>
+    </kendo-grid>
+  </div>
+
+  <manual-add-payment-dialog *ngIf="showAddPaymentDialog" (closeDialogEmitter)="addPaymentDialogToggle()"
+    (iframeUrlEmitted)="handleIframeUrl($event)"
+    [isRevSpringEnabled]="isRevSpringEnabled">
+  </manual-add-payment-dialog>
+
+  <confirmation-dialog
+    [confirmDialog]="confirmReconcileDialog"
+    (onConfirm)="onReconcilePayment($event)"
+  ></confirmation-dialog>
+  <confirmation-dialog
+    [confirmDialog]="confirmDeleteTransactionDialog"
+    (onConfirm)="onDeletePaymentTransaction($event)"
+  ></confirmation-dialog>
+  <div
+    *ngIf="showNotification"
+    id="notification-content"
+    class="col align-self-center"
+    style="width: calc(50% + 40px)"
+  >
+    <notify-component
+      [notificationText]="notificationText"
+      [type]="notificationType"
+    ></notify-component>
+  </div>
+  <!-- <processing-details #processingDetails (paymentParsed)="reloadData()"></processing-details> -->
+</div>
+<div kendoDialogContainer></div>
+<ng-template #testAccountDialog>
+    <!-- Close button -->
+   <button
+      mat-icon-button
+      class="close-button"
+      aria-label="Close dialog"
+      (click)="onCloseClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+  <!-- Iframe Container -->
+  <div *ngIf="webTokenUrl && !showError" class="iframe-container">
+    <iframe class="revspring-personapay" [src]="webTokenUrl" frameborder="0" (load)="onIframeLoad()"></iframe>
+  </div>
+
+  <div *ngIf="showError" class="iframe-error">
+    <h3>Payment Unavailable</h3>
+    <p>
+      Looks like this service is not available in your location.
+    </p>
+  </div>
+</ng-template>

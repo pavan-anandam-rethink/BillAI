@@ -1,0 +1,331 @@
+<header-toolbar class="header-position" [headerTitle]="'Financial Summary Report'" [isBackBtnShow]="false" 
+[isProfileShow]="false" [breadcrumbs]="breadcrumbs">
+</header-toolbar>
+
+<div class="financial-main-container">
+    <div class="financial-actions-wrapper d-flex justify-content-between flex-wrap ">
+        <div class="d-flex mt-2 ml-2">
+            <div class="report-type-container">
+        <div class="report-type-label" style="white-space: nowrap;padding-right: 10px;
+        padding-top: 7px;">Report Type:</div>
+        
+    
+    <kendo-dropdownlist 
+    [(ngModel)]="selectedReportType"
+    [data]="reportTypeOptions"
+    textField="text"
+    valueField="value"
+    (valueChange)="onReportTypeChange($event)"
+    [valuePrimitive]="true"
+    class="report-type-dropdown-main">
+</kendo-dropdownlist>
+    </div>
+        </div>
+        <div class="financial-actions-right">
+            <div class="d-flex mt-2 mr-2">
+                <span *ngIf="canEdit" class="icon-24 download-icon" 
+                    [ngClass]="checkedGridResultCount == 0 ? 'disabled' : ''" 
+                    (click)="exportToExcel()" 
+                    kendoTooltip title="Export to Excel">
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="filters-wrapper">
+        <financial-summary-filters 
+            [selectedReportType] = "selectedReportType"
+            (requestData)="applyFilter($event)" 
+            (clearFilter)="clearFilter()" 
+            (filterChanged)="onFilterChanged()">
+        </financial-summary-filters>
+    </div>
+    <div class="financial-list">
+        <div id="encounters" class="tab-content">
+  <!-- Monthly Financial Summary Grid -->
+  <kendo-grid
+  *ngIf="selectedReportType === 'Monthly'"
+  [data]="gridView"
+  [class.filter-on]="showFilter"
+  class="height-100 unbilled-grid">
+
+  <kendo-grid-column field="monthYear" title="Month-Year" [width]="150">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span
+        [ngClass]="{
+          'total-cell': dataItem.monthYear == 'TOTAL',
+          'previous-period': dataItem.monthYear == 'Previous Period',
+          'blank-cell': isBlank(dataItem.monthYear)
+        }"
+        [ngStyle]="!isBlank(dataItem.monthYear) ? { 'padding-left.px': 5 } : null">
+        {{ isBlank(dataItem.monthYear) ? '\u00A0' :     dataItem.monthYear }}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="charges" title="Charges ($)" [width]="130" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="insurancePay" title="Insurance Pay ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+      
+  </kendo-grid-column>
+
+  <kendo-grid-column field="patientPay" title="Patient Pay ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+      <span
+        class="cell-content"
+        [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+        [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+        {{ isBlank(dataItem[column.field])
+          ? '\u00A0'
+          : (dataItem[column.field] | number:'1.2-2') }}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  
+
+  <kendo-grid-column field="totalPay" title="Total Pay ($)" [width]="130" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="adjustments" title="Adjustments ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="writeOffs" title="Write-Offs ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="periodBalance" title="Period Balance ($)" [width]="170" class="text-right">
+    <ng-template kendoGridHeaderTemplate>
+      <span kendoTooltip title="Net change in accounts receivable for the period (Charges - Payments - Adjustments - Write-offs)">Period Balance ($)</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]),
+           'negative-value': dataItem.periodBalance < 0 }"
+           [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : formatAmount(dataItem.periodBalance) }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column field="endingAR" title="Total Balance ($)" [width]="180" class="text-right">
+    <ng-template kendoGridHeaderTemplate>
+      <span kendoTooltip title="Ending A/R: Total accounts receivable balance at the end of the period">Total Balance ($)</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+</kendo-grid>
+
+<!-- Funder Financial Summary Grid -->
+<kendo-grid
+  *ngIf="selectedReportType === 'Funder'"
+  [data]="funderGridView"
+  [class.filter-on]="showFilter"
+  class="height-100 unbilled-grid funder-grid">
+
+  <kendo-grid-column field="funderName" title="Funder" [width]="200">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span
+        [ngClass]="{
+          'total-cell': dataItem.funderName == 'TOTAL',
+          'blank-cell': isBlank(dataItem.funderName)
+        }">
+        {{ isBlank(dataItem.funderName) ? '\u00A0' : dataItem.funderName }}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="priorPeriodBalance" title="Prior Period Balance ($)" [width]="180" class="text-right">
+    <ng-template kendoGridHeaderTemplate>
+      <span kendoTooltip title="Starting A/R: Accounts receivable balance at the beginning of the period">Prior Period Balance ($)</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="charges" title="Charges ($)" [width]="130" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="insurancePay" title="Insurance Pay ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="patientPay" title="Patient Pay ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="totalPay" title="Total Pay ($)" [width]="130" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="adjustments" title="Adjustments ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="writeOffs" title="Write-Off ($)" [width]="150" class="text-right">
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="periodBalance" title="Period Balance ($)" [width]="170" class="text-right">
+    <ng-template kendoGridHeaderTemplate>
+      <span kendoTooltip title="Net change in accounts receivable for the period (Charges - Payments - Adjustments - Write-offs)">Period Balance ($)</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]),
+           'negative-value': dataItem.periodBalance < 0 }"
+           [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : formatAmount(dataItem.periodBalance) }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="totalBalance" title="Total Balance ($)" [width]="180" class="text-right">
+    <ng-template kendoGridHeaderTemplate>
+      <span kendoTooltip title="Ending A/R: Total accounts receivable balance at the end of the period">Total Balance ($)</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem let-column="column">
+        <span
+          [ngClass]="{ 'blank-cell': isBlank(dataItem[column.field]) }"
+          [ngStyle]="!isBlank(dataItem[column.field]) ? { 'padding-right.px': 5 } : null">
+          {{ isBlank(dataItem[column.field]) ? '\u00A0' : (dataItem[column.field] | number:'1.2-2') }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+</kendo-grid>
+</div>
+    </div>
+<table class="unapplied-table" *ngIf="selectedReportType === 'Monthly' && financialSummary?.unappliedCredits">
+    <tbody>
+        <tr>
+            <th>Insurance Unapplied Credits</th>
+            <td>
+                {{ financialSummary.unappliedCredits.insuranceUnapplied | currency }}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Patient Unapplied Credits</th>
+            <td>
+                {{ financialSummary.unappliedCredits.patientUnapplied | currency }}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Total Unapplied Credits</th>
+            <td>
+                {{ financialSummary.unappliedCredits.totalUnapplied | currency }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="unapplied-table" *ngIf="selectedReportType === 'Funder' && funderFinancialSummary?.unappliedCredits">
+    <tbody>
+        <tr>
+            <th>Insurance Unapplied Credits</th>
+            <td>
+                {{ funderFinancialSummary.unappliedCredits.insuranceUnapplied | currency }}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Patient Unapplied Credits</th>
+            <td>
+                {{ funderFinancialSummary.unappliedCredits.patientUnapplied | currency }}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Total Unapplied Credits</th>
+            <td>
+                {{ funderFinancialSummary.unappliedCredits.totalUnapplied | currency }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+</div>

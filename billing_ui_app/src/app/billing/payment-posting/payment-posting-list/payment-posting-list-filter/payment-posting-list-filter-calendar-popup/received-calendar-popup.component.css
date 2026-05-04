@@ -1,0 +1,64 @@
+﻿.k-title {
+    display: none;
+}
+
+:host ::ng-deep .k-dateinput {
+    width: unset;
+}
+.date-filter-popup {
+    padding: 24px 16px;
+    display: contents !important;
+}
+
+.filter-date-selector input{
+    font-size: 14px !important;
+    text-align: left !important;
+    width: 110px !important;
+}
+
+.filter-date-selector {
+    border: 1px solid var(--Black-88);
+    overflow: hidden;
+}
+
+.filter-date-selector .k-dateinput-wrap {
+    border: none;
+}
+
+.filter-date-selector:first-child {
+    border-radius: 40px 0 0 40px;
+}
+.filter-date-selector:last-child {
+    border-radius: 0 40px 40px 0;
+}
+
+.date-filter-selector .k-calendar-header,
+.date-filter-selector .k-button.k-prev-view,
+.date-filter-selector .k-button.k-next-view {
+    display: none;
+}
+
+.date-filter-selector,
+.date-filter-selector .k-calendar-view.k-calendar-monthview {
+    border: none !important;
+}
+
+    .date-filter-selector{
+        height: 240px;
+        width: 100%;
+        font-family: inherit;
+    }
+
+    .k-dateinput {
+        border: none;   
+        font-family: inherit;
+     }
+
+.content {
+    display: block !important;
+    padding: 20px 10px 0px 10px;
+}
+
+.btns {
+    padding: 20px 0px;
+}

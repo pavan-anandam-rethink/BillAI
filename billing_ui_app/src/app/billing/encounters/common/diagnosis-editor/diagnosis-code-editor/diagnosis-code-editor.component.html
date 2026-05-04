@@ -1,0 +1,51 @@
+<div>
+    <div class="header">
+        <div class="header-text">Edit Diagnosis Code</div>
+    </div>
+    <div class="content">
+        <div class="list-title">Diagnosis Order</div>
+        <div class="diagnosis-list">
+            <div class="diagnosis-block" *ngFor="let diagnosisCode of getSortedCodes; let i = index">
+                <div class="auth-title">
+                    <div>
+                        <div class="label">Diagnosis Code</div>
+                        <div class="value">{{diagnosisCode.diagnosisCode}}</div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="m-auto">{{getOrderName(diagnosisCode.order)}}</div>
+                        <!-- hidden #134057 -->
+                        <span class="ml-2 icon-24 arrow-down" [class.disabled]="diagnosisCode.order === diagnosisCodes.length" (click)="downOrder(diagnosisCode)"></span>
+                        <span class="icon-24 arrow-up" [class.disabled]="diagnosisCode.order === 1" (click)="upOrder(diagnosisCode)"></span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="label">Description</div>
+                    <div class="value">{{diagnosisCode.description}}</div>
+                </div>
+                <div class="block-footer">
+                    <!-- <div class="label"><label [attr.for]="'includeOnClaims-'+i">Include on Claims</label></div>  -->
+                    <div class="d-flex">
+                        <!-- <input [disabled]="true" [id]="'includeOnClaims-'+i" 
+                               type="checkbox" [(ngModel)]="diagnosisCode.includeOnClaims" (click)="changeIncludeOnClaims(diagnosisCode)"> -->
+                        <!-- hidden #134057 -->
+                        <span class="icon-24 trash-icon ml-2 pointer" style="height: 20px;" [class.disabled]="diagnosisCode.order === 1" (click)="removeCode(diagnosisCode)"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex" (keydown.enter)="openAddDiagnosis()">
+            <outlined-btn text="Add" id="AddButton" [isDisabled]="diagnosisCodes.length >= 11" (onClick)="openAddDiagnosis()"></outlined-btn>
+        </div>
+    </div>
+
+    <div class="footer d-flex flex-row-reverse">
+        <div (keydown.enter)="saveEvent(diagnosisCodes)">
+            <contained-btn (onClick)="saveEvent(diagnosisCodes)" class="ml-2" text="Save"></contained-btn>
+        </div>
+        <div (keydown.enter)="cancelEvent()">
+            <outlined-btn (onClick)="cancelEvent()" text="Cancel"></outlined-btn>
+        </div>
+    </div>
+</div>
+
+<!-- <add-diagnosis-popup (save)="onDiagnosisAdd($event)" [addedCodeIds]="addedCodeIds"></add-diagnosis-popup> -->
