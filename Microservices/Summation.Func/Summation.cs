@@ -13,12 +13,14 @@ namespace Summation.Func
     {
         private readonly ILogger<Summation> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _apiUrl;
 
-        public Summation(ILogger<Summation> logger, IConfiguration configuration)
+        public Summation(ILogger<Summation> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
             _apiUrl = _configuration["ApiUrl"].ToString();
         }
 
@@ -28,27 +30,24 @@ namespace Summation.Func
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_apiUrl);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("XApiKey", _configuration["XApiKey"].ToString());
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_apiUrl);
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("XApiKey", _configuration["XApiKey"].ToString());
 
-                ClaimTransactionModel summationRequest = JsonConvert.DeserializeObject<ClaimTransactionModel>(message.Body.ToString());
-                StringContent content = new StringContent(JsonConvert.SerializeObject(summationRequest), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = new HttpResponseMessage();
-                response = await client.PostAsync("/ClaimTransaction/AddOrUpdateClaimTransaction", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    await messageActions.CompleteMessageAsync(message);
-                }
-                else
-                {
-                    _logger.LogError($"Summation failed with status {response.StatusCode} and message {response.Content} " +
-                                     $"for Transaction Type: {summationRequest?.TransactionType}, Id: {summationRequest?.TransactionTypeId}");
-                    throw new ServiceBusException(response.StatusCode.ToString(), ServiceBusFailureReason.ServiceCommunicationProblem);
-                }
+            ClaimTransactionModel summationRequest = JsonConvert.DeserializeObject<ClaimTransactionModel>(message.Body.ToString());
+            StringContent content = new StringContent(JsonConvert.SerializeObject(summationRequest), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync("/ClaimTransaction/AddOrUpdateClaimTransaction", content);
+            if (response.IsSuccessStatusCode)
+            {
+                await messageActions.CompleteMessageAsync(message);
+            }
+            else
+            {
+                _logger.LogError("Summation failed with status {StatusCode} for Transaction Type: {TransactionType}, Id: {TransactionTypeId}",
+                    response.StatusCode, summationRequest?.TransactionType, summationRequest?.TransactionTypeId);
+                throw new ServiceBusException(response.StatusCode.ToString(), ServiceBusFailureReason.ServiceCommunicationProblem);
             }
         }
     }

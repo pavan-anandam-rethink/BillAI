@@ -12,13 +12,15 @@ namespace ProcessEligibilityRequest.Func
     {
         private readonly ILogger<ProcessEligibilityRequest> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _ApiUrl;
         private readonly string _XApiKey;
 
-        public ProcessEligibilityRequest(ILogger<ProcessEligibilityRequest> logger, IConfiguration configuration)
+        public ProcessEligibilityRequest(ILogger<ProcessEligibilityRequest> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
             _ApiUrl = _configuration["ApiUrl"].ToString();
             _XApiKey = _configuration["XApiKey"].ToString();
         }
@@ -28,17 +30,14 @@ namespace ProcessEligibilityRequest.Func
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
-            _logger.LogInformation($"ProcessEligibilityRequest--> Message ID: {message.MessageId}");
-            _logger.LogInformation($"ProcessEligibilityRequest--> Message Body: {message.Body}");
-            _logger.LogInformation($"ProcessEligibilityRequest--> Message Content-Type: {message.ContentType}");
+            _logger.LogInformation("ProcessEligibilityRequest--> Message ID: {MessageId}", message.MessageId);
 
             var eligilibilityModel = null as Eligibility270Request;
 
             try
             {
                 eligilibilityModel = JsonSerializer.Deserialize<Eligibility270Request>(message.Body.ToString());
-                _logger.LogInformation("Raw ServiceBus Body: {Body}", message.Body.ToString());
-                HttpClient httpClient = new HttpClient();
+                var httpClient = _httpClientFactory.CreateClient();
 
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -68,7 +67,7 @@ namespace ProcessEligibilityRequest.Func
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ProcessEligibilityRequest--> Error processing eligibility request: {ex.Message}");
+                _logger.LogError(ex, "ProcessEligibilityRequest--> Error processing eligibility request for message {MessageId}", message.MessageId);
                 throw;
             }
         }

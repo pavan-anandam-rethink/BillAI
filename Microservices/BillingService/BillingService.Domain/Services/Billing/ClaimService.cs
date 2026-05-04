@@ -1865,7 +1865,7 @@ namespace BillingService.Domain.Services.Billing
                 }
             }
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return resultList;
         }
@@ -2357,7 +2357,7 @@ namespace BillingService.Domain.Services.Billing
             {
                 claimTransactionData.Add(PrepareClaimTransaction(chargeEntryId.Id, ClaimTransactionType.billedAmount));
             }
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claim.Id;
         }
@@ -2488,7 +2488,7 @@ namespace BillingService.Domain.Services.Billing
                 }
             }
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claimErrors;
         }
@@ -2522,7 +2522,7 @@ namespace BillingService.Domain.Services.Billing
 
             await _claimRepository.CommitAsync();
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claimsIds;
         }
@@ -2560,7 +2560,7 @@ namespace BillingService.Domain.Services.Billing
             await _claimRepository.CommitAsync();
             int[] flags = flagIds.ToArray();
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return flags;
         }
@@ -2644,7 +2644,7 @@ namespace BillingService.Domain.Services.Billing
                 {
                     claimTransactionData.Add(PrepareClaimTransaction(claim.Id, ClaimTransactionType.submitClaim));
                 }
-                sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+                await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
             }
 
             return claims.Select(c => c.Id).ToArray();
@@ -2697,7 +2697,7 @@ namespace BillingService.Domain.Services.Billing
             await _claimRepository.CommitAsync();
             await _claimFlagTransactionRepository.CommitAsync();
             int[] unFlags = unFlagIds.ToArray();
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
 
             return unFlags;
@@ -2914,7 +2914,7 @@ namespace BillingService.Domain.Services.Billing
             }
             await _claimRepository.CommitAsync();
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claimIdentifiers;
         }
@@ -2956,7 +2956,7 @@ namespace BillingService.Domain.Services.Billing
                 await _bus.SendBatchAsync(Queues.RT_Billing_Queue_AppointmentBillingStatus, apptBillingStatus);
             }
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claimsIds;
         }
@@ -3066,7 +3066,7 @@ namespace BillingService.Domain.Services.Billing
             {
                 await _bus.SendBatchAsync(Queues.RT_Billing_Queue_AppointmentBillingStatus, apptBillingStatus);
             }
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claimIdentifiers;
         }
@@ -3152,7 +3152,7 @@ namespace BillingService.Domain.Services.Billing
                 }
             }
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claimIdentifiers;
         }
@@ -3291,7 +3291,7 @@ namespace BillingService.Domain.Services.Billing
                 }
             }
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
 
             return claimIdentifiers;
         }
@@ -3409,7 +3409,7 @@ namespace BillingService.Domain.Services.Billing
                 }
             }
 
-            sendMessage(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
+            await SendMessageAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
             return claimIdentifiers;
 
         }
@@ -4052,7 +4052,7 @@ namespace BillingService.Domain.Services.Billing
 
             return ResponsibilitySequenceType.Primary; // for old claims
         }
-        public async void sendMessage(string entityName, List<ClaimTransactionModel> claimTransaction)
+        public async Task SendMessageAsync(string entityName, List<ClaimTransactionModel> claimTransaction)
         {
 
             if (claimTransaction.Count != 0)

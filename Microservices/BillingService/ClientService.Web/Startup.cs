@@ -112,7 +112,8 @@ namespace ClientService.Web
             {
                 app.UseHttpsRedirection();
             }
-            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            var allowedOrigins = Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new[] { "https://localhost" };
+            app.UseCors(options => options.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader());
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

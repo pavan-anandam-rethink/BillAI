@@ -13,12 +13,14 @@ namespace ProcessClaimCreation.Func
     {
         private readonly ILogger<ProcessClaimCreation> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _apiUrl;
 
-        public ProcessClaimCreation(ILogger<ProcessClaimCreation> logger, IConfiguration configuration)
+        public ProcessClaimCreation(ILogger<ProcessClaimCreation> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
             _apiUrl = _configuration["ApiUrl"].ToString();
         }
 
@@ -28,28 +30,25 @@ namespace ProcessClaimCreation.Func
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
-            using (var client = new HttpClient())
-            {
-                client.Timeout = TimeSpan.FromMinutes(10);
-                client.BaseAddress = new Uri(_apiUrl);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("XApiKey", _configuration["XApiKey"].ToString());
+            var client = _httpClientFactory.CreateClient();
+            client.Timeout = TimeSpan.FromMinutes(10);
+            client.BaseAddress = new Uri(_apiUrl);
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("XApiKey", _configuration["XApiKey"].ToString());
 
-                ClaimCreateEnd claimCreateEnd = JsonConvert.DeserializeObject<ClaimCreateEnd>(message.Body.ToString());
-                StringContent content = new StringContent(JsonConvert.SerializeObject(claimCreateEnd), Encoding.UTF8, "application/json");
-                // HTTP POST
-                HttpResponseMessage response = await client.PostAsync("Claim/ProcessClaimCreation", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    await messageActions.CompleteMessageAsync(message);
-                }
-                else
-                {
-                    _logger.LogError($"HTTP request failed with status code {response.StatusCode}");
-                    _logger.LogInformation($"Request contents : {claimCreateEnd}");
-                    throw new ServiceBusException(response.StatusCode.ToString(), ServiceBusFailureReason.ServiceCommunicationProblem);
-                }
+            ClaimCreateEnd claimCreateEnd = JsonConvert.DeserializeObject<ClaimCreateEnd>(message.Body.ToString());
+            StringContent content = new StringContent(JsonConvert.SerializeObject(claimCreateEnd), Encoding.UTF8, "application/json");
+            // HTTP POST
+            HttpResponseMessage response = await client.PostAsync("Claim/ProcessClaimCreation", content);
+            if (response.IsSuccessStatusCode)
+            {
+                await messageActions.CompleteMessageAsync(message);
+            }
+            else
+            {
+                _logger.LogError("ProcessClaimCreation HTTP request failed with status code {StatusCode} for message {MessageId}", response.StatusCode, message.MessageId);
+                throw new ServiceBusException(response.StatusCode.ToString(), ServiceBusFailureReason.ServiceCommunicationProblem);
             }
         }
     }

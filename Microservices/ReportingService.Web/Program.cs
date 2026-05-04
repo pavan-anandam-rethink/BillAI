@@ -102,7 +102,8 @@ namespace ReportingService.Web
                             c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReportingService.Web v1");
                         });
                         app.UseHttpsRedirection();
-                        app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+                        var allowedOrigins = hostContext.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new[] { "https://localhost" };
+                        app.UseCors(options => options.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
                         app.UseRouting();
                         app.UseAuthentication();
                         app.UseAuthorization();

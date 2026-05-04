@@ -60,7 +60,8 @@ builder.Logging.AddAppInsightLogger(config);
 
 var app = builder.Build();
 
-app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+var allowedOrigins = config.GetSection("AllowedOrigins").Get<string[]>() ?? new[] { "https://localhost" };
+app.UseCors(options => options.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader());
 
 app.UseSwagger();
 app.UseSwaggerUI();

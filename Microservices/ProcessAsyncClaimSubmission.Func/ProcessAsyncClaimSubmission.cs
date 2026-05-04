@@ -47,8 +47,7 @@ public class ProcessAsyncClaimSubmission
         var model = new ClaimProcessRequestModel();
         try
         {
-            _logger.LogInformation($"ProcessAsyncClaimApproval--> Message ID: {message.MessageId}");
-            _logger.LogWarning($"ProcessAsyncClaimApproval--> Message Body: {message.Body.ToString()}"); // Log the message body for debugging
+            _logger.LogInformation("ProcessAsyncClaimApproval--> Message ID: {MessageId}", message.MessageId);
 
             claim = JsonSerializer.Deserialize<ClaimApproveRequestModel>(message.Body.ToString());
             if (claim == null || claim.RequestModel == null)
@@ -74,14 +73,14 @@ public class ProcessAsyncClaimSubmission
             var apiResponse = await CallWithRetry(() => _apiClient.CallClaimApprovalApi(claim.RequestModel), MaxRetryAttempts, "ProcessAsyncClaimApproval");
 
             // Log ClaimApproval API response
-            _logger.LogInformation($"ProcessAsyncClaimApproval--> ApproveClaim API response for claim {claim.RequestModel.Ids.First()}: {apiResponse.StatusCode}");
+            _logger.LogInformation("ProcessAsyncClaimApproval--> ApproveClaim API response for claim {ClaimId}: {StatusCode}", claim.RequestModel.Ids.FirstOrDefault(), apiResponse.StatusCode);
 
             // Notify frontend via Pusher API
             model.ClaimStatus = apiResponse.IsSuccessStatusCode ? "Approved" : "Rejected";
             await _apiClient.CallPusherNotificationApi(model, apiResponse);
 
             // Log Pusher API response
-            _logger.LogInformation($"ProcessAsyncClaimApproval--> Pusher API notification sent for claim {claim.RequestModel.Ids.First()}");
+            _logger.LogInformation("ProcessAsyncClaimApproval--> Pusher API notification sent for claim {ClaimId}", claim.RequestModel.Ids.FirstOrDefault());
 
             // Complete message
             await messageActions.CompleteMessageAsync(message);
@@ -108,8 +107,7 @@ public class ProcessAsyncClaimSubmission
         var claim = null as ClaimProcessRequestModel;
         try
         {
-            _logger.LogInformation($"ProcessAsyncClaimSubmission--> Message ID: {message.MessageId}");
-            _logger.LogWarning($"ProcessAsyncClaimSubmission--> Message Body: {message.Body.ToString()}"); // Log the message body for debugging
+            _logger.LogInformation("ProcessAsyncClaimSubmission--> Message ID: {MessageId}", message.MessageId);
 
             claim = JsonSerializer.Deserialize<ClaimProcessRequestModel>(message.Body.ToString());
 
@@ -117,14 +115,14 @@ public class ProcessAsyncClaimSubmission
             var apiResponse = await CallWithRetry(() => _apiClient.CallClaimProcessingApi(claim.RequestModel), MaxRetryAttempts, nameof(ProcessAsyncClaimSubmission));
 
             // Log ClaimSubmission API response
-            _logger.LogInformation($"ProcessAsyncClaimSubmission--> Claim Processing API response for claim {claim.RequestModel.Ids.First()}: {apiResponse.StatusCode}");
+            _logger.LogInformation("ProcessAsyncClaimSubmission--> Claim Processing API response for claim {ClaimId}: {StatusCode}", claim.RequestModel.Ids.FirstOrDefault(), apiResponse.StatusCode);
 
             // Notify frontend via Pusher API
             claim.ClaimStatus = apiResponse.IsSuccessStatusCode ? "Success" : "Failure";
             await _apiClient.CallPusherNotificationApi(claim, apiResponse);
 
             // Log Pusher API response
-            _logger.LogInformation($"ProcessAsyncClaimSubmission--> Pusher API notification sent for claim {claim.RequestModel.Ids.First()}");
+            _logger.LogInformation("ProcessAsyncClaimSubmission--> Pusher API notification sent for claim {ClaimId}", claim.RequestModel.Ids.FirstOrDefault());
 
             // Complete message
             await messageActions.CompleteMessageAsync(message);
@@ -165,8 +163,8 @@ public class ProcessAsyncClaimSubmission
             catch (Exception ex) when (retryCount < maxRetries)
             {
                 retryCount++;
-                _logger.LogWarning($"{functionName}-- > Retry {retryCount}/{maxRetries} due to {ex.Message}");
-                await Task.Delay(InitialDelayMilliseconds);
+                _logger.LogWarning("{FunctionName} --> Retry {RetryCount}/{MaxRetries} due to: {ErrorMessage}", functionName, retryCount, maxRetries, ex.Message);
+                await Task.Delay(delay);
                 delay *= 2; // exponential backoff
             }
         }

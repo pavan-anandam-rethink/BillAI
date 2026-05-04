@@ -14,12 +14,14 @@ namespace ClaimSubmission.Func
     {
         private readonly ILogger<ClaimSubmission> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _ApiUrl;
         private readonly string _XApiKey;
-        public ClaimSubmission(ILogger<ClaimSubmission> logger, IConfiguration configuration)
+        public ClaimSubmission(ILogger<ClaimSubmission> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
             _ApiUrl = _configuration["ApiUrl"].ToString();
             _XApiKey = _configuration["XApiKey"].ToString();
 
@@ -32,12 +34,11 @@ namespace ClaimSubmission.Func
             ServiceBusMessageActions messageActions)
         {
             _logger.LogInformation("Message ID: {id}", message.MessageId);
-            _logger.LogInformation("Message Body: {body}", message.Body);
             _logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);
 
             var str = message.Body.ToString();
             ClearingHouseClaimModel claimDetails = JsonConvert.DeserializeObject<ClearingHouseClaimModel>(str.ToString());
-            HttpClient httpClient = new HttpClient();
+            var httpClient = _httpClientFactory.CreateClient();
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -45,24 +46,15 @@ namespace ClaimSubmission.Func
 
             using (var content = new StringContent(JsonConvert.SerializeObject(claimDetails), Encoding.UTF8, "application/json"))
             {
-                try
+                HttpResponseMessage result = await httpClient.PostAsync(_ApiUrl, content);
+                if (result.StatusCode == HttpStatusCode.OK)
                 {
-                    HttpResponseMessage result = httpClient.PostAsync(_ApiUrl, content).Result;
-                    {
-                        if (result.StatusCode == HttpStatusCode.OK)
-                        {
-                            await messageActions.CompleteMessageAsync(message);
-                        }
-                        else
-                        {
-                            throw new ServiceBusException(result.StatusCode.ToString(), ServiceBusFailureReason.ServiceCommunicationProblem);
-                        }
-
-                    }
+                    await messageActions.CompleteMessageAsync(message);
                 }
-                catch (ServiceBusException ex)
+                else
                 {
-                    throw new Exception("Not Found" + ex.Message.ToString());
+                    _logger.LogError("ClaimSubmission failed with status {StatusCode} for message {MessageId}", result.StatusCode, message.MessageId);
+                    throw new ServiceBusException(result.StatusCode.ToString(), ServiceBusFailureReason.ServiceCommunicationProblem);
                 }
             }
         }

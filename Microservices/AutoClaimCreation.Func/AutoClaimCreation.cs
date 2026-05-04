@@ -31,9 +31,8 @@ namespace AutoClaimCreation.Func
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
-            _logger.LogInformation($"AutoClaimCreation initialized for Appointment: {message.Body.ToString()}");
-            using (var client = new HttpClient())
-            {
+            _logger.LogInformation("AutoClaimCreation initialized for Appointment with message {MessageId}", message.MessageId);
+            var client = _httpClientFactory.CreateClient();
                 client.BaseAddress = new Uri(_apiUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -55,7 +54,6 @@ namespace AutoClaimCreation.Func
                                      $"for Appointment: {autoClaimRequest?.appointmentId}, Account: {autoClaimRequest?.accountId}");
                     throw new ServiceBusException(response.StatusCode.ToString(), ServiceBusFailureReason.ServiceCommunicationProblem);
                 }
-            }
         }
 
 

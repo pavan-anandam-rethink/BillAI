@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Rethink.Services.Common.Messaging;
 using Rethink.Services.Domain.Interfaces;
@@ -127,7 +128,8 @@ namespace BillingService.Web
             }
             //app.UseDeveloperExceptionPage();
 
-            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            var allowedOrigins = Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new[] { "https://localhost" };
+            app.UseCors(options => options.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -161,7 +163,12 @@ namespace BillingService.Web
                 var billingBlobService = app.ApplicationServices.GetRequiredService<IBillingBlobService>();
                 billingBlobService.CreateBlobContainerAsync();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Log blob container creation failure so configuration issues are not silently hidden
+                var logger = app.ApplicationServices.GetService<ILoggerFactory>()?.CreateLogger<Startup>();
+                logger?.LogWarning(ex, "Failed to create blob container during startup. This may indicate a configuration issue.");
+            }
         }
     }
 }

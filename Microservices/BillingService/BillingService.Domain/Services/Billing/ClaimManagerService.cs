@@ -652,7 +652,7 @@ namespace BillingService.Domain.Services.Billing
                                                 claimSubmission.ReferringProviderLastName).Trim(' ').Trim(',');
             hcfa.ReferringProviderNPI = claimSubmission.ReferringProviderNpiNumber;
 
-            MapHcfaAdress(hcfa, claim, claimSubmission);
+            await MapHcfaAdressAsync(hcfa, claim, claimSubmission);
 
             if (nextFunderSequence != null)
             {
@@ -1272,7 +1272,7 @@ namespace BillingService.Domain.Services.Billing
             }
         }
 
-        private async void MapHcfaAdress(ClaimHFCAModel hcfa, ClaimEntity claim, ClaimSubmissionEntity claimSubmission)
+        private async Task MapHcfaAdressAsync(ClaimHFCAModel hcfa, ClaimEntity claim, ClaimSubmissionEntity claimSubmission)
         {
             var billingProviderIsIndividual = hcfa.ServiceLineBillingProviderOption == BillingProviderOptionType.Individual;
             var isIndividualAndGroup = hcfa.ServiceLineBillingProviderOption == BillingProviderOptionType.GroupAndIndividual;
