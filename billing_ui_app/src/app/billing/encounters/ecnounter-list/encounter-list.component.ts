@@ -1339,7 +1339,6 @@ export class EncounterListComponent
       this.cdr.detectChanges();
       // Ensure scroll is at top when switching to ALL
       this.resetGridScrollTop();
-      // Prefetch listeners are set up after initial load in loadClaimHeadersForVirtualScroll
 
       localStorage.setItem('lastPageSize', '0');
       this.gatClaimsTabData = true;

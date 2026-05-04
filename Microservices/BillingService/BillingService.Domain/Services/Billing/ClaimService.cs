@@ -2185,7 +2185,7 @@ namespace BillingService.Domain.Services.Billing
                 if (firstClaimDiagnosisCode != null)
                 {
                     var diagnosisCodes = clientDiagnoses?.FirstOrDefault(x => x.diagnosisId == firstClaimDiagnosisCode.DiagnosisId);
-                    DiagnosisEntityModel diagnosisEntity;
+                    DiagnosisEntityModel diagnosisEntity = null;
                     if (diagnosisCodes != null)
                     {
                         diagnosisEntity = new DiagnosisEntityModel()
@@ -2197,13 +2197,19 @@ namespace BillingService.Domain.Services.Billing
                     else
                     {
                         var diagnosisCode = await _rethinkServices.GetDiagnosisById(firstClaimDiagnosisCode.DiagnosisId);
-                        diagnosisEntity = new DiagnosisEntityModel()
+                        if (diagnosisCode != null)
                         {
-                            Id = diagnosisCode.id,
-                            DiagnosisCode = diagnosisCode.diagnosisCode
-                        };
+                            diagnosisEntity = new DiagnosisEntityModel()
+                            {
+                                Id = diagnosisCode.id,
+                                DiagnosisCode = diagnosisCode.diagnosisCode
+                            };
+                        }
                     }
-                    claimChargeEntry.DiagnosisCode = diagnosisEntity.DiagnosisCode;
+                    if (diagnosisEntity != null)
+                    {
+                        claimChargeEntry.DiagnosisCode = diagnosisEntity.DiagnosisCode;
+                    }
                 }
 
                 MarkCreated(claimChargeEntry, model.MemberId);
