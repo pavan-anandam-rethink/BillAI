@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Polly.CircuitBreaker;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -29,15 +28,13 @@ internal sealed class ResilienceDelegatingHandler : DelegatingHandler
     {
         if (_circuitOpenUntil > DateTimeOffset.UtcNow)
         {
-            throw new BrokenCircuitException($"Outbound circuit open until {_circuitOpenUntil:O}");
+            throw new HttpRequestException($"Outbound circuit open until {_circuitOpenUntil:O}");
         }
 
         var dependency = request.RequestUri?.Host ?? "unknown";
         var method = request.Method.Method;
         var attempt = 0;
         Exception lastException = null;
-        HttpResponseMessage lastResponse = null;
-
         while (attempt <= MaxRetries)
         {
             var sw = Stopwatch.StartNew();
@@ -94,11 +91,6 @@ internal sealed class ResilienceDelegatingHandler : DelegatingHandler
             _circuitOpenUntil = DateTimeOffset.UtcNow.Add(CircuitBreakDuration);
             Interlocked.Exchange(ref _consecutiveFailures, 0);
             _logger.LogWarning("Outbound circuit opened for {Seconds}s", CircuitBreakDuration.TotalSeconds);
-        }
-
-        if (lastResponse != null)
-        {
-            return lastResponse;
         }
 
         throw lastException ?? new HttpRequestException("Outbound dependency call failed.");

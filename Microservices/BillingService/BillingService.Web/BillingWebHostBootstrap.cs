@@ -28,6 +28,7 @@ public static class BillingWebHostBootstrap
         var configuration = builder.Configuration;
         var services = builder.Services;
         services.AddSingleton<DbCommandMetricsListener>();
+        services.AddHostedService(sp => sp.GetRequiredService<DbCommandMetricsListener>());
 
         var billingConnTask = IoCContainer.GetDBConnectionStringAsync(configuration, "Database", kv);
         var reportingConnTask = IoCContainer.GetDBConnectionStringAsync(configuration, "ReportingDB", kv);
