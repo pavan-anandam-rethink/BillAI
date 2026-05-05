@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>annotations</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>..\..</DockerfileContext>
+        <UserSecretsId>25ec7201-b679-4984-9e3a-3263a8d9b438</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Authentication\Authentication.csproj" />
+      <ProjectReference Include="..\BillingService.Domain\BillingService.Domain.csproj" />
+      <ProjectReference Include="..\Rethink.Billing.FolderStructure.Core\Billing.FolderStructure.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AspNetCore.HealthChecks.Azure.Storage.Blobs" Version="8.0.1" />
+      <PackageReference Include="AspNetCore.HealthChecks.AzureApplicationInsights" Version="8.0.1" />
+      <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" Version="8.0.1" />
+      <PackageReference Include="AspNetCore.HealthChecks.AzureServiceBus" Version="8.0.1" />
+      <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="7.0.0" />
+      <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
+      <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="8.0.2" />
+      <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
+      <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
+      <PackageReference Include="Azure.Identity" Version="1.14.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+      <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+      <PackageReference Include="PuppeteerSharp" Version="20.0.0" />
+      <PackageReference Include="PusherServer-net8-fork" Version="8.0.0" />
+      <PackageReference Include="RethinkCore.Common.Logging" Version="8.0.0-alpha.20240328.44373" />
+      <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="bin\**" />
+		<Compile Remove="obj\**" />
+		<Compile Remove="Properties\PublishProfiles\**" />
+		<Compile Remove="Properties\ServiceDependencies\**" />
+		<Content Remove="bin\**" />
+		<Content Remove="obj\**" />
+		<Content Remove="Properties\PublishProfiles\**" />
+		<Content Remove="Properties\ServiceDependencies\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<EmbeddedResource Remove="obj\**" />
+		<EmbeddedResource Remove="Properties\PublishProfiles\**" />
+		<EmbeddedResource Remove="Properties\ServiceDependencies\**" />
+		<None Remove="bin\**" />
+		<None Remove="obj\**" />
+		<None Remove="Properties\PublishProfiles\**" />
+		<None Remove="Properties\ServiceDependencies\**" />
+		<_WebToolingArtifacts Remove="Properties\PublishProfiles\**" />
+		<_WebToolingArtifacts Remove="Properties\ServiceDependencies\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+</Project>

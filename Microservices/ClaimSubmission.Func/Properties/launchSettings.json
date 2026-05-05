@@ -1,0 +1,29 @@
+{
+  "profiles": {
+    "ClaimSubmission.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7037",
+      "launchBrowser": false
+    },
+    "Development.ClaimSubmission.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7037",
+      "launchBrowser": false
+    },
+    "QA.ClaimSubmission.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7037",
+      "launchBrowser": false
+    },
+    "Production.ClaimSubmission.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7037",
+      "launchBrowser": false
+    },
+    "Staging.ClaimSubmission.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7037",
+      "launchBrowser": false
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+
+    "SftpApiUrl": "https://rta-billing-prd-app-ch-svc.graysmoke-c0bdd691.eastus2.azurecontainerapps.io/api/ClearingHouseProcessor/downloadEdiDataFromSftp",
+    "SftpXApiKey": "A1A32167-18BB-4A05-BB3B-0F97BDEBFF30",
+    "AvailityTimerSchedule": "0 */15 * * * *",
+    "StediTimerSchedule": "0 5-59/15 * * * *",
+    "AvailityClearingHouseId": "1",
+    "StediClearingHouseId": "8",
+
+    "ReportApiUrl": "https://rta-billing-prd-app-claim-svc.graysmoke-c0bdd691.eastus2.azurecontainerapps.io/",
+    "ReportXApiKey": "6F0D7BB1-93E9-49BE-987B-1EF92436D7F9",
+    "WeeklyTimerSchedule": "0 0 0 * * 5",
+    "MonthlyTimerSchedule": "0 0 0 1 * *"
+  }
+}

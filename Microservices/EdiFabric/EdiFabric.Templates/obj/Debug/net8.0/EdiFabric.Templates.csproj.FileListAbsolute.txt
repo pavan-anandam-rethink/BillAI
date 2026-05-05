@@ -1,0 +1,13 @@
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\bin\Debug\net8.0\EdiFabric.Templates.deps.json
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\bin\Debug\net8.0\EdiFabric.Templates.dll
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\bin\Debug\net8.0\EdiFabric.Templates.pdb
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.csproj.AssemblyReference.cache
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.AssemblyInfoInputs.cache
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.AssemblyInfo.cs
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.csproj.CoreCompileInputs.cache
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.sourcelink.json
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.dll
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\refint\EdiFabric.Templates.dll
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\EdiFabric.Templates.pdb
+C:\Users\PavankumarAnandam(te\source\repos\Billing\Rethink.BH.BillingSystem.Platform\Microservices\EdiFabric\EdiFabric.Templates\obj\Debug\net8.0\ref\EdiFabric.Templates.dll

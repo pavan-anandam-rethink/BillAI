@@ -1,0 +1,11 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "ServiceBusConnectionString": "Endpoint=sb://rta-billing-prd-sbns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ni26T22QDYwsR3dlqJAOMbkRLikBlzN7V+ASbIHb8yA=;",
+        "QueueName": "rt-billing-queue-clearinghouse-claim-submission",
+        "ApiUrl": "https://rta-billing-prd-app-ch-svc.graysmoke-c0bdd691.eastus2.azurecontainerapps.io/api/ClearingHouseProcessor/uploadEdiDataToSftp",
+        "XApiKey": "A1A32167-18BB-4A05-BB3B-0F97BDEBFF30"
+    }
+}

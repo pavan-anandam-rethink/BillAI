@@ -1,0 +1,11 @@
+﻿{
+    "IsEncrypted": false,
+    "Values": {
+        "ApiUrl": "https://rta-billing-dev-app-agg-svc.agreeableforest-1d2b8eb2.eastus2.azurecontainerapps.io",
+        "TopicName": "rt-billing-processclaimtxn",
+        "AzureWebJobsStorage": "",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "ServiceBusConnectionString": "Endpoint=sb://rta-billing-dev-sbns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=/O5G9mfW+Fq7rAIcAxxqHKL6IeMP70FDn+ASbN68FDY=;",
+        "XApiKey": "CCFBB9DC-07A0-4995-AA60-E23672EA5FC5"
+    }
+}

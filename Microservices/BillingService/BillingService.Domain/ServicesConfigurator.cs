@@ -1,0 +1,111 @@
+﻿using Billing.FolderStructure.Core.Utils;
+using BillingService.Domain.Interfaces;
+using BillingService.Domain.Interfaces.Billing;
+using BillingService.Domain.Interfaces.Billing.ChangeTracking;
+using BillingService.Domain.Interfaces.BillingSettings;
+using BillingService.Domain.Interfaces.Client;
+using BillingService.Domain.Interfaces.Common;
+using BillingService.Domain.Interfaces.Files;
+using BillingService.Domain.Interfaces.FunderSetting;
+using BillingService.Domain.Interfaces.History;
+using BillingService.Domain.Interfaces.PatientInvoice;
+using BillingService.Domain.Interfaces.Payment;
+using BillingService.Domain.Interfaces.Provider;
+using BillingService.Domain.Services;
+using BillingService.Domain.Services.Billing;
+using BillingService.Domain.Services.Billing.ChangeTracking;
+using BillingService.Domain.Services.BillingSetting;
+using BillingService.Domain.Services.Client;
+using BillingService.Domain.Services.Common;
+using BillingService.Domain.Services.Files;
+using BillingService.Domain.Services.FunderSetting;
+using BillingService.Domain.Services.History;
+using BillingService.Domain.Services.PatientInvoice;
+using BillingService.Domain.Services.Payment;
+using BillingService.Domain.Services.Provider;
+using BillingService.Domain.Services.RethinkMasterDataMicroservices;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Rethink.Services.Common.Cache;
+using Rethink.Services.Common.Cache.Memory;
+using Rethink.Services.Common.Cache.Redis;
+using Rethink.Services.Common.Interfaces;
+using Rethink.Services.Common.Utils;
+using Rethink.Services.Domain.Interfaces;
+using Rethink.Services.Domain.Services;
+using SummationService.Domain.Interfaces;
+using SummationService.Domain.Services;
+
+namespace BillingService.Domain
+{
+    public class ServicesConfigurator
+    {
+        public static void Register(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped(typeof(IDbHelper<>), typeof(DbHelper<>));
+
+            services.AddScoped<IRazorViewService, RazorViewService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IChargeEntryService, ChargeEntryService>();
+            services.AddScoped<IChargePaymentService, ChargePaymentService>();
+            services.AddScoped<IClaimAttachmentService, ClaimAttachmentService>();
+            services.AddScoped<IFunderService, FunderService>();
+            services.AddScoped<ILocationCodeService, LocationCodeService>();
+            services.AddScoped<IMemberAccountService, MemberAccountService>();
+            services.AddScoped<IProviderBillingCodeService, ProviderBillingCodeService>();
+            services.AddScoped<IProviderLocationService, ProviderLocationService>();
+            services.AddScoped<IClaimService, ClaimService>();
+            services.AddScoped<IClientChargeHistoryService, ClientChargeHistoryService>();
+            services.AddScoped<IClaimManagerService, ClaimManagerService>();
+            services.AddScoped<IPaymentPostingService, PaymentPostingService>();
+            services.AddScoped<IPaymentClaimService, PaymentClaimService>();
+            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<IChildProfileService, ChildProfileService>();
+            services.AddScoped<IPaymentServiceLineAdjustmentService, PaymentServiceLineAdjustmentService>();
+            services.AddScoped<IStediProviderEnrollmentService, StediProviderEnrollmentService>();
+            services.AddScoped<IBulkPaymentPostingService, BulkPaymentPostingService>();
+            services.AddScoped<IPaymentAttachmentService, PaymentAttachmentService>();
+            services.AddScoped<IClaimNoteService, ClaimNoteService>();
+            services.AddScoped<IPaymentNoteService, PaymentNoteService>();
+            services.AddScoped<IWriteOffService, WriteOffService>();
+            services.AddScoped<IClaimHistoryService, ClaimHistoryService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IFileManagerService, BlobManagerService>();
+            services.AddScoped<IEdiFilesDownload, EdiFilesDownload>();
+            services.AddScoped<IBillingFilePath, BillingFilePath>();
+            services.AddScoped<IClearingHouseService, ClearingHouseService>();
+            services.AddScoped<IClearinghouseCredentialValidationService, ClearinghouseCredentialValidationService>();
+            services.AddScoped<IMessageBus, MessageBus>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IClaimChangeTrackingService, ClaimChangeTrackingService>();
+            services.AddScoped<IClaimVersionService, ClaimVersionService>();
+            services.AddScoped<IClaimCreateService, ClaimCreateService>();
+            services.AddScoped<IClaimSyncService, ClaimSyncService>();
+            services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IHelperService, HelperService>();
+            services.AddScoped<IClaimUpdateService, ClaimUpdateService>();
+            services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<ICommonService, CommonService>();
+            services.AddScoped<IProviderService, ProviderService>();
+            services.AddScoped<IRethinkMasterDataMicroServices, RethinkMasterDataMicroServices>();
+            services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+            services.AddScoped<IClaimValidationService, ClaimValidationService>();
+            services.AddScoped<ICHService, CHService>();
+            services.AddScoped<IClaimSearchService, ClaimSearchService>();
+            services.AddScoped<IHelperService, HelperService>();
+            services.AddScoped<IPatientInvoiceService, PatientInvoiceService>();
+            services.AddScoped<IPdfService, PdfService>();
+            services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<ICacheManager, RedisCacheManager>();
+            services.AddScoped<IRedisCacheManager, RedisCacheManager>();
+            services.AddScoped<ICacheManager, MemoryCacheManager>();
+            services.AddScoped<IMemoryCacheManager, MemoryCacheManager>();
+            services.AddScoped<IClientInfoService, ClientInfoService>();
+            services.AddScoped<IAppointmentReportService, AppointmentReportService>();
+            services.AddScoped<IEligibility271ResponseService, Eligibility271ResponseService>();
+            services.AddScoped<IBillingSettingsService, BillingSettingsService>();
+            services.AddScoped<IAuditService, AuditService>();
+            services.AddScoped<IFunderSettingService, FunderSettingService>();
+        }
+    }
+}

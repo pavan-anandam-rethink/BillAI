@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "3O5dVlX4XnfNU/ql9WEiwweeEZYD2diKpXIBwoETqw4=",
+  "Source": "LoginService.Web",
+  "BasePath": "_content/LoginService.Web",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

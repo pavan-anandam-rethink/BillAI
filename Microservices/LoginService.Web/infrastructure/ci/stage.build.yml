@@ -1,0 +1,23 @@
+stages:
+ - stage: Build
+   jobs:
+   - job: Build
+     displayName: Build
+     steps:
+     - script: |
+        pwd
+        ls -lrt
+        echo $(password) | docker login --username $(login) --password-stdin https://$(container)
+        echo "Tag Build: $(TagBuild)"
+        echo "Tag Latest: $(TagLatest)"
+        docker build --no-cache --build-arg ENVIRONMENT=$(Environment) --build-arg ACCESS_TOKEN=$PAT -f $(dockerfilePath) -t $(TagBuild) -t $(TagLatest) .
+        docker image tag $(TagBuild) $(container)/$(TagBuild)
+        docker image tag $(TagBuild) $(container)/$(TagLatest)
+       env:
+        PAT: $(System.AccessToken)
+       displayName: Build 
+
+     - script: |
+        docker push $(container)/$(TagBuild)
+        docker push $(container)/$(TagLatest)
+       displayName: Push to registry

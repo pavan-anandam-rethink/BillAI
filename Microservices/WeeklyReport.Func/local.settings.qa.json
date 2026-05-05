@@ -1,0 +1,10 @@
+﻿{
+    "IsEncrypted": false,
+    "Values": {
+        "ApiUrl": "https://rta-billing-qa-app-claim-svc.bravewave-07ceb928.eastus2.azurecontainerapps.io/",
+        "TimerSchedule": "0 0 0 * * 5",
+        "AzureWebJobsStorage": "",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "XApiKey": "86D1AB62-606F-46AC-94E7-35390F8A5379"
+    }
+}

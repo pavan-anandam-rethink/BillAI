@@ -1,0 +1,29 @@
+{
+  "profiles": {
+    "ProcessClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7263",
+      "launchBrowser": false
+    },
+    "Development.ProcessClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7263",
+      "launchBrowser": false
+    },
+    "Staging.ProcessClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7263",
+      "launchBrowser": false
+    },
+    "Production.ProcessClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7263",
+      "launchBrowser": false
+    },
+    "QA.ProcessClaimCreation.Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7263",
+      "launchBrowser": false
+    }
+  }
+}

@@ -1,0 +1,6 @@
+@LoginService.Web_HostAddress = http://localhost:5073
+
+GET {{LoginService.Web_HostAddress}}/sso/
+Accept: application/json
+
+###

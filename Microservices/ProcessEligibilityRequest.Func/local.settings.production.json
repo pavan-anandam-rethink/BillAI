@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "ApiUrl": "https://rta-billing-prd-app-ch-svc.graysmoke-c0bdd691.eastus2.azurecontainerapps.io/ClearingHouse270FileGenerator/upload270EdiData",
+    "TopicName": "eligibility-request-topic",
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "ServiceBusConnectionString": "Endpoint=sb://rta-billing-prd-sbns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ni26T22QDYwsR3dlqJAOMbkRLikBlzN7V+ASbIHb8yA=;EndpointSuffix=core.windows.net",
+    "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=d034e900-2663-4ab8-95a6-10abefa4c8c3;IngestionEndpoint=https://eastus2-3.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus2.livediagnostics.monitor.azure.com/;ApplicationId=fa2f1ece-0dfe-455a-bd0c-2d0779c42062",
+    "XApiKey": "A1A32167-18BB-4A05-BB3B-0F97BDEBFF30"
+  }
+}
