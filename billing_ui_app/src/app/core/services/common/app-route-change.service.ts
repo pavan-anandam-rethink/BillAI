@@ -1,8 +1,6 @@
 ﻿import { EventEmitter, Injectable } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { of }  from 'rxjs/internal/observable/of';
-import { Observable } from 'rxjs/internal/Observable';
+import { BehaviorSubject, of, Observable } from 'rxjs';
 import { filter, mergeMap, startWith } from 'rxjs/operators';
 
 @Injectable({

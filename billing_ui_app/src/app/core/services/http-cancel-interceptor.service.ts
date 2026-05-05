@@ -1,5 +1,5 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable }  from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpCancelService } from './http-cancel.service';
 import { takeUntil, tap }  from 'rxjs/operators';

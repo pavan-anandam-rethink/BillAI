@@ -1,7 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable }  from 'rxjs/internal/Observable';
-import { BehaviorSubject }  from 'rxjs/internal/BehaviorSubject';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpService } from '@core/services/http.service'
 
 @Injectable({

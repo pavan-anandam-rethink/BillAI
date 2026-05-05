@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 
 import { HttpService } from '../http.service';
 import { KareoSettings } from '@core/models/company-account';

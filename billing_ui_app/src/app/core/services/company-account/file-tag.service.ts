@@ -3,7 +3,7 @@ import { FileTagsToFiles } from '@core/models/common/file-cabinet/file-tags-to-f
 import { FileTag } from '@core/models/common/file-tag/file-tag';
 import { AccountPermissions } from '@core/enums/account';
 import { DayPilot } from 'daypilot-pro-angular';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { filter, finalize, map, shareReplay } from 'rxjs/operators';
 import { AccountMemberService } from '@core/services/account/account-member.service';
 import { LoaderService } from '../common';

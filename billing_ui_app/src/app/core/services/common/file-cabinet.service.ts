@@ -1,12 +1,10 @@
 ﻿import { EventEmitter, Injectable } from '@angular/core';
 import { FileCabinet, Folder, MemberFile, RequestResult } from '@core/models/common';
-import { BehaviorSubject }  from 'rxjs/internal/BehaviorSubject';
-import { Observable }  from 'rxjs/internal/Observable';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FilesInfo, UploadFilesModel } from '../../models/common/file-cabinet';
 import { HttpService } from '../http.service';
 import { HttpResponse } from '@angular/common/http';
-import { combineLatest }  from 'rxjs/internal/observable/combineLatest';
 
 @Injectable({
     providedIn: 'root'

@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 
 import { HttpService } from '../http.service';
 import { AbcData, RequestError } from '@core/models/company-account';

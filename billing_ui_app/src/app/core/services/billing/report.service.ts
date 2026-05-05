@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Encounter } from '@core/models/billing/encounter';
-import { Subject } from 'rxjs/internal/Subject';
+import { Subject } from 'rxjs';
 import { HttpService } from '../http.service';
 import { RequestUserData } from '@core/utils/request-user-data';
 import { AccountMemberService } from '../account/account-member.service';

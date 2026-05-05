@@ -1,8 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 import { BasicOption } from '@core/models/common';
 import { HttpService } from '@core/services';
-import { BehaviorSubject }  from 'rxjs/internal/BehaviorSubject';
-import { Observable }  from 'rxjs/internal/Observable';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ClientOptionModel} from '@core/models/clients';
 import { ClaimCreateInfoGetModel, PlaceOfServiceServerModel ,} from '@core/models/billing';
 import { ClientFunderModel, FunderServiceLine } from '@core/models/company-account/funders/client-funder-model';

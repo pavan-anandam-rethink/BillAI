@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { Observable }  from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 
 import { HttpService } from '@core/services';
 import { CustomField } from '@core/models/common';

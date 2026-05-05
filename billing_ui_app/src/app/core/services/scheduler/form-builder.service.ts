@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpService } from '../http.service';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 
 declare var google: any;
 

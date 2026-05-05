@@ -4,7 +4,7 @@ import {DatePipe} from "@angular/common";
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ClaimHistoryListSearch } from '@core/models/billing/claim-history-list-search';
 import { HistoryFilterModels } from '../encounter-transaction/encounter-transaction.component';
-import { Subject } from 'rxjs/internal/Subject';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'claim-history-list-filter',

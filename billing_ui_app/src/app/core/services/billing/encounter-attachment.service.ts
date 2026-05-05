@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpService } from '../http.service';
 import { ClaimAttachment } from '@core/models/billing';
