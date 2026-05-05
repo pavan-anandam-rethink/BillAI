@@ -2,6 +2,7 @@
 using PusherServer;
 using Rethink.Services.Domain.Interfaces;
 using System.Threading.Tasks;
+using System;
 
 namespace BillingService.Web.Servers
 {
@@ -16,9 +17,13 @@ namespace BillingService.Web.Servers
                 Cluster = config["Pusher:Cluster"],
                 Encrypted = true
             };
-            var appId = keyVaultProviderService.GetSecretAsync(config["Pusher:AppId"]).Result;
-            var key = keyVaultProviderService.GetSecretAsync(config["Pusher:Key"]).Result;
-            var secret = keyVaultProviderService.GetSecretAsync(config["Pusher:Secret"]).Result;
+            var appIdTask = keyVaultProviderService.GetSecretAsync(config["Pusher:AppId"]);
+            var keyTask = keyVaultProviderService.GetSecretAsync(config["Pusher:Key"]);
+            var secretTask = keyVaultProviderService.GetSecretAsync(config["Pusher:Secret"]);
+            Task.WhenAll(appIdTask, keyTask, secretTask).GetAwaiter().GetResult();
+            var appId = appIdTask.GetAwaiter().GetResult();
+            var key = keyTask.GetAwaiter().GetResult();
+            var secret = secretTask.GetAwaiter().GetResult();
 
             _pusher = new Pusher(
                 appId,

@@ -279,7 +279,7 @@ namespace BillingService.Web.Controllers
 
                 // Check if call the new ClaimProcessing Endpoint of old one
                 var key = _configuration["UseNewClaimProcessing"];
-                var getDataFromKv = string.IsNullOrEmpty(key) ? string.Empty : _keyVaultProviderService.GetSecretAsync(key).Result;
+                var getDataFromKv = string.IsNullOrEmpty(key) ? string.Empty : await _keyVaultProviderService.GetSecretAsync(key).ConfigureAwait(false);
                 var useNewClaimProcessing = getDataFromKv.Length > 0 ? Convert.ToBoolean(getDataFromKv) : false;
 
                 // get the data from the service
@@ -1409,10 +1409,13 @@ namespace BillingService.Web.Controllers
                     nameof(ClaimController),
                     nameof(GetGridPageSizes));
 
-                var pageSizesSecret = _keyVaultProviderService.GetSecretAsync(_configuration["GridPageSizes"]).Result;
+                var pageSizesTask = _keyVaultProviderService.GetSecretAsync(_configuration["GridPageSizes"]);
+                var defaultPageSizeTask = _keyVaultProviderService.GetSecretAsync(_configuration["DefaultPageSize"]);
+                await Task.WhenAll(pageSizesTask, defaultPageSizeTask).ConfigureAwait(false);
+                var pageSizesSecret = await pageSizesTask.ConfigureAwait(false);
                 var pageSizes = JsonSerializer.Deserialize<object[]>(pageSizesSecret);
 
-                var defaultPageSizeSecret = _keyVaultProviderService.GetSecretAsync(_configuration["DefaultPageSize"]).Result;
+                var defaultPageSizeSecret = await defaultPageSizeTask.ConfigureAwait(false);
                 var defaultPageSize = JsonSerializer.Deserialize<object>(defaultPageSizeSecret);
 
                 var response = new

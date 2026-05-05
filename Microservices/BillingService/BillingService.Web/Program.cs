@@ -1,4 +1,3 @@
-using BillingService.Web.Servers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,22 +40,17 @@ namespace BillingService.Web
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddSingleton<IKeyVaultProviderService, KeyVaultProviderService>();
-
-                    using var serviceProvider = services.BuildServiceProvider();
-                    var secretProvider = serviceProvider.GetRequiredService<IKeyVaultProviderService>();
-
+                    var keyVault = new KeyVaultProviderService(context.Configuration);
                     var appInsightsConnStringSecretKey =
                         context.Configuration["ApplicationInsights:APPLICATIONINSIGHTS_CONNECTION_STRING"];
 
                     var appInsightsConnectionString =
-                        secretProvider.GetSecretAsync(appInsightsConnStringSecretKey).Result;
+                        keyVault.GetSecretAsync(appInsightsConnStringSecretKey).GetAwaiter().GetResult();
                     services.AddApplicationInsightsTelemetry(options =>
                     {
                         options.ConnectionString = appInsightsConnectionString;
                     });
                     services.AddRethinkLogging(context.Configuration);
-                    services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

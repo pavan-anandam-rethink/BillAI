@@ -53,19 +53,16 @@ namespace BillingService.Web.IoC
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
         }
 
-        public static void RegisterRedisCache(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        public static async Task RegisterRedisCacheAsync(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
         {
-            services.AddSingleton<IConnectionMultiplexer>(sp =>
-            {
-                var redisConnectionString = keyVaultProviderService.GetSecretAsync(configuration["RedisCache:ConnectionString"]).Result; ;
-                return ConnectionMultiplexer.Connect(redisConnectionString);
-            });
+            var redisConnectionString = await keyVaultProviderService.GetSecretAsync(configuration["RedisCache:ConnectionString"]).ConfigureAwait(false);
+            services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisConnectionString));
         }
 
-        public static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        public static async Task RegisterHttpClientsAsync(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
         {
             services.AddHttpClient<IBaseHttpClient, BaseHttpClient>().SetHandlerLifetime(TimeSpan.FromMinutes(5));
-            RethinkMicroserviceHttpClientsRegistration.Register(services, configuration, keyVaultProviderService);
+            await RethinkMicroserviceHttpClientsRegistration.RegisterAsync(services, configuration, keyVaultProviderService).ConfigureAwait(false);
         }
 
         public static async Task RegisterServices(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService secretProvider)
@@ -98,7 +95,7 @@ namespace BillingService.Web.IoC
             var ediFabricKey = await keyVaultProviderService.GetSecretAsync(configuration["EdiFabric:SerialKey"]);
             SerialKey.Set(ediFabricKey);
 
-            var blobConnectionString = keyVaultProviderService.GetSecretAsync(configuration["ConnectionStrings:BlobStorage:ConnectionString"]).Result;
+            var blobConnectionString = await keyVaultProviderService.GetSecretAsync(configuration["ConnectionStrings:BlobStorage:ConnectionString"]).ConfigureAwait(false);
 
             var factory = new BlobConnectionFactory(blobConnectionString);
             services.AddScoped<IBlobConnectionFactory>(x => factory);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
@@ -24,7 +25,7 @@ namespace Authentication.Middlewares
                     bool apiKeyExists = headers.TryGetValue(APIKEY, out var appKey);
                     if (apiKeyExists)
                     {
-                        errorMessage = ValidateApiKey(appKey);
+                        errorMessage = await ValidateApiKeyAsync(appKey).ConfigureAwait(false);
                     }
                     else
                     {
@@ -41,11 +42,10 @@ namespace Authentication.Middlewares
             await next(context);
         }
 
-        public string ValidateApiKey(StringValues appKey)
+        private async Task<string> ValidateApiKeyAsync(StringValues appKey)
         {
             string errorMessage = string.Empty;
-            // Retrive jwt token values from vault 
-            string apiKey = keyVaultProviderService.GetSecretAsync(config["XApiKey"]).Result;
+            string apiKey = await keyVaultProviderService.GetSecretAsync(config["XApiKey"]).ConfigureAwait(false);
 
             if (appKey.Count > 1)
             {

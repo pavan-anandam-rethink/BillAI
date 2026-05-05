@@ -43,11 +43,13 @@ builder.Services.AddTransient<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-RethinkMicroserviceHttpClientsRegistration.Register(builder.Services, config, keyVaultProvider);
+await RethinkMicroserviceHttpClientsRegistration.RegisterAsync(builder.Services, config, keyVaultProvider).ConfigureAwait(false);
 
+var tokenValidationTimeout = Rethink.Services.Domain.Configuration.RethinkMicroserviceHttpClientOptions.GetRequestTimeout(config);
 builder.Services.AddHttpClient("tokenValidation", client =>
 {
     client.BaseAddress = new Uri(config["TokenValidationApi"]!.TrimEnd('/') + "/");
+    client.Timeout = tokenValidationTimeout;
 });
 
 builder.Services.AddScoped<IRethinkBillingRequestContext, RethinkBillingRequestContext>();

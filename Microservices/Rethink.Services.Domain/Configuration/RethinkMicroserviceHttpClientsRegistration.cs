@@ -1,7 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rethink.Services.Common.Interfaces;
+using Microsoft.Extensions.Http.Resilience;
+using System.Net.Http;
+using Rethink.Services.Domain.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace Rethink.Services.Domain.Configuration
 {
@@ -10,66 +13,146 @@ namespace Rethink.Services.Domain.Configuration
     /// </summary>
     public static class RethinkMicroserviceHttpClientsRegistration
     {
-        public static void Register(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        public static async Task RegisterAsync(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService, bool includeAppointmentClient = true)
         {
-            string accountsKey, curriculumsKey, demographicsKey, healthPlansKey, healthInsuranceKey, medicalRecordsKey, practiceOperationsKey, appointmentAPIKey, appointmentApplicationKey;
-            FetchClientServiceKeys(configuration, keyVaultProviderService, out accountsKey, out curriculumsKey, out demographicsKey, out healthPlansKey, out healthInsuranceKey, out medicalRecordsKey, out practiceOperationsKey, out appointmentAPIKey, out appointmentApplicationKey);
+            var keys = await FetchClientServiceKeysAsync(configuration, keyVaultProviderService, includeAppointmentClient).ConfigureAwait(false);
+            var timeout = RethinkMicroserviceHttpClientOptions.GetRequestTimeout(configuration);
+            var useResilience = RethinkMicroserviceHttpClientOptions.UseResilience(configuration);
 
-            services.AddHttpClient("accountsClient", client =>
+            RegisterClient(services, "accountsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["AccountsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), accountsKey);
-            });
-            services.AddHttpClient("curriculumClient", client =>
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.AccountsKey);
+            }, timeout, useResilience);
+
+            RegisterClient(services, "curriculumClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["CurriculumApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), curriculumsKey);
-            });
-            services.AddHttpClient("demographicsClient", client =>
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.CurriculumsKey);
+            }, timeout, useResilience);
+
+            RegisterClient(services, "demographicsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["DemographicsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), demographicsKey);
-            });
-            services.AddHttpClient("healthPlansClient", client =>
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.DemographicsKey);
+            }, timeout, useResilience);
+
+            RegisterClient(services, "healthPlansClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["HealthPlansApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), healthPlansKey);
-            });
-            services.AddHttpClient("healthInsuranceClient", client =>
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.HealthPlansKey);
+            }, timeout, useResilience);
+
+            RegisterClient(services, "healthInsuranceClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["HealthInsuranceApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), healthInsuranceKey);
-            });
-            services.AddHttpClient("medicalRecordsClient", client =>
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.HealthInsuranceKey);
+            }, timeout, useResilience);
+
+            RegisterClient(services, "medicalRecordsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["MedicalRecordsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), medicalRecordsKey);
-            });
-            services.AddHttpClient("praticeOperationsClient", client =>
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.MedicalRecordsKey);
+            }, timeout, useResilience);
+
+            RegisterClient(services, "praticeOperationsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["PracticeOperationsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), practiceOperationsKey);
-            });
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.PracticeOperationsKey);
+            }, timeout, useResilience);
 
-            services.AddHttpClient("appointmentClient", client =>
+            if (includeAppointmentClient)
             {
-                client.BaseAddress = new Uri(configuration["AppointmentApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["ApiKey"].ToString(), appointmentAPIKey);
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), appointmentApplicationKey);
-            });
+                RegisterClient(services, "appointmentClient", client =>
+                {
+                    client.BaseAddress = new Uri(configuration["AppointmentApiUrl"].ToString());
+                    client.DefaultRequestHeaders.Add(configuration["ApiKey"].ToString(), keys.AppointmentApiKey);
+                    client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), keys.AppointmentApplicationKey);
+                }, timeout, useResilience);
+            }
         }
 
-        private static void FetchClientServiceKeys(IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService, out string accountsKey, out string curriculumsKey, out string demographicsKey, out string healthPlansKey, out string healthInsuranceKey, out string medicalRecordsKey, out string practiceOperationsKey, out string appointmentAPIKey, out string appointmentApplicationKey)
+        /// <summary>Synchronous wrapper for callers that cannot await during DI registration.</summary>
+        public static void Register(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService, bool includeAppointmentClient = true)
         {
-            accountsKey = keyVaultProviderService.GetSecretAsync(configuration["AccountsKey"]).Result;
-            curriculumsKey = keyVaultProviderService.GetSecretAsync(configuration["CurriculumsKey"]).Result;
-            demographicsKey = keyVaultProviderService.GetSecretAsync(configuration["DemographicsKey"]).Result;
-            healthPlansKey = keyVaultProviderService.GetSecretAsync(configuration["HealthPlansKey"]).Result;
-            healthInsuranceKey = keyVaultProviderService.GetSecretAsync(configuration["HealthInsuranceKey"]).Result;
-            medicalRecordsKey = keyVaultProviderService.GetSecretAsync(configuration["MedicalRecordsKey"]).Result;
-            practiceOperationsKey = keyVaultProviderService.GetSecretAsync(configuration["PracticeOperationsKey"]).Result;
-            appointmentAPIKey = keyVaultProviderService.GetSecretAsync(configuration["AppointmentAPIKey"]).Result;
-            appointmentApplicationKey = keyVaultProviderService.GetSecretAsync(configuration["AppointmentApplicationKey"]).Result;
+            RegisterAsync(services, configuration, keyVaultProviderService, includeAppointmentClient).GetAwaiter().GetResult();
+        }
+
+        private static void RegisterClient(IServiceCollection services, string name, Action<HttpClient> configureClient, TimeSpan timeout, bool useResilience)
+        {
+            var builder = services.AddHttpClient(name, configureClient);
+            builder.ConfigureHttpClient(c => c.Timeout = timeout);
+            if (useResilience)
+            {
+                builder.AddStandardResilienceHandler();
+            }
+        }
+
+        private static async Task<(
+            string AccountsKey,
+            string CurriculumsKey,
+            string DemographicsKey,
+            string HealthPlansKey,
+            string HealthInsuranceKey,
+            string MedicalRecordsKey,
+            string PracticeOperationsKey,
+            string AppointmentApiKey,
+            string AppointmentApplicationKey)> FetchClientServiceKeysAsync(IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService, bool includeAppointmentClient)
+        {
+            var accountsTask = keyVaultProviderService.GetSecretAsync(configuration["AccountsKey"]);
+            var curriculumsTask = keyVaultProviderService.GetSecretAsync(configuration["CurriculumsKey"]);
+            var demographicsTask = keyVaultProviderService.GetSecretAsync(configuration["DemographicsKey"]);
+            var healthPlansTask = keyVaultProviderService.GetSecretAsync(configuration["HealthPlansKey"]);
+            var healthInsuranceTask = keyVaultProviderService.GetSecretAsync(configuration["HealthInsuranceKey"]);
+            var medicalRecordsTask = keyVaultProviderService.GetSecretAsync(configuration["MedicalRecordsKey"]);
+            var practiceOpsTask = keyVaultProviderService.GetSecretAsync(configuration["PracticeOperationsKey"]);
+
+            if (includeAppointmentClient)
+            {
+                var appointmentApiTask = keyVaultProviderService.GetSecretAsync(configuration["AppointmentAPIKey"]);
+                var appointmentAppTask = keyVaultProviderService.GetSecretAsync(configuration["AppointmentApplicationKey"]);
+                await Task.WhenAll(
+                    accountsTask,
+                    curriculumsTask,
+                    demographicsTask,
+                    healthPlansTask,
+                    healthInsuranceTask,
+                    medicalRecordsTask,
+                    practiceOpsTask,
+                    appointmentApiTask,
+                    appointmentAppTask).ConfigureAwait(false);
+
+                return (
+                    await accountsTask.ConfigureAwait(false),
+                    await curriculumsTask.ConfigureAwait(false),
+                    await demographicsTask.ConfigureAwait(false),
+                    await healthPlansTask.ConfigureAwait(false),
+                    await healthInsuranceTask.ConfigureAwait(false),
+                    await medicalRecordsTask.ConfigureAwait(false),
+                    await practiceOpsTask.ConfigureAwait(false),
+                    await appointmentApiTask.ConfigureAwait(false),
+                    await appointmentAppTask.ConfigureAwait(false));
+            }
+
+            await Task.WhenAll(
+                accountsTask,
+                curriculumsTask,
+                demographicsTask,
+                healthPlansTask,
+                healthInsuranceTask,
+                medicalRecordsTask,
+                practiceOpsTask).ConfigureAwait(false);
+
+            return (
+                await accountsTask.ConfigureAwait(false),
+                await curriculumsTask.ConfigureAwait(false),
+                await demographicsTask.ConfigureAwait(false),
+                await healthPlansTask.ConfigureAwait(false),
+                await healthInsuranceTask.ConfigureAwait(false),
+                await medicalRecordsTask.ConfigureAwait(false),
+                await practiceOpsTask.ConfigureAwait(false),
+                string.Empty,
+                string.Empty);
         }
     }
 }
