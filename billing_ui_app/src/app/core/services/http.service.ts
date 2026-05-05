@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
-import { Observable }  from 'rxjs/internal/Observable';
-import { of }  from 'rxjs/internal/observable/of';
-import { EMPTY }  from 'rxjs/internal/observable/empty';
-import { tap, catchError, finalize, switchMap }  from 'rxjs/operators';
+import { EMPTY, Observable, Subject, defer, throwError } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 import { LoaderService } from './common/loader.service';
 import { ErrorHandlingService } from './error-handling/error-handling.service';
-import { Subject } from 'rxjs';
 
 
 export interface IRequestOptions {
@@ -19,11 +16,14 @@ export interface IRequestOptions {
     withCredentials?: boolean;
     body?: any;
     showSpinner?: boolean;
+    /** When true, forwards HTTP failures to ErrorHandlingService (legacy wrapper did not notify). */
+    notifyGlobalOnError?: boolean;
 }
 
 const defaultOptions: IRequestOptions = {
-    showSpinner: true
-}
+    showSpinner: true,
+    notifyGlobalOnError: false
+};
 
 
 @Injectable({
@@ -36,89 +36,123 @@ export class HttpService {
     private _apiUrl: string = '';
 
     constructor(
-        private loaderService: LoaderService, 
+        private loaderService: LoaderService,
         public http: HttpClient,
         private errorHandler: ErrorHandlingService
     ) { }
 
-    public get<T>(url: string, options?: IRequestOptions, loadingSpinner: boolean = true, propagateError: boolean = false): Observable<T> {
-        if (loadingSpinner) {
-            this.loaderService.show();
+    /**
+     * @param propagateError When true, errors are forwarded to subscribers after global handling (default false preserves legacy swallow-on-GET behavior).
+     */
+    public get<T>(
+        url: string,
+        options?: IRequestOptions,
+        loadingSpinner: boolean = true,
+        propagateError: boolean = false
+    ): Observable<T> {
+        const merged = {
+            ...defaultOptions,
+            ...options
+        };
+        const spinnerActive = merged.showSpinner !== false && loadingSpinner !== false;
+
+        this.setApiUrl(url);
+
+        return defer(() => {
+            if (spinnerActive) {
+                this.loaderService.show(false);
+            }
+            return this.http.get<T>(url, merged as object).pipe(
+                catchError((error) =>
+                    this.handleHttpError(error, propagateError, merged.notifyGlobalOnError)),
+                finalize(() => {
+                    if (spinnerActive) {
+                        this.loaderService.hide();
+                    }
+                })
+            );
+        });
+    }
+
+    public post<T>(
+        url: string,
+        params: unknown,
+        options?: IRequestOptions,
+        isWithAddClaim: boolean = false,
+        propagateError: boolean = true
+    ): Observable<T> {
+        const merged = {
+            ...defaultOptions,
+            ...options
+        };
+        const spinnerActive = merged.showSpinner !== false;
+
+        this.setApiUrl(url);
+
+        const n = url.lastIndexOf('/');
+        const result = url.substring(n + 1);
+
+        return defer(() => {
+            this.applySpinnerForRequest(result, spinnerActive, isWithAddClaim);
+            return this.http.post<T>(url, params, merged as object).pipe(
+                catchError((error) =>
+                    this.handleHttpError(error, propagateError, merged.notifyGlobalOnError)),
+                finalize(() => {
+                    if (spinnerActive) {
+                        this.loaderService.hide();
+                    }
+                })
+            );
+        });
+    }
+
+    /**
+     * Extension point for structured logging / APM (e.g. AppInsights, Datadog RUM).
+     * Replace or wrap this in a subclass or delegate to your telemetry service.
+     */
+    protected logHttpFailure(method: string, url: string, error: unknown): void {
+        // eslint-disable-next-line no-console
+        console.error(`[HttpService] ${method} failed`, {
+            url,
+            error,
+            ...(typeof error === 'object' && error !== null && 'status' in error
+                ? { status: (error as { status?: number }).status }
+                : {})
+        });
+    }
+
+    private applySpinnerForRequest(
+        apiName: string,
+        spinnerActive: boolean,
+        isWithAddClaim: boolean
+    ): void {
+        if (!spinnerActive) {
+            return;
         }
-
-        this.setApiUrl(url);
-        
-        options = {
-            ...defaultOptions,
-            ...options
-        };
-
-        return of({}).pipe(
-            tap(x => this.onStart('', options)),
-            switchMap(x => this.http.get<T>(url, options)),
-            catchError((error, caught) => this.onCatch()),
-
-            tap((res: any) => { },
-            (error: any) => {
-                this.onError(error);
-            }),
-            finalize(() => {
-                if (loadingSpinner !== false) {
-                    this.loaderService.hide();
-                }
-                this.onEnd(options);
-            }),
-        )
-    }
-
-    public post<T>(url: string, params: any, options?: IRequestOptions,
-        isWithAddClaim: boolean = false): Observable<T> {
-        options = {
-            ...defaultOptions,
-            ...options
-        };
-
-        this.setApiUrl(url);
-        
-        var n = url.lastIndexOf('/');
-        var result = url.substring(n + 1);
-
-        return of({}).pipe(
-            tap(x => this.onStart(result, options, isWithAddClaim)),
-            switchMap(x => this.http.post<T>(url, params, options)),
-            catchError((error, caught) => {
-                throw error;
-            }),
-            tap((res: any) => { },
-                (error: any) => {
-                    this.onError(error);
-                }),
-            finalize(() => {
-                this.onEnd(options);
-            }),
-        )
-    }
-
-    private onCatch() {
-        return EMPTY;
-    }
-
-    private onError(res: any): void {
-        console.log('Error, status code: ' + res.status);
-        this.errorHandler.handleError(res.error);
-        this.loaderService.hide();
-    }
-
-    private onStart(apiName: string, options?: IRequestOptions, isWithAddClaim: boolean = false): void { 
         if (apiName === 'ValidateClaimData' && !isWithAddClaim) {
-            options && options.showSpinner && this.loaderService.show(true);
+            this.loaderService.show(true);
         } else {
-            options && options.showSpinner && this.loaderService.show(false);
+            this.loaderService.show(false);
         }
     }
 
-    private onEnd(options?: IRequestOptions): void { 
-        options && options.showSpinner && this.loaderService.hide();
+    private handleHttpError(
+        error: unknown,
+        propagateError: boolean,
+        notifyGlobalOnError: boolean | undefined
+    ): Observable<never> {
+        this.logHttpFailure('HTTP', this._apiUrl, error);
+
+        if (notifyGlobalOnError) {
+            const httpLike = error as { status?: number; error?: unknown };
+            if (httpLike?.status != null || httpLike?.error !== undefined) {
+                this.errorHandler.handleError(httpLike.error ?? httpLike ?? error);
+            } else {
+                this.errorHandler.handleError(error);
+            }
+        }
+
+        return propagateError ? throwError(() => error) : EMPTY;
     }
 
     setApiUrl(url: string) {
@@ -130,5 +164,4 @@ export class HttpService {
         return this._apiUrl;
     }
 }
-
 
