@@ -1,8 +1,0 @@
-﻿<div class="w-100 border-bottom p-2 row-cell"
-     [style.height.px]="minHeight / rows.length"
-     [style.textAlign]="textAlign"
-     *ngFor="let payment of rows"
->
-    <ng-container *ngIf="!numberFormat; else formattedText"><span [title]="payment[field]" kendoTooltip>{{payment[field]}}</span></ng-container>
-    <!-- <ng-template #formattedText><span [title]="payment[field] | kendoNumber: numberFormat" kendoTooltip>{{payment[field] | kendoNumber: numberFormat }}</span></ng-template> -->
-</div>

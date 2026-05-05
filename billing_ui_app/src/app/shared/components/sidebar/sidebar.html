@@ -1,8 +1,0 @@
-﻿<div *ngIf="isOpened" class="sidebar-backdrop" (click)="$event.stopPropagation()"></div>
-<div class="sidebar-body {{options.position}} {{options.popupWidthClass}}" [ngClass]="{'opened': isOpened}">
-    <div *ngIf = "closeIconEnabled && !IsSidebarFixed" class="header">
-        <span class="icon-24 close-icon" (click)="close()"></span>
-    </div>
-    <ng-template appInsertion> </ng-template>
-</div>
-<div *ngIf="!IsSidebarFixed" class="sidebar-overlay" [ngClass]="{'opened': isOpened}" (click)="close()"></div>

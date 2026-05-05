@@ -1,6 +1,0 @@
-@SummationService.Web_HostAddress = http://localhost:5076
-
-GET {{SummationService.Web_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

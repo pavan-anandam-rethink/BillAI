@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\LoginService.Web.props" />
-</Project>
