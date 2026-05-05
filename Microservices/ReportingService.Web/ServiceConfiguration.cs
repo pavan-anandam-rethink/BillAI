@@ -13,6 +13,7 @@ using Rethink.Services.Common.Infrastructure.Repository;
 using Rethink.Services.Common.Interfaces;
 using Rethink.Services.Common.Utils;
 using Rethink.Services.Domain.Interfaces;
+using System.Threading.Tasks;
 using SummationService.Domain.Interfaces;
 using SummationService.Domain.Services;
 using System.Data.SqlClient;
@@ -39,7 +40,7 @@ namespace ReportingService.Web
         public async Task Configure()
         {
             ConfigureDatabase();
-            RegisterHttpClients(_serviceCollection, _configuration, _keyVaultProviderService);
+            RegisterHttpClientsAsync(_serviceCollection, _configuration, _keyVaultProviderService).GetAwaiter().GetResult();
             _serviceCollection.AddScoped(typeof(IDbHelper<>), typeof(DbHelper<>));
             //Domain services
             _serviceCollection.AddScoped<IAccountsReceivableService, AccountsReceivableService>();
@@ -52,10 +53,15 @@ namespace ReportingService.Web
 
         }
 
-        public static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        public static async Task RegisterHttpClientsAsync(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
         {
-            string accountsKey, demographicsKey, healthInsuranceKey;
-            FetchClientServiceKeys(configuration, keyVaultProviderService, out accountsKey, out demographicsKey, out healthInsuranceKey);
+            var accountsTask = keyVaultProviderService.GetSecretAsync(configuration["AccountsKey"]);
+            var demographicsTask = keyVaultProviderService.GetSecretAsync(configuration["DemographicsKey"]);
+            var healthInsuranceTask = keyVaultProviderService.GetSecretAsync(configuration["HealthInsuranceKey"]);
+            await Task.WhenAll(accountsTask, demographicsTask, healthInsuranceTask).ConfigureAwait(false);
+            var accountsKey = await accountsTask.ConfigureAwait(false);
+            var demographicsKey = await demographicsTask.ConfigureAwait(false);
+            var healthInsuranceKey = await healthInsuranceTask.ConfigureAwait(false);
 
             services.AddHttpClient<IBaseHttpClient, BaseHttpClient>().SetHandlerLifetime(TimeSpan.FromMinutes(5));
 
@@ -74,13 +80,6 @@ namespace ReportingService.Web
                 client.BaseAddress = new Uri(configuration["HealthInsuranceApiUrl"].ToString());
                 client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), healthInsuranceKey);
             });
-        }
-
-        private static void FetchClientServiceKeys(IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService, out string accountsKey, out string demographicsKey, out string healthInsuranceKey)
-        {
-            accountsKey = keyVaultProviderService.GetSecretAsync(configuration["AccountsKey"]).Result;
-            demographicsKey = keyVaultProviderService.GetSecretAsync(configuration["DemographicsKey"]).Result;
-            healthInsuranceKey = keyVaultProviderService.GetSecretAsync(configuration["HealthInsuranceKey"]).Result;
         }
 
         private void ConfigureDatabase()

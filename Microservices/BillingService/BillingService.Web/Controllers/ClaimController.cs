@@ -8,6 +8,7 @@ using BillingService.Domain.Models.Funders;
 using BillingService.Domain.Models.PaymentPosting;
 using BillingService.Web.Helpers.HttpClients;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Rethink.Services.Common.Handlers;
@@ -35,6 +36,7 @@ namespace BillingService.Web.Controllers
         private readonly ICommonService _commonService;
         private readonly IClientService _clientService;
         private readonly IKeyVaultProviderService _keyVaultProviderService;
+        private readonly IMemoryCache _memoryCache;
         private IConfiguration _configuration;
 
         public ClaimController(
@@ -50,7 +52,8 @@ namespace BillingService.Web.Controllers
             IRethinkMasterDataMicroServices rethinkMasterDataMicroServices,
             ICommonService commonService,
             IClientService clientService,
-            IKeyVaultProviderService keyVaultProviderService)
+            IKeyVaultProviderService keyVaultProviderService,
+            IMemoryCache memoryCache)
             : base(httpClient, configuration)
         {
             _clientService = clientService;
@@ -64,6 +67,7 @@ namespace BillingService.Web.Controllers
             _rethinkServices = rethinkMasterDataMicroServices;
             _commonService = commonService;
             _keyVaultProviderService = keyVaultProviderService;
+            _memoryCache = memoryCache;
             _configuration = configuration;
         }
 
@@ -277,21 +281,28 @@ namespace BillingService.Web.Controllers
                           nameof(GetClaimHeaders),
                           requestModel.MemberId);
 
-                // Check if call the new ClaimProcessing Endpoint of old one
                 var key = _configuration["UseNewClaimProcessing"];
-                var getDataFromKv = string.IsNullOrEmpty(key) ? string.Empty : _keyVaultProviderService.GetSecretAsync(key).Result;
-                var useNewClaimProcessing = getDataFromKv.Length > 0 ? Convert.ToBoolean(getDataFromKv) : false;
+                var useNewClaimProcessing = false;
+                if (!string.IsNullOrEmpty(key))
+                {
+                    useNewClaimProcessing = await _memoryCache.GetOrCreateAsync(
+                        "claim_processing:" + key,
+                        async entry =>
+                        {
+                            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                            var secret = await _keyVaultProviderService.GetSecretAsync(key).ConfigureAwait(false);
+                            return secret.Length > 0 && Convert.ToBoolean(secret);
+                        }).ConfigureAwait(false);
+                }
 
-                // get the data from the service
                 var result = await _claimService.GetClaimHeadersAsync(requestModel);
 
-                // set the flag to each claim header
-                if (useNewClaimProcessing)
+                if (useNewClaimProcessing && result?.Data != null)
                 {
-                    result?.Data?.ForEach(claimHeader =>
+                    foreach (var claimHeader in result.Data)
                     {
-                        claimHeader.UseNewClaimProcessing = useNewClaimProcessing;
-                    });
+                        claimHeader.UseNewClaimProcessing = true;
+                    }
                 }
                 return Ok(result);
             }
@@ -1409,10 +1420,13 @@ namespace BillingService.Web.Controllers
                     nameof(ClaimController),
                     nameof(GetGridPageSizes));
 
-                var pageSizesSecret = _keyVaultProviderService.GetSecretAsync(_configuration["GridPageSizes"]).Result;
+                var pageSizesTask = _keyVaultProviderService.GetSecretAsync(_configuration["GridPageSizes"]);
+                var defaultPageSizeTask = _keyVaultProviderService.GetSecretAsync(_configuration["DefaultPageSize"]);
+                await Task.WhenAll(pageSizesTask, defaultPageSizeTask).ConfigureAwait(false);
+                var pageSizesSecret = await pageSizesTask.ConfigureAwait(false);
                 var pageSizes = JsonSerializer.Deserialize<object[]>(pageSizesSecret);
 
-                var defaultPageSizeSecret = _keyVaultProviderService.GetSecretAsync(_configuration["DefaultPageSize"]).Result;
+                var defaultPageSizeSecret = await defaultPageSizeTask.ConfigureAwait(false);
                 var defaultPageSize = JsonSerializer.Deserialize<object>(defaultPageSizeSecret);
 
                 var response = new

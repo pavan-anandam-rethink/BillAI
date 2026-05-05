@@ -4,6 +4,8 @@ using LoginService.Web.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Rethink.Services.Domain.Services.RethinkServices;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace LoginService.Web.Controllers
@@ -18,14 +20,23 @@ namespace LoginService.Web.Controllers
         private readonly string _tokenValidationApi;
         private readonly string _tokenValidationKey;
         private readonly IUserProfileService _userProfileService;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IRethinkMasterDataSessionPrewarm _sessionPrewarm;
 
-        public SSOController(IConfiguration config, ITokenService tokenService, IUserProfileService userProfileService)
+        public SSOController(
+            IConfiguration config,
+            ITokenService tokenService,
+            IUserProfileService userProfileService,
+            IHttpClientFactory httpClientFactory,
+            IRethinkMasterDataSessionPrewarm sessionPrewarm)
         {
             _config = config;
             _tokenService = tokenService;
             _tokenValidationApi = Convert.ToString(_config.GetSection("TokenValidationApi").Value);
             _tokenValidationKey = Convert.ToString(_config.GetSection("TokenValidationApiKey").Value);
             _userProfileService = userProfileService;
+            _httpClientFactory = httpClientFactory;
+            _sessionPrewarm = sessionPrewarm;
         }
 
         [HttpPost]
@@ -55,21 +66,18 @@ namespace LoginService.Web.Controllers
             //    }
             //};
             AuthenticateRequest authRequest = null;
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_tokenValidationApi);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + rethinkToken.token);
-                HttpResponseMessage response = await client.GetAsync("core/api/integrations/billing/GetBillingStaffData");
-                JsonSerializerSettings settings = new() { NullValueHandling = NullValueHandling.Ignore };
+            var client = _httpClientFactory.CreateClient("tokenValidation");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", rethinkToken.token);
+            HttpResponseMessage response = await client.GetAsync("core/api/integrations/billing/GetBillingStaffData");
+            JsonSerializerSettings settings = new() { NullValueHandling = NullValueHandling.Ignore };
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var body = await response.Content.ReadAsStringAsync();
-                    var textContent = JsonConvert.DeserializeObject<string>(body);
-                    authRequest = JsonConvert.DeserializeObject<AuthenticateRequest>(_tokenService.DecryptString(_tokenValidationKey, textContent), settings);
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var textContent = JsonConvert.DeserializeObject<string>(body);
+                authRequest = JsonConvert.DeserializeObject<AuthenticateRequest>(_tokenService.DecryptString(_tokenValidationKey, textContent), settings);
             }
 
             if (authRequest == null)
@@ -97,10 +105,17 @@ namespace LoginService.Web.Controllers
             var jwtToken = await _tokenService.GenerateAccessToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), authRequest);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
+            if (int.TryParse(authRequest.AccountInfoId, out var accountId) && accountId > 0
+                && !string.IsNullOrEmpty(authRequest.BillingSessionKey))
+            {
+                await _sessionPrewarm.WarmAsync(accountId, authRequest.BillingSessionKey);
+            }
+
             return Ok(new AuthenticatedResponse
             {
                 Token = jwtToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                BillingSessionKey = authRequest.BillingSessionKey
             });
         }
 
@@ -124,6 +139,7 @@ namespace LoginService.Web.Controllers
                 ImpersonationUserObjectId = claims.SingleOrDefault(c => c.Type == "ImpersonatedUser").Value,
                 ImpersonationUserName= claims.SingleOrDefault(c => c.Type == "ImpersonationUserName").Value,
                 ImpersonationUserEmail= claims.SingleOrDefault(c => c.Type == "ImpersonationUserEmail").Value,
+                BillingSessionKey = claims.SingleOrDefault(c => c.Type == "BillingSessionKey")?.Value ?? string.Empty,
                 Permissions = []
             };
             foreach (var permission in claims.Where(c => c.Type == "Permissions"))
@@ -138,7 +154,8 @@ namespace LoginService.Web.Controllers
             return Ok(new AuthenticatedResponse
             {
                 Token = newJwtToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newRefreshToken,
+                BillingSessionKey = authRequest.BillingSessionKey
             });
         }
 

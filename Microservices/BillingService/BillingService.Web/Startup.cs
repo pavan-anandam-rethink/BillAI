@@ -2,6 +2,8 @@ using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Web.IoC;
+using BillingService.Web.Middlewares;
+using BillingService.Web.Servers;
 using HealthChecks.Azure.Storage.Blobs;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -32,12 +34,16 @@ namespace BillingService.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IKeyVaultProviderService>(_ => KeyVaultProviderService);
+
             IoCContainer.ConfigureDatabase(services, Configuration, KeyVaultProviderService);
             IoCContainer.RegisterDBContext(services);
             IoCContainer.RegisterServices(services, Configuration, KeyVaultProviderService).Wait();
-            IoCContainer.RegisterHttpClients(services, Configuration, KeyVaultProviderService);
-            IoCContainer.RegisterRedisCache(services, Configuration, KeyVaultProviderService);
+            IoCContainer.RegisterHttpClientsAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
+            IoCContainer.RegisterRedisCacheAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
 
+            services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
+            services.AddMemoryCache();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -128,14 +134,18 @@ namespace BillingService.Web
             //app.UseDeveloperExceptionPage();
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            app.UseMiddleware<RequestLatencyLoggingMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseWhen(
                 context => !context.Request.Headers.ContainsKey(APIKEY),
-                app => app.UseMiddleware<JwtMiddleware>()
-            );
+                branch =>
+                {
+                    branch.UseMiddleware<JwtMiddleware>();
+                    branch.UseMiddleware<BillingMasterDataRequestMiddleware>();
+                });
             app.UseWhen(
                 context => context.Request.Headers.ContainsKey(APIKEY),
                 app => app.UseMiddleware<ApiKeyMiddleware>()

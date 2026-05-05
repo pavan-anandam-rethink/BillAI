@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authentication\Authentication.csproj" />
+    <ProjectReference Include="..\Rethink.Services.Domain\Rethink.Services.Domain.csproj" />
   </ItemGroup>
 
 </Project>

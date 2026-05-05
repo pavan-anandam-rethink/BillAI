@@ -25,7 +25,7 @@ namespace ClientService.Web
             IoCContainer.ConfigureDatabase(services, Configuration, KeyVaultProviderService);
             IoCContainer.RegisterDBContext(services);
             IoCContainer.RegisterServices(services, Configuration, KeyVaultProviderService).Wait();
-            IoCContainer.RegisterHttpClients(services, Configuration, KeyVaultProviderService);
+            IoCContainer.RegisterHttpClientsAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

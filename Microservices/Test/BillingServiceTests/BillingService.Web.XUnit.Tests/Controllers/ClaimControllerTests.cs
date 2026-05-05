@@ -13,6 +13,7 @@ using BillingService.Web.Helpers.HttpClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using Rethink.Services.Common.Entities.Billing;
 using Rethink.Services.Common.Entities.Billing.Claim;
@@ -83,7 +84,8 @@ public class ClaimControllerTests
             _rethinkServices.Object,
             _commonService.Object,
             _clientService.Object,
-            _mockKeyVaultProviderService.Object
+            _mockKeyVaultProviderService.Object,
+            new MemoryCache(new MemoryCacheOptions())
         );
     }
 

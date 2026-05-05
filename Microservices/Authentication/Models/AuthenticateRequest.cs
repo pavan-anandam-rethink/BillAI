@@ -13,6 +13,8 @@ namespace Authentication.Models
         public string ImpersonationUserObjectId { get; set; } = string.Empty;
         public string ImpersonationUserName { get; set; } = string.Empty;
         public string ImpersonationUserEmail { get; set; } = string.Empty;
+        /// <summary>Opaque key for Redis session cache of BH master data (set at login).</summary>
+        public string BillingSessionKey { get; set; } = string.Empty;
         public Dictionary<string, bool> Permissions { get; set; }
     }
 

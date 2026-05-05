@@ -1,4 +1,5 @@
 ﻿using Authentication.Interfaces;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -30,7 +31,7 @@ namespace Authentication.Middlewares
                     if (jwtTokenExists)
                     {
                         string token = jwtToken.ToString().Replace("Bearer ", "");
-                        errorMessage = ValidateJwtToken(token, tokenService);
+                        errorMessage = await ValidateJwtTokenAsync(token, tokenService).ConfigureAwait(false);
                     }
                     else
                     {
@@ -47,7 +48,7 @@ namespace Authentication.Middlewares
             await next(context);
         }
 
-        public string ValidateJwtToken(StringValues jwtToken,ITokenService tokenService)
+        private async Task<string> ValidateJwtTokenAsync(StringValues jwtToken, ITokenService tokenService)
         {
             string errorMessage = string.Empty;
 
@@ -61,8 +62,7 @@ namespace Authentication.Middlewares
             }
             else
             {
-                // Retrive jwt token values from vault 
-                var userIdSecret = keyVaultProviderService.GetSecretAsync(config["Jwt:Key"]).Result;
+                var userIdSecret = await keyVaultProviderService.GetSecretAsync(config["Jwt:Key"]).ConfigureAwait(false);
 
                 if (!_tokenService.IsTokenValid(userIdSecret, config[Issuer].ToString(), config[Audience].ToString(), jwtToken))
                 {
