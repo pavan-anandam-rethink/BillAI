@@ -6,6 +6,7 @@ using BillingService.Domain.Interfaces.Provider;
 using BillingService.Domain.Services.Payment;
 using BillingService.Domain.Utils;
 using BillingService.Web.Helpers.HttpClients;
+using BillingService.Web.Observability;
 using EdiFabric;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -61,43 +62,51 @@ namespace BillingService.Web.IoC
                 configuration[keyName] ??
                 throw new InvalidOperationException($"Configuration '{keyName}' is required for HTTP clients.");
 
-            services.AddHttpClient<IBaseHttpClient, BaseHttpClient>().SetHandlerLifetime(TimeSpan.FromMinutes(5));
-            services.AddHttpClient("accountsClient", client =>
+            IHttpClientBuilder CreateResilientClient(string name, Action<System.Net.Http.HttpClient> configureClient)
+            {
+                return services.AddHttpClient(name, configureClient)
+                    .AddHttpMessageHandler<ResilienceDelegatingHandler>();
+            }
+
+            services.AddHttpClient<IBaseHttpClient, BaseHttpClient>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddHttpMessageHandler<ResilienceDelegatingHandler>();
+            CreateResilientClient("accountsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["AccountsApiUrl"]);
                 client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["AccountsKey"]);
             });
-            services.AddHttpClient("curriculumClient", client =>
+            CreateResilientClient("curriculumClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["CurriculumApiUrl"]);
                 client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["CurriculumsKey"]);
             });
-            services.AddHttpClient("demographicsClient", client =>
+            CreateResilientClient("demographicsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["DemographicsApiUrl"]);
                 client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["DemographicsKey"]);
             });
-            services.AddHttpClient("healthPlansClient", client =>
+            CreateResilientClient("healthPlansClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["HealthPlansApiUrl"]);
                 client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["HealthPlansKey"]);
             });
-            services.AddHttpClient("healthInsuranceClient", client =>
+            CreateResilientClient("healthInsuranceClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["HealthInsuranceApiUrl"]);
                 client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["HealthInsuranceKey"]);
             });
-            services.AddHttpClient("medicalRecordsClient", client =>
+            CreateResilientClient("medicalRecordsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["MedicalRecordsApiUrl"]);
                 client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["MedicalRecordsKey"]);
             });
-            services.AddHttpClient("praticeOperationsClient", client =>
+            CreateResilientClient("praticeOperationsClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["PracticeOperationsApiUrl"]);
                 client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["PracticeOperationsKey"]);
             });
-            services.AddHttpClient("appointmentClient", client =>
+            CreateResilientClient("appointmentClient", client =>
             {
                 client.BaseAddress = new Uri(configuration["AppointmentApiUrl"]);
                 client.DefaultRequestHeaders.Add(configuration["ApiKey"], clientApiKeys["AppointmentAPIKey"]);
