@@ -43,6 +43,7 @@ namespace BillingService.Web
             IoCContainer.RegisterRedisCacheAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
 
             services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
+            services.AddMemoryCache();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

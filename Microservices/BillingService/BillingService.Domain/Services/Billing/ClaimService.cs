@@ -597,28 +597,28 @@ namespace BillingService.Domain.Services.Billing
                 sqlParams.Add(new SqlParameter("OrderDir", sort.Dir == "desc"));
             }
 
-            var claimsTask = _dbHelper.ExecuteListAsync<ClaimHeaderModel>("GetClaimsByAccountInfoId",sqlParams);
+            var claimsTask = _dbHelper.ExecuteListAsync<ClaimHeaderModel>("GetClaimsByAccountInfoId", sqlParams);
 
             var memberTask = _rethinkServices.GetStaffMemberList(model.AccountInfoId);
             var providerTask = _rethinkServices.GetRenderingProvidersAsync(model.AccountInfoId);
             var accountTask = _rethinkServices.GetAccountReturningEntityAsync(model.AccountInfoId, true);
             var childProfilesTask = _rethinkServices.GetChildProfilesForAccount(model.AccountInfoId);
 
-            await Task.WhenAll(claimsTask,memberTask,providerTask,accountTask,childProfilesTask);
+            await Task.WhenAll(claimsTask, memberTask, providerTask, accountTask, childProfilesTask).ConfigureAwait(false);
 
-            var result = claimsTask.Result.ToList();
+            var result = (await claimsTask.ConfigureAwait(false)).ToList();
 
-            var memberNamesDict = memberTask.Result.ToDictionary(
+            var memberNamesDict = (await memberTask.ConfigureAwait(false)).ToDictionary(
                 x => x.memberId,
                 x => x.name);
 
-            var providerDict = providerTask.Result.ToDictionary(
+            var providerDict = (await providerTask.ConfigureAwait(false)).ToDictionary(
                 x => x.StaffMemberId,
                 x => x.Name);
 
-            var clientUsersDict = childProfilesTask.Result.ToDictionary(x => x.Id);
+            var clientUsersDict = (await childProfilesTask.ConfigureAwait(false)).ToDictionary(x => x.Id);
 
-            var isTestAccount = accountTask.Result.AccountType == 1;
+            var isTestAccount = (await accountTask.ConfigureAwait(false)).AccountType == 1;
 
             var uniqueAuthRequests = result.Select(x => (ClientId: x.ChildProfileId,AuthorizationId: x.ChildProfileAuthorizationId)).Distinct().ToList();
 
@@ -665,24 +665,30 @@ namespace BillingService.Domain.Services.Billing
                 }
             }
 
-            var totalCount = result.FirstOrDefault()?.TotalCount ?? 0;        
-
-            var claimsCountResult =(await _dbHelper.ExecuteListAsync<ClaimsCountModel>("GetClaimsCount",parameters)).FirstOrDefault();
+            var totalCount = result.FirstOrDefault()?.TotalCount ?? 0;
 
             var claimNumbers = result.Select(x => x.ClaimNumber).Distinct().ToList();
 
-            var manualClaimIdentifiers = await _claimRepository.Query()
-                                        .Where(x =>
-                                            x.AccountInfoId == model.AccountInfoId &&
-                                            x.DateDeleted == null &&
-                                            claimNumbers.Contains(x.ClaimIdentifier))
-                                        .SelectMany(x => x.ClaimHistory
-                                            .Where(h =>
-                                                h.ClaimHistoryAction == ClaimHistoryAction.ClaimCreated &&
-                                                h.Mode == ClaimActionMode.User)
-                                            .Select(_ => x.ClaimIdentifier))
-                                        .Distinct()
-                                        .ToListAsync();
+            var claimsCountTask = _dbHelper.ExecuteListAsync<ClaimsCountModel>("GetClaimsCount", parameters);
+            var manualClaimIdentifiersTask = _claimRepository.Query()
+                .AsNoTracking()
+                .Where(x =>
+                    x.AccountInfoId == model.AccountInfoId &&
+                    x.DateDeleted == null &&
+                    claimNumbers.Contains(x.ClaimIdentifier))
+                .SelectMany(x => x.ClaimHistory
+                    .Where(h =>
+                        h.ClaimHistoryAction == ClaimHistoryAction.ClaimCreated &&
+                        h.Mode == ClaimActionMode.User)
+                    .Select(_ => x.ClaimIdentifier))
+                .Distinct()
+                .ToListAsync();
+
+            await Task.WhenAll(claimsCountTask, manualClaimIdentifiersTask).ConfigureAwait(false);
+
+            var claimsCountResult = (await claimsCountTask.ConfigureAwait(false)).FirstOrDefault();
+
+            var manualClaimIdentifiers = await manualClaimIdentifiersTask.ConfigureAwait(false);
 
             var manualClaimsDict = manualClaimIdentifiers
                 .ToDictionary(x => x, _ => true);
@@ -736,39 +742,106 @@ namespace BillingService.Domain.Services.Billing
         }
 
 
-        public async Task<Dictionary<(int ClientId, int AuthorizationId), ClientAuthorization>>GetChildProfileAuthorizationsByClientIdsAsync(int accountInfoId,List<(int ClientId, int AuthorizationId)> requests)
+        public async Task<Dictionary<(int ClientId, int AuthorizationId), ClientAuthorization>> GetChildProfileAuthorizationsByClientIdsAsync(int accountInfoId, List<(int ClientId, int AuthorizationId)> requests)
         {
-            var semaphore = new SemaphoreSlim(5);
             var authSw = Stopwatch.StartNew();
-            _logger.LogInformation("GetClaimHeadersAsync-GetChildProfileAuthorizationsByClientIdsAsync Authorization calls start in {ElapsedMs} ms", authSw.ElapsedMilliseconds);
+            _logger.LogInformation("GetClaimHeadersAsync-GetChildProfileAuthorizationsByClientIdsAsync Authorization batch start at {ElapsedMs} ms", authSw.ElapsedMilliseconds);
 
-            var tasks = requests.Select(async request =>
+            var dict = new Dictionary<(int ClientId, int AuthorizationId), ClientAuthorization>();
+
+            if (requests == null || requests.Count == 0)
             {
-                await semaphore.WaitAsync();
+                authSw.Stop();
+                return dict;
+            }
 
+            // One Health Plans list call per client (up to 500 auths) instead of one HTTP call per (client, auth) pair.
+            var distinctClients = requests.Where(r => r.ClientId != 0).Select(r => r.ClientId).Distinct().ToList();
+            var clientFetchGate = new SemaphoreSlim(8, 8);
+
+            var batchTasks = distinctClients.Select(async clientId =>
+            {
+                await clientFetchGate.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    var auth = await _rethinkServices.GetChildProfileAuthorizationByClientId(accountInfoId,request.ClientId,request.AuthorizationId);
-
-                    return new
-                    {
-                        request.ClientId,
-                        request.AuthorizationId,
-                        Authorization = auth
-                    };
+                    var listModel = await _rethinkServices.GetClientAuthorizationsByClientId(accountInfoId, clientId).ConfigureAwait(false);
+                    return (clientId, listModel?.data);
                 }
                 finally
                 {
-                    semaphore.Release();
+                    clientFetchGate.Release();
                 }
             });
 
-            var results = await Task.WhenAll(tasks);
+            var batchResults = await Task.WhenAll(batchTasks).ConfigureAwait(false);
 
-           authSw.Stop();
-           _logger.LogInformation("GetClaimHeadersAsync-GetChildProfileAuthorizationsByClientIdsAsync Authorization calls completed in {ElapsedMs} ms", authSw.ElapsedMilliseconds);
+            foreach (var (clientId, auths) in batchResults)
+            {
+                if (auths == null)
+                {
+                    continue;
+                }
 
-            return results.ToDictionary(x => (x.ClientId, x.AuthorizationId),x => x.Authorization);
+                foreach (var auth in auths)
+                {
+                    dict[(clientId, auth.id)] = auth;
+                }
+            }
+
+            // ClientId 0 uses the "all authorizations" BH route — still resolve per requested id.
+            var zeroClientRequests = requests.Where(r => r.ClientId == 0).Distinct().ToList();
+            if (zeroClientRequests.Count > 0)
+            {
+                var fallbackGate = new SemaphoreSlim(8, 8);
+                var fallbackTasks = zeroClientRequests.Select(async request =>
+                {
+                    await fallbackGate.WaitAsync().ConfigureAwait(false);
+                    try
+                    {
+                        var auth = await _rethinkServices.GetChildProfileAuthorizationByClientId(accountInfoId, request.ClientId, request.AuthorizationId).ConfigureAwait(false);
+                        return (request.ClientId, request.AuthorizationId, auth);
+                    }
+                    finally
+                    {
+                        fallbackGate.Release();
+                    }
+                });
+
+                foreach (var item in await Task.WhenAll(fallbackTasks).ConfigureAwait(false))
+                {
+                    dict[(item.ClientId, item.AuthorizationId)] = item.auth;
+                }
+            }
+
+            // If an auth id was not present in the batched list response (e.g. paging), fetch individually.
+            var missing = requests.Where(r => !dict.ContainsKey((r.ClientId, r.AuthorizationId))).ToList();
+            if (missing.Count > 0)
+            {
+                var fillGate = new SemaphoreSlim(8, 8);
+                var fillTasks = missing.Select(async request =>
+                {
+                    await fillGate.WaitAsync().ConfigureAwait(false);
+                    try
+                    {
+                        var auth = await _rethinkServices.GetChildProfileAuthorizationByClientId(accountInfoId, request.ClientId, request.AuthorizationId).ConfigureAwait(false);
+                        return (request.ClientId, request.AuthorizationId, auth);
+                    }
+                    finally
+                    {
+                        fillGate.Release();
+                    }
+                });
+
+                foreach (var item in await Task.WhenAll(fillTasks).ConfigureAwait(false))
+                {
+                    dict[(item.ClientId, item.AuthorizationId)] = item.auth;
+                }
+            }
+
+            authSw.Stop();
+            _logger.LogInformation("GetClaimHeadersAsync-GetChildProfileAuthorizationsByClientIdsAsync Authorization batch completed in {ElapsedMs} ms (clients={ClientCount}, pairs={PairCount})", authSw.ElapsedMilliseconds, distinctClients.Count, requests.Count);
+
+            return dict;
         }
 
         public async Task<List<ClaimFilterOptionModel>> GetClaimPatientsAsync(ClaimFilterGetModel model)
