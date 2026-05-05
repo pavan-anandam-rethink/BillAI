@@ -1,4 +1,5 @@
-﻿using BillingService.Domain.Interfaces.Billing;
+﻿using BillingService.Web;
+using BillingService.Domain.Interfaces.Billing;
 using BillingService.Domain.Interfaces.Client;
 using BillingService.Domain.Interfaces.Common;
 using Microsoft.AspNetCore.Hosting;
@@ -84,7 +85,7 @@ namespace BillingService.XUnit.Integration.Tests
 
         public Task InitializeAsync()
         {
-            var startupAssembly = typeof(Web.Startup).GetTypeInfo().Assembly;
+            var startupAssembly = typeof(Startup).GetTypeInfo().Assembly;
             var contentRoot = GetProjectPath(_relativeTargetProjectParentDir, startupAssembly);
             var config = new ConfigurationBuilder()
                     .SetBasePath(contentRoot)
@@ -98,7 +99,7 @@ namespace BillingService.XUnit.Integration.Tests
                 .ConfigureTestServices(InitializeTestServices)
                 .UseEnvironment("Development")
                 .UseConfiguration(config)
-                .UseStartup(typeof(Web.Startup));
+                .UseStartup(typeof(Startup));
 
             Server = new TestServer(builder);
             Client = Server.CreateClient();
@@ -120,7 +121,7 @@ namespace BillingService.XUnit.Integration.Tests
 
         protected virtual void InitializeBaseAndRepos(IServiceCollection services)
         {
-            var startupAssembly = typeof(Web.Startup).GetTypeInfo().Assembly;
+            var startupAssembly = typeof(Startup).GetTypeInfo().Assembly;
 
             // Inject a custom application part manager.
             // Overrides AddMvcCore() because it uses TryAdd().
