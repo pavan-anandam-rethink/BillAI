@@ -1,5 +1,6 @@
 ﻿using BillingService.Domain.Models.ClientMicroServicesModels;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Rethink.Services.Common;
 using Rethink.Services.Common.Interfaces;
@@ -10,6 +11,7 @@ using Rethink.Services.Common.Models.Clients;
 using Rethink.Services.Common.Models.RethinkDataEntityClasses;
 using Rethink.Services.Common.Services;
 using Rethink.Services.Domain.Mapper;
+using Rethink.Services.Domain.Services.RethinkServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -26,6 +28,9 @@ namespace BillingService.Domain.Services.RethinkMasterDataMicroservices
     {
         #region "Other APIs"
         private readonly IConfiguration _configuration;
+        private readonly IRethinkMasterDataSessionCache? _sessionCache;
+        private readonly IRethinkBillingRequestContext? _requestContext;
+        private readonly ILogger<RethinkMasterDataMicroServices>? _logger;
         private readonly HttpClient _httpAccountsClient;
         private readonly HttpClient _httpCurriculumClient;
         private readonly HttpClient _httpDemographicsClient;
@@ -34,9 +39,17 @@ namespace BillingService.Domain.Services.RethinkMasterDataMicroservices
         private readonly HttpClient _httpMedicalRecordsClient;
         private readonly HttpClient _httpPracticeOperationsClient;
         private readonly HttpClient _httpAppointmentClient;
-        public RethinkMasterDataMicroServices(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public RethinkMasterDataMicroServices(
+            IConfiguration configuration,
+            IHttpClientFactory httpClientFactory,
+            IRethinkMasterDataSessionCache? sessionCache = null,
+            IRethinkBillingRequestContext? requestContext = null,
+            ILogger<RethinkMasterDataMicroServices>? logger = null)
         {
             _configuration = configuration;
+            _sessionCache = sessionCache;
+            _requestContext = requestContext;
+            _logger = logger;
             _httpAccountsClient = httpClientFactory.CreateClient("accountsClient");
             _httpCurriculumClient = httpClientFactory.CreateClient("curriculumClient");
             _httpDemographicsClient = httpClientFactory.CreateClient("demographicsClient");
@@ -1333,51 +1346,114 @@ namespace BillingService.Domain.Services.RethinkMasterDataMicroservices
             return result;
         }
 
-        private async Task<T> CallAccountsRequest<T>(string url)
+        private async Task<T> CallAccountsRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("accounts", _httpAccountsClient, url, () => HttpGetAsync<T>(_httpAccountsClient, url));
+
+        private async Task<T> CallCurriculumRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("curriculum", _httpCurriculumClient, url, () => HttpGetAsync<T>(_httpCurriculumClient, url));
+
+        private async Task<T> CallDemographicsRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("demographics", _httpDemographicsClient, url, () => HttpGetAsync<T>(_httpDemographicsClient, url));
+
+        private async Task<T> CallHealthPlansRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("healthplans", _httpHealthPlansClient, url, () => HttpGetAsync<T>(_httpHealthPlansClient, url));
+
+        private async Task<T> CallHealthInsuranceRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("healthinsurance", _httpHealthInsuranceClient, url, () => HttpGetAsync<T>(_httpHealthInsuranceClient, url));
+
+        private async Task<T> CallMedicalRecordsRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("medicalrecords", _httpMedicalRecordsClient, url, () => HttpGetAsync<T>(_httpMedicalRecordsClient, url));
+
+        private async Task<T> CallPracticeOperationsRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("practiceops", _httpPracticeOperationsClient, url, () => HttpGetAsync<T>(_httpPracticeOperationsClient, url));
+
+        private async Task<T> CallAppointmentsRequest<T>(string url) =>
+            await GetCachedOrHttpAsync("appointments", _httpAppointmentClient, url, () => HttpGetAsync<T>(_httpAppointmentClient, url));
+
+        private async Task<T> GetCachedOrHttpAsync<T>(string serviceName, HttpClient client, string relativePath, Func<Task<T>> httpGet)
         {
-            var response = await _httpAccountsClient.GetAsync(_httpAccountsClient.BaseAddress + url);
-            return await ReturnGenericData<T>(response);
+            if (!TryGetSessionCacheContext(relativePath, out var sessionKey, out var accountId))
+            {
+                return await httpGet();
+            }
+
+            var cachePath = $"{serviceName}:{relativePath}";
+            try
+            {
+                return await _sessionCache!.GetOrFetchAsync(sessionKey, accountId, cachePath, httpGet);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogWarning(ex, "Session master data cache read failed; calling upstream. Path={Path}", cachePath);
+                return await httpGet();
+            }
         }
 
-        private async Task<T> CallCurriculumRequest<T>(string url)
+        private bool TryGetSessionCacheContext(string relativePath, out string sessionKey, out int accountId)
         {
-            var response = await _httpCurriculumClient.GetAsync(_httpCurriculumClient.BaseAddress + url);
-            return await ReturnGenericData<T>(response);
+            sessionKey = string.Empty;
+            accountId = 0;
+            if (_sessionCache == null || _requestContext == null)
+            {
+                return false;
+            }
+
+            sessionKey = _requestContext.SessionKey ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(sessionKey))
+            {
+                return false;
+            }
+
+            if (_requestContext.AccountInfoId is int aid && aid > 0)
+            {
+                accountId = aid;
+                return AccountScopedPathMatches(relativePath, accountId);
+            }
+
+            if (TryParseAccountFromPath(relativePath, out var parsedId))
+            {
+                accountId = parsedId;
+                return true;
+            }
+
+            return false;
         }
 
-        private async Task<T> CallDemographicsRequest<T>(string url)
+        private static bool AccountScopedPathMatches(string relativePath, int accountInfoId)
         {
-            var response = await _httpDemographicsClient.GetAsync(_httpDemographicsClient.BaseAddress + url);
-            return await ReturnGenericData<T>(response);
+            return relativePath.Contains("/accounts/" + accountInfoId + "/", StringComparison.Ordinal)
+                   || relativePath.StartsWith("/accounts/" + accountInfoId + "?", StringComparison.Ordinal)
+                   || relativePath == "/accounts/" + accountInfoId;
         }
 
-        private async Task<T> CallHealthPlansRequest<T>(string url)
+        private static bool TryParseAccountFromPath(string relativePath, out int accountInfoId)
         {
-            var response = await _httpHealthPlansClient.GetAsync(_httpHealthPlansClient.BaseAddress + url);
-            return await ReturnGenericData<T>(response);
+            accountInfoId = 0;
+            const string prefix = "/accounts/";
+            var idx = relativePath.IndexOf(prefix, StringComparison.Ordinal);
+            if (idx < 0)
+            {
+                return false;
+            }
+
+            var start = idx + prefix.Length;
+            var end = start;
+            while (end < relativePath.Length && char.IsDigit(relativePath[end]))
+            {
+                end++;
+            }
+
+            if (end == start)
+            {
+                return false;
+            }
+
+            return int.TryParse(relativePath.AsSpan(start, end - start), out accountInfoId) && accountInfoId > 0;
         }
 
-        private async Task<T> CallHealthInsuranceRequest<T>(string url)
+        private async Task<T> HttpGetAsync<T>(HttpClient client, string url)
         {
-            var response = await _httpHealthInsuranceClient.GetAsync(_httpHealthInsuranceClient.BaseAddress + url);
-            return await ReturnGenericData<T>(response);
-        }
-
-        private async Task<T> CallMedicalRecordsRequest<T>(string url)
-        {
-            var response = await _httpMedicalRecordsClient.GetAsync(_httpMedicalRecordsClient.BaseAddress + url);
-            return await ReturnGenericData<T>(response);
-        }
-
-        private async Task<T> CallPracticeOperationsRequest<T>(string url)
-        {
-            var response = await _httpPracticeOperationsClient.GetAsync(_httpPracticeOperationsClient.BaseAddress + url);
-            return await ReturnGenericData<T>(response);
-        }
-
-        private async Task<T> CallAppointmentsRequest<T>(string url)
-        {
-            var response = await _httpAppointmentClient.GetAsync(_httpAppointmentClient.BaseAddress + url);
+            var response = await client.GetAsync(client.BaseAddress + url);
             return await ReturnGenericData<T>(response);
         }
 

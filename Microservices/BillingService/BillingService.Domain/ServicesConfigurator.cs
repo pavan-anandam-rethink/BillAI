@@ -24,6 +24,7 @@ using BillingService.Domain.Services.PatientInvoice;
 using BillingService.Domain.Services.Payment;
 using BillingService.Domain.Services.Provider;
 using BillingService.Domain.Services.RethinkMasterDataMicroservices;
+using Rethink.Services.Domain.Services.RethinkServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rethink.Services.Common.Cache;
@@ -87,6 +88,9 @@ namespace BillingService.Domain
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<IProviderService, ProviderService>();
+            services.AddScoped<IRethinkBillingRequestContext, RethinkBillingRequestContext>();
+            services.AddSingleton<IRethinkMasterDataSessionCache, RethinkMasterDataSessionCache>();
+            services.AddScoped<IRethinkMasterDataSessionPrewarm, RethinkMasterDataSessionPrewarm>();
             services.AddScoped<IRethinkMasterDataMicroServices, RethinkMasterDataMicroServices>();
             services.AddScoped<IFeatureFlagService, FeatureFlagService>();
             services.AddScoped<IClaimValidationService, ClaimValidationService>();

@@ -2,6 +2,7 @@ using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Web.IoC;
+using BillingService.Web.Middlewares;
 using HealthChecks.Azure.Storage.Blobs;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -134,8 +135,11 @@ namespace BillingService.Web
 
             app.UseWhen(
                 context => !context.Request.Headers.ContainsKey(APIKEY),
-                app => app.UseMiddleware<JwtMiddleware>()
-            );
+                branch =>
+                {
+                    branch.UseMiddleware<JwtMiddleware>();
+                    branch.UseMiddleware<BillingMasterDataRequestMiddleware>();
+                });
             app.UseWhen(
                 context => context.Request.Headers.ContainsKey(APIKEY),
                 app => app.UseMiddleware<ApiKeyMiddleware>()

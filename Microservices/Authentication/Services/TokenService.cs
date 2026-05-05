@@ -62,6 +62,12 @@ namespace Authentication.Services
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(authRequest.BillingSessionKey)
+                && !string.IsNullOrWhiteSpace(authRequest.AccountInfoId))
+            {
+                authRequest.BillingSessionKey = Guid.NewGuid().ToString("N");
+            }
+
             var token = GenerateJWTToken(key, issuer, authRequest, osbEnabled, accountDetail);
 
             return token;
@@ -130,7 +136,8 @@ namespace Authentication.Services
                 new("ImpersonatedUser", authRequest.ImpersonationUserObjectId.ToString()),
                 new("ImpersonationUserName", authRequest.ImpersonationUserName),
                 new("ImpersonationUserEmail", authRequest.ImpersonationUserEmail),
-                new("AccountDetail", accountDetail)
+                new("AccountDetail", accountDetail),
+                new("BillingSessionKey", authRequest.BillingSessionKey ?? string.Empty)
             };
 
             IEnumerable<KeyValuePair<string, bool>> permissionSource = authRequest.Permissions ?? new Dictionary<string, bool>();
