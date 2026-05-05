@@ -554,16 +554,18 @@ namespace BillingService.Domain.Services.PatientInvoice
             }
 
             var invoiceIds = previousInvoices.Select(i => i.Id).ToList();
-            var invoiceDetailsTask = _patientInvoiceDetailsRepository.Query()
+            var invoiceDetails = await _patientInvoiceDetailsRepository.Query()
                 .Where(d => invoiceIds.Contains(d.InvoiceId) && d.DateDeleted == null)
                 .ToListAsync();
-            var chargeEntriesTask = getChargeDetails(invoiceDetailsTask.Result.Select(d => d.ChargeId).Distinct().ToList());
+            var chargeIds = invoiceDetails.Select(d => d.ChargeId).Distinct().ToList();
+            var chargeEntriesTask = getChargeDetails(chargeIds);
+            var groupedByChargeTask = _paymentClaimService.GetGroupedByPaymentsForPatientInvoice(chargeIds);
+            await Task.WhenAll(chargeEntriesTask, groupedByChargeTask);
 
-            var invoiceDetails = await invoiceDetailsTask;
             var chargeEntries = await chargeEntriesTask;
 
             var chargeEntryLookup = chargeEntries.ToDictionary(c => c.Id);
-            var groupByChargeData = await _paymentClaimService.GetGroupedByPaymentsForPatientInvoice(invoiceDetailsTask.Result.Select(d => d.ChargeId).Distinct().ToList());
+            var groupByChargeData = await groupedByChargeTask;
 
             var previousInvoicesViewModel = previousInvoices.Select(previousInvoice =>
             {
@@ -658,6 +660,8 @@ namespace BillingService.Domain.Services.PatientInvoice
                 .ToListAsync();
 
             await Task.WhenAll(clientUsersTask, clientDetailsTask);
+            var clientUsers = await clientUsersTask;
+            var clientDetails = await clientDetailsTask;
 
             var invoiceDetails = await _patientInvoiceDetailsRepository
                 .Query()
@@ -675,10 +679,10 @@ namespace BillingService.Domain.Services.PatientInvoice
                 .GetGroupedByPaymentsForPatientInvoice(chargeIds))
                 .ToDictionary(x => x.ChargeId);
 
-            var clientLookup = clientDetailsTask.Result
+            var clientLookup = clientDetails
                 .ToDictionary(c => c.Id, c => c.ClientName);
 
-            foreach (var u in clientUsersTask.Result)
+            foreach (var u in clientUsers)
             {
                 if (!clientLookup.ContainsKey(u.Id))
                 {

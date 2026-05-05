@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Web.IoC;
+using BillingService.Web.Observability;
 using BillingService.Web.Servers;
 using Azure.Storage.Blobs;
 using HealthChecks.Azure.Storage.Blobs;
@@ -26,6 +27,7 @@ public static class BillingWebHostBootstrap
     {
         var configuration = builder.Configuration;
         var services = builder.Services;
+        services.AddSingleton<DbCommandMetricsListener>();
 
         var billingConnTask = IoCContainer.GetDBConnectionStringAsync(configuration, "Database", kv);
         var reportingConnTask = IoCContainer.GetDBConnectionStringAsync(configuration, "ReportingDB", kv);
@@ -145,6 +147,8 @@ public static class BillingWebHostBootstrap
             });
         });
 
+        services.AddHostedService<DbCommandMetricsHostedService>();
+
         services.AddHealthChecks()
             .AddSqlServer(billingConn, name: "SQL Server")
             .AddAzureServiceBusQueue(svcBusConn, Queues.RT_Billing_ClearingHouse_ClaimSubmission, name: "Service Bus")
@@ -177,6 +181,7 @@ public static class BillingWebHostBootstrap
         app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
             .WithExposedHeaders("Content-Disposition"));
         app.UseRouting();
+        app.UseMiddleware<RequestTelemetryMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -202,6 +207,8 @@ public static class BillingWebHostBootstrap
 
         try
         {
+            // Force initialization so EF Core command listener is subscribed early.
+            _ = app.Services.GetRequiredService<DbCommandMetricsListener>();
             var billingBlobService = app.Services.GetRequiredService<IBillingBlobService>();
             _ = billingBlobService.CreateBlobContainerAsync();
         }
