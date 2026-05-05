@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Domain;
@@ -9,41 +7,37 @@ using BillingService.Domain.Services.Payment;
 using BillingService.Domain.Utils;
 using BillingService.Web.Helpers.HttpClients;
 using EdiFabric;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver.Core.Configuration;
-using Quartz.Util;
-using Rethink.Services.Common.Factories;
 using Rethink.Services.Common.Infrastructure.Configuration;
 using Rethink.Services.Common.Infrastructure.Context.Billing;
 using Rethink.Services.Common.Infrastructure.Repository;
-using Rethink.Services.Common.Interfaces;
 using Rethink.Services.Domain.Interfaces;
 using Rethink.Services.Domain.Services;
 using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BillingService.Web.IoC
 {
-    public class IoCContainer
+    public static class IoCContainer
     {
-        private static IDbContextConfigurator<BillingDbContext> _billingConfigurator = new DbContextConfigurator<BillingDbContext>();
-        private static IDbContextConfigurator<ReportingDbContext> _reportingConfigurator = new DbContextConfigurator<ReportingDbContext>();
+        private static readonly IDbContextConfigurator<BillingDbContext> BillingConfigurator =
+            new DbContextConfigurator<BillingDbContext>();
+        private static readonly IDbContextConfigurator<ReportingDbContext> ReportingConfigurator =
+            new DbContextConfigurator<ReportingDbContext>();
 
-        public static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService secretProvider)
+        public static void ConfigureDatabase(
+            IServiceCollection services,
+            string billingDbConnectionString,
+            string reportingDbConnectionString)
         {
-
-            var billingDbConnectionString = GetDBConnectionString(configuration, "Database", secretProvider);
-            var reportingDbConnectionString = GetDBConnectionString(configuration, "ReportingDB", secretProvider);
-
-            _billingConfigurator.Configure(services, billingDbConnectionString, false, false);
-            _reportingConfigurator.Configure(services, reportingDbConnectionString, false, false);
+            BillingConfigurator.Configure(services, billingDbConnectionString, false, false);
+            ReportingConfigurator.Configure(services, reportingDbConnectionString, false, false);
         }
-
 
         public static void RegisterDBContext(IServiceCollection services)
         {
@@ -52,121 +46,144 @@ namespace BillingService.Web.IoC
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
         }
 
-        public static void RegisterRedisCache(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        public static void RegisterRedisCache(IServiceCollection services, string redisConnectionString)
         {
-            services.AddSingleton<IConnectionMultiplexer>(sp =>
-            {
-                var redisConnectionString = keyVaultProviderService.GetSecretAsync(configuration["RedisCache:ConnectionString"]).Result; ;
-                return ConnectionMultiplexer.Connect(redisConnectionString);
-            });
+            services.AddSingleton<IConnectionMultiplexer>(_ =>
+                ConnectionMultiplexer.Connect(redisConnectionString));
         }
 
-        public static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        public static void RegisterHttpClients(
+            IServiceCollection services,
+            IConfiguration configuration,
+            IReadOnlyDictionary<string, string> clientApiKeys)
         {
-            string accountsKey, curriculumsKey, demographicsKey, healthPlansKey, healthInsuranceKey, medicalRecordsKey, practiceOperationsKey, appointmentAPIKey, appointmentApplicationKey;
-            FetchClientServiceKeys(configuration, keyVaultProviderService, out accountsKey, out curriculumsKey, out demographicsKey, out healthPlansKey, out healthInsuranceKey, out medicalRecordsKey, out practiceOperationsKey, out appointmentAPIKey, out appointmentApplicationKey);
+            string Header(string keyName) =>
+                configuration[keyName] ??
+                throw new InvalidOperationException($"Configuration '{keyName}' is required for HTTP clients.");
 
             services.AddHttpClient<IBaseHttpClient, BaseHttpClient>().SetHandlerLifetime(TimeSpan.FromMinutes(5));
             services.AddHttpClient("accountsClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["AccountsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), accountsKey);
+                client.BaseAddress = new Uri(configuration["AccountsApiUrl"]);
+                client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["AccountsKey"]);
             });
             services.AddHttpClient("curriculumClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["CurriculumApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), curriculumsKey);
+                client.BaseAddress = new Uri(configuration["CurriculumApiUrl"]);
+                client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["CurriculumsKey"]);
             });
             services.AddHttpClient("demographicsClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["DemographicsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), demographicsKey);
+                client.BaseAddress = new Uri(configuration["DemographicsApiUrl"]);
+                client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["DemographicsKey"]);
             });
             services.AddHttpClient("healthPlansClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["HealthPlansApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), healthPlansKey);
+                client.BaseAddress = new Uri(configuration["HealthPlansApiUrl"]);
+                client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["HealthPlansKey"]);
             });
             services.AddHttpClient("healthInsuranceClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["HealthInsuranceApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), healthInsuranceKey);
+                client.BaseAddress = new Uri(configuration["HealthInsuranceApiUrl"]);
+                client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["HealthInsuranceKey"]);
             });
             services.AddHttpClient("medicalRecordsClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["MedicalRecordsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), medicalRecordsKey);
+                client.BaseAddress = new Uri(configuration["MedicalRecordsApiUrl"]);
+                client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["MedicalRecordsKey"]);
             });
             services.AddHttpClient("praticeOperationsClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["PracticeOperationsApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), practiceOperationsKey);
+                client.BaseAddress = new Uri(configuration["PracticeOperationsApiUrl"]);
+                client.DefaultRequestHeaders.Add(Header("HeaderKey"), clientApiKeys["PracticeOperationsKey"]);
             });
-
             services.AddHttpClient("appointmentClient", client =>
             {
-                client.BaseAddress = new Uri(configuration["AppointmentApiUrl"].ToString());
-                client.DefaultRequestHeaders.Add(configuration["ApiKey"].ToString(), appointmentAPIKey);
-                client.DefaultRequestHeaders.Add(configuration["HeaderKey"].ToString(), appointmentApplicationKey);
+                client.BaseAddress = new Uri(configuration["AppointmentApiUrl"]);
+                client.DefaultRequestHeaders.Add(configuration["ApiKey"], clientApiKeys["AppointmentAPIKey"]);
+                client.DefaultRequestHeaders.Add(configuration["HeaderKey"], clientApiKeys["AppointmentApplicationKey"]);
             });
         }
 
-        private static void FetchClientServiceKeys(IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService, out string accountsKey, out string curriculumsKey, out string demographicsKey, out string healthPlansKey, out string healthInsuranceKey, out string medicalRecordsKey, out string practiceOperationsKey, out string appointmentAPIKey, out string appointmentApplicationKey)
+        private static async Task<IReadOnlyDictionary<string, string>> FetchClientServiceKeysAsync(
+            IConfiguration configuration,
+            IKeyVaultProviderService keyVaultProviderService)
         {
-            accountsKey = keyVaultProviderService.GetSecretAsync(configuration["AccountsKey"]).Result;
-            curriculumsKey = keyVaultProviderService.GetSecretAsync(configuration["CurriculumsKey"]).Result;
-            demographicsKey = keyVaultProviderService.GetSecretAsync(configuration["DemographicsKey"]).Result;
-            healthPlansKey = keyVaultProviderService.GetSecretAsync(configuration["HealthPlansKey"]).Result;
-            healthInsuranceKey = keyVaultProviderService.GetSecretAsync(configuration["HealthInsuranceKey"]).Result;
-            medicalRecordsKey = keyVaultProviderService.GetSecretAsync(configuration["MedicalRecordsKey"]).Result;
-            practiceOperationsKey = keyVaultProviderService.GetSecretAsync(configuration["PracticeOperationsKey"]).Result;
-            appointmentAPIKey = keyVaultProviderService.GetSecretAsync(configuration["AppointmentAPIKey"]).Result;
-            appointmentApplicationKey = keyVaultProviderService.GetSecretAsync(configuration["AppointmentApplicationKey"]).Result;
-        }
-
-        public static async Task RegisterServices(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService secretProvider)
-        {
-
-            var mapperConfig = new MapperConfiguration(cfg =>
+            var defs = new (string DictKey, string ConfigKey)[]
             {
-                cfg.AddProfile(new MapperProfile());
-            });
+                ("AccountsKey", "AccountsKey"),
+                ("CurriculumsKey", "CurriculumsKey"),
+                ("DemographicsKey", "DemographicsKey"),
+                ("HealthPlansKey", "HealthPlansKey"),
+                ("HealthInsuranceKey", "HealthInsuranceKey"),
+                ("MedicalRecordsKey", "MedicalRecordsKey"),
+                ("PracticeOperationsKey", "PracticeOperationsKey"),
+                ("AppointmentAPIKey", "AppointmentAPIKey"),
+                ("AppointmentApplicationKey", "AppointmentApplicationKey"),
+            };
 
-            IMapper mapper = mapperConfig.CreateMapper();
+            var pairs = await Task.WhenAll(defs.Select(async d =>
+            {
+                var v = await keyVaultProviderService.GetSecretAsync(configuration[d.ConfigKey]).ConfigureAwait(false);
+                return (d.DictKey, Value: v ?? string.Empty);
+            })).ConfigureAwait(false);
 
-            services.AddSingleton(mapper);
+            return pairs.ToDictionary(p => p.DictKey, p => p.Value);
+        }
 
-            await ConfigureBlobStorageAsync(services, configuration, secretProvider);
+        public static Task<IReadOnlyDictionary<string, string>> ResolveClientHttpKeysAsync(
+            IConfiguration configuration,
+            IKeyVaultProviderService keyVaultProviderService) =>
+            FetchClientServiceKeysAsync(configuration, keyVaultProviderService);
 
-            var svcBusConnStrBuilder = ServiceBusConfig.ConfigureServiceBus(services, configuration, secretProvider);
-            var mgmtClient = new ManagementClient(svcBusConnStrBuilder);
+        /// <param name="blobStorageConnectionString">Pre-resolved so blob storage secret is read once.</param>
+        /// <param name="serviceBusConnectionString">Pre-resolved so Service Bus is not queried twice.</param>
+        public static async Task RegisterServicesAsync(
+            IServiceCollection services,
+            IConfiguration configuration,
+            IKeyVaultProviderService secretProvider,
+            string blobStorageConnectionString,
+            string serviceBusConnectionString)
+        {
+            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new MapperProfile()); });
+            services.AddSingleton(mapperConfig.CreateMapper());
 
-            //for razor engine in services
+            await ConfigureBlobStorageAsync(services, configuration, secretProvider, blobStorageConnectionString)
+                .ConfigureAwait(false);
+
+            _ = ServiceBusConfig.ConfigureServiceBusWithConnectionString(services, serviceBusConnectionString);
+
             services.AddRazorPages();
 
             ServicesConfigurator.Register(services, configuration);
             Authentication.ServicesConfigurator.Register(services, configuration);
-
         }
 
-        private static async Task ConfigureBlobStorageAsync(IServiceCollection services, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        private static async Task ConfigureBlobStorageAsync(
+            IServiceCollection services,
+            IConfiguration configuration,
+            IKeyVaultProviderService keyVaultProviderService,
+            string blobStorageConnectionString)
         {
-            var ediFabricKey = await keyVaultProviderService.GetSecretAsync(configuration["EdiFabric:SerialKey"]);
+            var ediFabricKey = await keyVaultProviderService.GetSecretAsync(configuration["EdiFabric:SerialKey"])
+                .ConfigureAwait(false);
             SerialKey.Set(ediFabricKey);
 
-            var blobConnectionString = keyVaultProviderService.GetSecretAsync(configuration["ConnectionStrings:BlobStorage:ConnectionString"]).Result;
-
+            var blobConnectionString = blobStorageConnectionString ?? string.Empty;
             var factory = new BlobConnectionFactory(blobConnectionString);
-            services.AddScoped<IBlobConnectionFactory>(x => factory);
-            services.AddSingleton(x => new BlobServiceClient(blobConnectionString));
+            services.AddScoped<IBlobConnectionFactory>(_ => factory);
+            services.AddSingleton(_ => new BlobServiceClient(blobConnectionString));
             services.AddScoped<IBillingBlobService, BillingBlobService>();
             services.AddScoped<IBlobProcessingService, BlobProcessingService>();
-
         }
-        public static string GetDBConnectionString(IConfiguration configuration, string DbName, IKeyVaultProviderService secretProvider)
+
+        public static async Task<string> GetDBConnectionStringAsync(
+            IConfiguration configuration,
+            string dbName,
+            IKeyVaultProviderService secretProvider)
         {
-            var DbSectionName = $"ConnectionStrings:{DbName}";
-            var connectionStringSection = configuration.GetSection(DbSectionName);
+            var dbSectionName = $"ConnectionStrings:{dbName}";
+            var connectionStringSection = configuration.GetSection(dbSectionName);
             var connStringBuilder = new SqlConnectionStringBuilder
             {
                 DataSource = connectionStringSection["DataSource"],
@@ -181,14 +198,16 @@ namespace BillingService.Web.IoC
 
             if (!connStringBuilder.IntegratedSecurity)
             {
-                var userIdSecret = secretProvider.GetSecretAsync(configuration["ConnectionStrings:Database:UserId"]).Result;
-                var passwordSecret = secretProvider.GetSecretAsync(configuration["ConnectionStrings:Database:Password"]).Result;
-                connStringBuilder.UserID = userIdSecret;
-                connStringBuilder.Password = passwordSecret;
+                var userIdKey = connectionStringSection["UserId"];
+                var passwordKey = connectionStringSection["Password"];
+                var userIdTask = secretProvider.GetSecretAsync(userIdKey);
+                var passwordTask = secretProvider.GetSecretAsync(passwordKey);
+                await Task.WhenAll(userIdTask, passwordTask).ConfigureAwait(false);
+                connStringBuilder.UserID = await userIdTask.ConfigureAwait(false);
+                connStringBuilder.Password = await passwordTask.ConfigureAwait(false);
             }
 
             return connStringBuilder.ConnectionString;
         }
-
     }
 }

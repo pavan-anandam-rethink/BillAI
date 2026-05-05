@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using EdiFabric;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.Extensions.Configuration;
@@ -15,16 +12,41 @@ namespace BillingService.Domain
 {
     public class ServiceBusConfig
     {
-        public static ServiceBusConnectionStringBuilder ConfigureServiceBus(IServiceCollection serviceCollection, IConfiguration configuration,IKeyVaultProviderService keyVaultProviderService)
+        /// <summary>Registers <see cref="IServiceBusConnectionFactory"/> without additional Key Vault round-trips.</summary>
+        public static ServiceBusConnectionStringBuilder ConfigureServiceBusWithConnectionString(
+            IServiceCollection serviceCollection,
+            string connectionString)
         {
-            var serviceBusSecret = keyVaultProviderService.GetSecretAsync(configuration["ConnectionStrings:ServiceBus:ConnectionString"]).Result;
-            
-            // we need a ServiceBusConnectionStringBuilder to construct a ManagementClient
-            var connStringBuilder = new ServiceBusConnectionStringBuilder(serviceBusSecret);
-            var builder = new ServiceBusConnectionFactory(connStringBuilder);
-            serviceCollection.AddScoped<IServiceBusConnectionFactory>(x => builder);
-
+            var connStringBuilder = new ServiceBusConnectionStringBuilder(connectionString);
+            var factory = new ServiceBusConnectionFactory(connStringBuilder);
+            serviceCollection.AddScoped<IServiceBusConnectionFactory>(_ => factory);
             return connStringBuilder;
+        }
+
+        public static Task<ServiceBusConnectionStringBuilder> ConfigureServiceBusAsync(
+            IServiceCollection serviceCollection,
+            string serviceBusKvSecretName,
+            IKeyVaultProviderService keyVaultProviderService)
+        {
+            return ConfigureServiceBusFromKeyVaultAsync(serviceCollection, serviceBusKvSecretName, keyVaultProviderService);
+        }
+
+        public static async Task<ServiceBusConnectionStringBuilder> ConfigureServiceBusFromKeyVaultAsync(
+            IServiceCollection serviceCollection,
+            string serviceBusKvSecretName,
+            IKeyVaultProviderService keyVaultProviderService)
+        {
+            var serviceBusSecret = await keyVaultProviderService.GetSecretAsync(serviceBusKvSecretName).ConfigureAwait(false);
+            return ConfigureServiceBusWithConnectionString(serviceCollection, serviceBusSecret);
+        }
+
+        [Obsolete("Use ConfigureServiceBusWithConnectionString or ConfigureServiceBusFromKeyVaultAsync.")]
+        public static ServiceBusConnectionStringBuilder ConfigureServiceBus(IServiceCollection serviceCollection, IConfiguration configuration, IKeyVaultProviderService keyVaultProviderService)
+        {
+            return ConfigureServiceBusFromKeyVaultAsync(
+                serviceCollection,
+                configuration["ConnectionStrings:ServiceBus:ConnectionString"],
+                keyVaultProviderService).GetAwaiter().GetResult();
         }
 
         public static async Task CreateQueueIfNotExists(ManagementClient mgmtClient, string queuePath)

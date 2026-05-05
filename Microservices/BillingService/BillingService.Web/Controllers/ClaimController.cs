@@ -78,7 +78,33 @@ namespace BillingService.Web.Controllers
                     userInfo.AccountInfoId, userInfo.MemberId);
                 ClaimOptions options = new ClaimOptions();
 
-                var clientList = await _clientService.GetClientsListForClaimAsync(userInfo.AccountInfoId, userInfo.MemberId);
+                var accountId = userInfo.AccountInfoId;
+                var memberId = userInfo.MemberId;
+                var claimEntityId = userInfo.Id;
+
+                var clientListTask = _clientService.GetClientsListForClaimAsync(accountId, memberId);
+                var locationsTask = _providerLocationService.GetForAccount(accountId);
+                var membersTask = _memberAccountService.GetMembersByAccountInfoId(accountId);
+                var locationCodesTask = _commonService.GetLocationCodes(accountId);
+                var renderingProvidersTask = _claimService.GetClaimRenderingProviders(accountId);
+                var referringProvidersTask = _claimService.GetClaimReferringProviders(claimEntityId, accountId);
+                var claimIdsTask = _claimService.GetIdsForAccountAsync(accountId);
+                var unitTypesTask = _rethinkServices.GetUnitTypesAsync();
+
+                await Task.WhenAll(
+                    clientListTask,
+                    locationsTask,
+                    membersTask,
+                    locationCodesTask,
+                    renderingProvidersTask,
+                    referringProvidersTask,
+                    claimIdsTask,
+                    unitTypesTask).ConfigureAwait(false);
+
+                var clientList = await clientListTask.ConfigureAwait(false);
+                var locations = await locationsTask.ConfigureAwait(false);
+                var members = await membersTask.ConfigureAwait(false);
+                var locationCodes = await locationCodesTask.ConfigureAwait(false);
 
                 options.Clients = clientList.Select(cl => new BasicOption()
                 {
@@ -86,7 +112,6 @@ namespace BillingService.Web.Controllers
                     Name = cl.Name
                 }).ToList();
 
-                var locations = await _providerLocationService.GetForAccount(userInfo.AccountInfoId);
                 options.Locations = locations.Select(l => new BasicOption
                 {
                     Id = l.id,
@@ -103,29 +128,26 @@ namespace BillingService.Web.Controllers
                     Name = "Client Home"
                 });
 
-                var members = await _memberAccountService.GetMembersByAccountInfoId(userInfo.AccountInfoId);
                 options.Members = members.Select(m => new BasicOption()
                 {
                     Id = m.Id,
                     Name = m.FirstName + " " + m.LastName
                 }).ToList();
 
-                var locationCodes = await _commonService.GetLocationCodes(userInfo.AccountInfoId);
                 options.LocationCodes = locationCodes.Select(lc => new BasicOption()
                 {
                     Id = lc.Id,
                     Name = lc.Code + " - " + lc.Description
                 }).ToList();
 
-                options.RenderingProviders = await _claimService.GetClaimRenderingProviders(userInfo.AccountInfoId);
-                options.ReferringProviders = await _claimService.GetClaimReferringProviders(userInfo.Id, userInfo.AccountInfoId);
+                options.RenderingProviders = await renderingProvidersTask.ConfigureAwait(false);
+                options.ReferringProviders = await referringProvidersTask.ConfigureAwait(false);
                 options.ServiceFacilities = locations.Select(x => new BasicOption { Id = x.id, Name = x.name }).OrderBy(x => x.Name).ToList();
                 options.BillingProviders = locations.Where(x => x.isBillingLocation).Select(x => new BasicOption { Id = x.id, Name = x.name + " - " + x.agencyName }).OrderBy(x => x.Name).ToList();
 
-                var claimIds = await _claimService.GetIdsForAccountAsync(userInfo.AccountInfoId);
-                options.ClaimIds = claimIds;
+                options.ClaimIds = await claimIdsTask.ConfigureAwait(false);
 
-                var unitTypes = await _rethinkServices.GetUnitTypesAsync();
+                var unitTypes = await unitTypesTask.ConfigureAwait(false);
                 options.UnitTypes = unitTypes.Select(x => new BasicOption { Id = x.id, Name = x.unitString }).ToList();
 
                 _logger.LogInformation("Successfully retrieved claim options. AccountInfoId={AccountInfoId}, MemberId={MemberId}",
@@ -279,7 +301,9 @@ namespace BillingService.Web.Controllers
 
                 // Check if call the new ClaimProcessing Endpoint of old one
                 var key = _configuration["UseNewClaimProcessing"];
-                var getDataFromKv = string.IsNullOrEmpty(key) ? string.Empty : _keyVaultProviderService.GetSecretAsync(key).Result;
+                var getDataFromKv = string.IsNullOrEmpty(key)
+                    ? string.Empty
+                    : await _keyVaultProviderService.GetSecretAsync(key);
                 var useNewClaimProcessing = getDataFromKv.Length > 0 ? Convert.ToBoolean(getDataFromKv) : false;
 
                 // get the data from the service
@@ -1409,10 +1433,10 @@ namespace BillingService.Web.Controllers
                     nameof(ClaimController),
                     nameof(GetGridPageSizes));
 
-                var pageSizesSecret = _keyVaultProviderService.GetSecretAsync(_configuration["GridPageSizes"]).Result;
+                var pageSizesSecret = await _keyVaultProviderService.GetSecretAsync(_configuration["GridPageSizes"]);
                 var pageSizes = JsonSerializer.Deserialize<object[]>(pageSizesSecret);
 
-                var defaultPageSizeSecret = _keyVaultProviderService.GetSecretAsync(_configuration["DefaultPageSize"]).Result;
+                var defaultPageSizeSecret = await _keyVaultProviderService.GetSecretAsync(_configuration["DefaultPageSize"]);
                 var defaultPageSize = JsonSerializer.Deserialize<object>(defaultPageSizeSecret);
 
                 var response = new
