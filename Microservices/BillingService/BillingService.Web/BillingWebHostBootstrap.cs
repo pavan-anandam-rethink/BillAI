@@ -5,36 +5,40 @@ using BillingService.Web.IoC;
 using BillingService.Web.Servers;
 using Azure.Storage.Blobs;
 using HealthChecks.Azure.Storage.Blobs;
-using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Rethink.Services.Common.Messaging;
 using Rethink.Services.Domain.Interfaces;
 using RethinkCore.Common.Logging.Extensions;
+using HealthChecks.UI.Client;
+using Authentication.Middlewares;
 
 namespace BillingService.Web;
 
-/// <summary>Async composition for <see cref="Startup"/>; one synchronous bridge at host configure time.</summary>
-internal static class BillingWebHostBootstrap
+/// <summary>Async composition for minimal hosting — avoids synchronous blocking during service registration.</summary>
+public static class BillingWebHostBootstrap
 {
     internal const string ApiKeyHeader = "XApiKey";
 
-    public static async Task ConfigureServicesAsync(
-        IServiceCollection services,
-        IConfiguration configuration,
-        IKeyVaultProviderService kv)
+    public static async Task AddServicesAsync(WebApplicationBuilder builder, IKeyVaultProviderService kv)
     {
+        var configuration = builder.Configuration;
+        var services = builder.Services;
+
         var billingConnTask = IoCContainer.GetDBConnectionStringAsync(configuration, "Database", kv);
         var reportingConnTask = IoCContainer.GetDBConnectionStringAsync(configuration, "ReportingDB", kv);
         await Task.WhenAll(billingConnTask, reportingConnTask).ConfigureAwait(false);
 
-        IoCContainer.ConfigureDatabase(services, billingConnTask.Result, reportingConnTask.Result);
+        var billingConn = await billingConnTask.ConfigureAwait(false);
+        var reportingConn = await reportingConnTask.ConfigureAwait(false);
+
+        IoCContainer.ConfigureDatabase(services, billingConn, reportingConn);
         IoCContainer.RegisterDBContext(services);
 
         var httpKeysTask = IoCContainer.ResolveClientHttpKeysAsync(configuration, kv);
-        var redisConnTask = kv.GetSecretAsync(configuration["RedisCache:ConnectionString"]);
+        var redisConnTask = kv.GetSecretAsync(configuration["ConnectionStrings:RedisCache:ConnectionString"]);
         var svcBusConnTask = kv.GetSecretAsync(configuration["ConnectionStrings:ServiceBus:ConnectionString"]);
         var blobConnTask = kv.GetSecretAsync(configuration["ConnectionStrings:BlobStorage:ConnectionString"]);
         var aiInstTask = kv.GetSecretAsync(configuration["ApplicationInsights:InstrumentationKey"]);
@@ -54,25 +58,35 @@ internal static class BillingWebHostBootstrap
             pusherKeyTask,
             pusherSecretTask).ConfigureAwait(false);
 
+        var redisConn = await redisConnTask.ConfigureAwait(false);
+        var svcBusConn = await svcBusConnTask.ConfigureAwait(false);
+        var blobConn = await blobConnTask.ConfigureAwait(false);
+        var httpKeys = await httpKeysTask.ConfigureAwait(false);
+        var aiInst = await aiInstTask.ConfigureAwait(false);
+        var aiConnStr = await aiConnStrTask.ConfigureAwait(false);
+        var pusherAppId = await pusherAppIdTask.ConfigureAwait(false);
+        var pusherKey = await pusherKeyTask.ConfigureAwait(false);
+        var pusherSecret = await pusherSecretTask.ConfigureAwait(false);
+
         await IoCContainer.RegisterServicesAsync(
             services,
             configuration,
             kv,
-            blobConnTask.Result,
-            svcBusConnTask.Result).ConfigureAwait(false);
+            blobConn,
+            svcBusConn).ConfigureAwait(false);
 
-        IoCContainer.RegisterRedisCache(services, redisConnTask.Result);
-        IoCContainer.RegisterHttpClients(services, configuration, httpKeysTask.Result);
+        IoCContainer.RegisterRedisCache(services, redisConn);
+        IoCContainer.RegisterHttpClients(services, configuration, httpKeys);
 
         services.AddSingleton<IPusherNotificationServer>(_ =>
             new PusherNotificationServer(
                 configuration,
-                pusherAppIdTask.Result,
-                pusherKeyTask.Result,
-                pusherSecretTask.Result));
+                pusherAppId,
+                pusherKey,
+                pusherSecret));
 
         var aiStarter = new ApplicationInsightsStarter();
-        aiStarter.TryAddIfConfigured(aiConnStrTask.Result, services);
+        aiStarter.TryAddIfConfigured(aiConnStr, services);
 
         services.AddRethinkLogging(configuration);
 
@@ -132,13 +146,13 @@ internal static class BillingWebHostBootstrap
         });
 
         services.AddHealthChecks()
-            .AddSqlServer(billingConnTask.Result, name: "SQL Server")
-            .AddAzureServiceBusQueue(svcBusConnTask.Result, Queues.RT_Billing_ClearingHouse_ClaimSubmission, name: "Service Bus")
+            .AddSqlServer(billingConn, name: "SQL Server")
+            .AddAzureServiceBusQueue(svcBusConn, Queues.RT_Billing_ClearingHouse_ClaimSubmission, name: "Service Bus")
             .AddAzureBlobStorage(
-                _ => new BlobServiceClient(blobConnTask.Result),
+                _ => new BlobServiceClient(blobConn),
                 _ => new AzureBlobStorageHealthCheckOptions { ContainerName = "rtafiles" },
                 name: "Blob Storage")
-            .AddAzureApplicationInsights(aiInstTask.Result, name: "App Insights")
+            .AddAzureApplicationInsights(aiInst, name: "App Insights")
             .AddUrlGroup(
             [
                 new Uri(GetHealthCheckEndpoint(configuration["AccountsApiUrl"])),
@@ -150,6 +164,48 @@ internal static class BillingWebHostBootstrap
                 new Uri(GetHealthCheckEndpoint(configuration["PracticeOperationsApiUrl"])),
                 new Uri(GetHealthCheckEndpoint(configuration["AppointmentApiUrl"], "/api/cal/healthcheck/live")),
             ], name: "Rethink Microservices");
+    }
+
+    public static void ConfigurePipeline(WebApplication app)
+    {
+        var env = app.Environment;
+        if (!env.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
+        app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+            .WithExposedHeaders("Content-Disposition"));
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseWhen(
+            context => !context.Request.Headers.ContainsKey(ApiKeyHeader),
+            branch => branch.UseMiddleware<JwtMiddleware>());
+        app.UseWhen(
+            context => context.Request.Headers.ContainsKey(ApiKeyHeader),
+            branch => branch.UseMiddleware<ApiKeyMiddleware>());
+
+        app.UseSwagger();
+        app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Billing Service"); });
+
+        app.UseHealthChecks("/api/health", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = env.IsProduction()
+                ? UIResponseWriter.WriteHealthCheckUIResponseNoExceptionDetails
+                : UIResponseWriter.WriteHealthCheckUIResponse
+        });
+
+        app.MapControllers();
+
+        try
+        {
+            var billingBlobService = app.Services.GetRequiredService<IBillingBlobService>();
+            _ = billingBlobService.CreateBlobContainerAsync();
+        }
+        catch { }
     }
 
     private static string GetHealthCheckEndpoint(string fullApiUrl, string healthcheckEndpoint = "/healthcheck/live")

@@ -198,8 +198,10 @@ namespace BillingService.Web.IoC
 
             if (!connStringBuilder.IntegratedSecurity)
             {
-                var userIdTask = secretProvider.GetSecretAsync(configuration["ConnectionStrings:Database:UserId"]);
-                var passwordTask = secretProvider.GetSecretAsync(configuration["ConnectionStrings:Database:Password"]);
+                var userIdKey = connectionStringSection["UserId"];
+                var passwordKey = connectionStringSection["Password"];
+                var userIdTask = secretProvider.GetSecretAsync(userIdKey);
+                var passwordTask = secretProvider.GetSecretAsync(passwordKey);
                 await Task.WhenAll(userIdTask, passwordTask).ConfigureAwait(false);
                 connStringBuilder.UserID = await userIdTask.ConfigureAwait(false);
                 connStringBuilder.Password = await passwordTask.ConfigureAwait(false);

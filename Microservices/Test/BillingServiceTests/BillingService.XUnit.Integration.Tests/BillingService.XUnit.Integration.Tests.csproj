@@ -30,6 +30,7 @@
 		<Compile Include="PaymentNoteControllerTest.cs" />
 		<Compile Include="PaymentPostingControllerTest.cs" />
 		<Compile Include="ServiceLineAdjustmentControllerTest.cs" />
+		<Compile Include="BillingWebApplicationFactory.cs" />
 		<Compile Include="TestServerFixture.cs" />
 		<Compile Include="WriteOffControllerTest.cs" />
 	</ItemGroup>

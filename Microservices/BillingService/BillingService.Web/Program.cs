@@ -1,43 +1,43 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Rethink.Services.Common.Helpers;
+using Rethink.Services.Domain.Interfaces;
 using RethinkCore.Common.Logging.Extensions;
-using System;
-using System.IO;
 
-namespace BillingService.Web
+namespace BillingService.Web;
+
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();
+        builder.Logging.AddAppInsightLogger(builder.Configuration);
+        LogConfigHelper.ConfigureApiLogging(builder.Logging);
+
+        IKeyVaultProviderService keyVault = builder.Environment.IsEnvironment(IntegrationTestKeyVaultProvider.EnvironmentName)
+            ? new IntegrationTestKeyVaultProvider()
+            : new KeyVaultProviderService(builder.Configuration);
+
+        if (keyVault is KeyVaultProviderService concreteKv)
         {
-            CreateHostBuilder(args).Build().Run();
+            builder.Services.AddSingleton(concreteKv);
+            builder.Services.AddSingleton<IKeyVaultProviderService>(sp => sp.GetRequiredService<KeyVaultProviderService>());
+        }
+        else
+        {
+            builder.Services.AddSingleton(keyVault);
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureHostConfiguration(builder =>
-                {
-                    var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                    builder
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", true, true)
-                        .AddJsonFile($"appsettings.{environmentName}.json", true, true)
-                        .AddEnvironmentVariables();
-                })
-                .ConfigureLogging((context, loggingBuilder) =>
-                {
-                    loggingBuilder.ClearProviders();
-                    loggingBuilder.AddConsole();
-                    loggingBuilder.AddDebug();
-                    loggingBuilder.AddAppInsightLogger(context.Configuration);
-                    LogConfigHelper.ConfigureApiLogging(loggingBuilder);
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        await BillingWebHostBootstrap.AddServicesAsync(builder, keyVault).ConfigureAwait(false);
+
+        var app = builder.Build();
+        BillingWebHostBootstrap.ConfigurePipeline(app);
+
+        await app.RunAsync().ConfigureAwait(false);
     }
 }

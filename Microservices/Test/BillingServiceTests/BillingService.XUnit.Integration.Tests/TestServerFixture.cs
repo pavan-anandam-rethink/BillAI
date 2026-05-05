@@ -1,12 +1,12 @@
-﻿using BillingService.Web;
-using BillingService.Domain.Interfaces.Billing;
+﻿using BillingService.Domain.Interfaces.Billing;
 using BillingService.Domain.Interfaces.Client;
 using BillingService.Domain.Interfaces.Common;
-using Microsoft.AspNetCore.Hosting;
+using BillingService.Web;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -31,6 +31,8 @@ namespace BillingService.XUnit.Integration.Tests
     public class TestServerFixture : IAsyncLifetime, IDisposable
     {
         private readonly string _relativeTargetProjectParentDir;
+
+        private WebApplicationFactory<Program> _factory;
 
         public TestServerFixture()
             : this(Path.Combine("BillingService"))
@@ -80,51 +82,50 @@ namespace BillingService.XUnit.Integration.Tests
         public HttpClient Client { get; private set; }
         public string XApiKey { get; private set; }
 
-        public TestServer Server { get; private set; }
+        /// <summary>Factory for advanced scenarios; prefer <see cref="Client"/>.</summary>
+        public WebApplicationFactory<Program> Factory { get; private set; }
+
         #endregion
 
         public Task InitializeAsync()
         {
-            var startupAssembly = typeof(Startup).GetTypeInfo().Assembly;
+            var startupAssembly = typeof(Program).GetTypeInfo().Assembly;
             var contentRoot = GetProjectPath(_relativeTargetProjectParentDir, startupAssembly);
-            var config = new ConfigurationBuilder()
-                    .SetBasePath(contentRoot)
-                    .AddJsonFile("appsettings.json")
-                    //.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
-                    .Build();
 
-            var builder = new WebHostBuilder()
-                .UseContentRoot(contentRoot)
-                .ConfigureServices(InitializeBaseAndRepos)
-                .ConfigureTestServices(InitializeTestServices)
-                .UseEnvironment("Development")
-                .UseConfiguration(config)
-                .UseStartup(typeof(Startup));
+            _factory = new BillingWebApplicationFactory(services =>
+            {
+                InitializeBaseAndRepos(services);
+                InitializeTestServices(services);
+            }).WithWebHostBuilder(builder =>
+            {
+                builder.UseContentRoot(contentRoot);
+                builder.ConfigureAppConfiguration((_, config) =>
+                {
+                    config.SetBasePath(contentRoot);
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+                    config.AddJsonFile("appsettings.IntegrationTest.json", optional: true, reloadOnChange: false);
+                });
+            });
 
-            Server = new TestServer(builder);
-            Client = Server.CreateClient();
-            Client.BaseAddress = new Uri($"http://localhost:{5000}");
+            Factory = _factory;
+            Client = _factory.CreateClient();
+            Client.BaseAddress = new Uri("http://localhost");
             XApiKey = "B6E9430A-49E6-4100-AFC2-C37C50CFFB33";
             return Task.CompletedTask;
         }
 
-        public Task DisposeAsync()
-        {
-            return Task.CompletedTask;
-        }
+        public Task DisposeAsync() => Task.CompletedTask;
 
         public void Dispose()
         {
-            Server?.Dispose();
             Client?.Dispose();
+            _factory?.Dispose();
         }
 
         protected virtual void InitializeBaseAndRepos(IServiceCollection services)
         {
-            var startupAssembly = typeof(Startup).GetTypeInfo().Assembly;
+            var startupAssembly = typeof(Program).GetTypeInfo().Assembly;
 
-            // Inject a custom application part manager.
-            // Overrides AddMvcCore() because it uses TryAdd().
             var manager = new ApplicationPartManager();
             manager.ApplicationParts.Add(new AssemblyPart(startupAssembly));
             manager.FeatureProviders.Add(new ControllerFeatureProvider());
@@ -132,7 +133,6 @@ namespace BillingService.XUnit.Integration.Tests
 
             services.AddSingleton(manager);
 
-            // REPOSITORIES
             services.AddScoped(c => ClaimRepository.Object);
             services.AddScoped(c => ClaimAppointmentLinkRepository.Object);
             services.AddScoped(c => LinkChargeEntryRepository.Object);
@@ -154,10 +154,8 @@ namespace BillingService.XUnit.Integration.Tests
             services.AddScoped(c => ClaimVersionRepository.Object);
             services.AddScoped(c => ClaimSubmissionServiceLineRepository.Object);
 
-            // DBHELPERS
             services.AddScoped(c => BillingDbHelper.Object);
 
-            //SERVICES
             services.AddScoped(c => RethinkServices.Object);
             services.AddScoped(c => ClientService.Object);
             services.AddScoped(c => ProviderLocationService.Object);
@@ -172,24 +170,10 @@ namespace BillingService.XUnit.Integration.Tests
             services.AddScoped(c => ClaimManagerService.Object);
         }
 
-        /// <summary>
-        /// Gets the full path to the target project that we wish to test
-        /// </summary>
-        /// <param name="projectRelativePath">
-        /// The parent directory of the target project.
-        /// e.g. src, samples, test, or test/Websites
-        /// </param>
-        /// <param name="startupAssembly">The target project's assembly.</param>
-        /// <returns>The full path to the target project.</returns>
         private static string GetProjectPath(string projectRelativePath, Assembly startupAssembly)
         {
-            // Get name of the target project which we want to test
             var projectName = startupAssembly.GetName().Name;
-
-            // Get currently executing test project path
             var applicationBasePath = Assembly.GetExecutingAssembly().Location;
-
-            // Find the path to the target project
             var directoryInfo = new DirectoryInfo(applicationBasePath);
             do
             {
