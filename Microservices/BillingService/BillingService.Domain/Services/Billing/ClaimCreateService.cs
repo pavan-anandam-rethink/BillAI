@@ -338,6 +338,10 @@ namespace BillingService.Domain.Services.Billing
                         item.Name = sourceLocation.description;
                         updated = true;
                     }
+                    else if (!locationCodeLookup.ContainsKey(item.Id))
+                    {
+                        _logger.LogWarning("Location ID {LocationId} not found in BH location codes during migration", item.Id);
+                    }
                 }
 
                 var newLocations = createLocations.Select(x => new ClaimSearchLocationEntity { Id = x.id, Name = x.description });

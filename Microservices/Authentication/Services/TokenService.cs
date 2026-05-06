@@ -50,7 +50,7 @@ namespace Authentication.Services
                     var accountInfo = await _rethinkServices.GetAccountReturningEntityAsync(int.Parse(authRequest.AccountInfoId), false);
                     osbEnabled = accountInfo.subscriptionFeatures != null
                                  && accountInfo.subscriptionFeatures.TryGetValue("showOSBFlag", out var flagValue)
-                                 && flagValue is bool flag && flag;
+                                 && flagValue is true;
                     var accountId = accountInfo?.Id ?? 0;
                     var accountName = accountInfo?.Name;
                     accountDetail = $"{accountName} ({accountId})";

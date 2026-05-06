@@ -96,7 +96,8 @@ namespace LoginService.Web.Controllers
             if (int.TryParse(authRequest.AccountInfoId, out var accountId) && accountId > 0
                 && !string.IsNullOrEmpty(authRequest.BillingSessionKey))
             {
-                _ = FireAndForgetPrewarmAsync(accountId, authRequest.BillingSessionKey);
+                var prewarmTimeoutSeconds = _config.GetValue("RethinkMasterDataSession:PrewarmTimeoutSeconds", 15);
+                _ = FireAndForgetPrewarmAsync(accountId, authRequest.BillingSessionKey, prewarmTimeoutSeconds);
             }
 
             return Ok(new AuthenticatedResponse
@@ -110,11 +111,11 @@ namespace LoginService.Web.Controllers
         /// <summary>
         /// Runs session prewarm in the background with a timeout so it never blocks login response.
         /// </summary>
-        private async Task FireAndForgetPrewarmAsync(int accountId, string billingSessionKey)
+        private async Task FireAndForgetPrewarmAsync(int accountId, string billingSessionKey, int timeoutSeconds)
         {
             try
             {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
                 var warmTask = _sessionPrewarm.WarmAsync(accountId, billingSessionKey);
                 var completed = await Task.WhenAny(warmTask, Task.Delay(Timeout.Infinite, cts.Token));
                 if (completed != warmTask)
