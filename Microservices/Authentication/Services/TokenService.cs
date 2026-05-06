@@ -49,8 +49,8 @@ namespace Authentication.Services
                 {
                     var accountInfo = await _rethinkServices.GetAccountReturningEntityAsync(int.Parse(authRequest.AccountInfoId), false);
                     osbEnabled = accountInfo.subscriptionFeatures != null
-                                 && accountInfo.subscriptionFeatures.ContainsKey("showOSBFlag")
-                                 && (bool)accountInfo.subscriptionFeatures["showOSBFlag"];
+                                 && accountInfo.subscriptionFeatures.TryGetValue("showOSBFlag", out var flagValue)
+                                 && flagValue is true;
                     var accountId = accountInfo?.Id ?? 0;
                     var accountName = accountInfo?.Name;
                     accountDetail = $"{accountName} ({accountId})";

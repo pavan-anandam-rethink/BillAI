@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Rethink.Services.Common.Interfaces;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rethink.Services.Domain.Services.RethinkServices
@@ -12,6 +13,7 @@ namespace Rethink.Services.Domain.Services.RethinkServices
         private readonly IRethinkBillingRequestContext _requestContext;
         private readonly ILogger<RethinkMasterDataSessionPrewarm>? _logger;
         private readonly bool _enabled;
+        private readonly TimeSpan _timeout;
 
         public RethinkMasterDataSessionPrewarm(
             IRethinkMasterDataMicroServices masterData,
@@ -23,6 +25,8 @@ namespace Rethink.Services.Domain.Services.RethinkServices
             _requestContext = requestContext;
             _logger = logger;
             _enabled = configuration.GetSection("RethinkMasterDataSession").GetValue("PrewarmEnabled", true);
+            var timeoutSeconds = configuration.GetSection("RethinkMasterDataSession").GetValue("PrewarmTimeoutSeconds", 15);
+            _timeout = TimeSpan.FromSeconds(timeoutSeconds);
         }
 
         public async Task WarmAsync(int accountInfoId, string sessionKey)
@@ -37,7 +41,8 @@ namespace Rethink.Services.Domain.Services.RethinkServices
 
             try
             {
-                await Task.WhenAll(
+                using var cts = new CancellationTokenSource(_timeout);
+                var prewarmTask = Task.WhenAll(
                     _masterData.GetPlaceOfService(accountInfoId),
                     _masterData.GetLocationCodes(),
                     _masterData.GetClearingHouseDetails(),
@@ -54,6 +59,17 @@ namespace Rethink.Services.Domain.Services.RethinkServices
                     _masterData.GetBillingCodeList(accountInfoId),
                     _masterData.GetMainLocation(accountInfoId),
                     _masterData.GetClientDetailsGuarantor(accountInfoId));
+
+                var completed = await Task.WhenAny(prewarmTask, Task.Delay(Timeout.Infinite, cts.Token));
+                if (completed != prewarmTask)
+                {
+                    _logger?.LogWarning("Master data session prewarm timed out after {TimeoutSeconds}s for account {AccountId}",
+                        _timeout.TotalSeconds, accountInfoId);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger?.LogWarning("Master data session prewarm was cancelled for account {AccountId}", accountInfoId);
             }
             catch (Exception ex)
             {

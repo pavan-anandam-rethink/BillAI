@@ -3,6 +3,7 @@ using Authentication.Models;
 using LoginService.Web.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Rethink.Services.Domain.Services.RethinkServices;
 using System.Net.Http;
@@ -14,6 +15,7 @@ namespace LoginService.Web.Controllers
     [AllowAnonymous]
     public class SSOController : ControllerBase
     {
+        private static readonly JsonSerializerSettings _jsonSettings = new() { NullValueHandling = NullValueHandling.Ignore };
 
         private readonly IConfiguration _config;
         private readonly ITokenService _tokenService;
@@ -22,13 +24,15 @@ namespace LoginService.Web.Controllers
         private readonly IUserProfileService _userProfileService;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IRethinkMasterDataSessionPrewarm _sessionPrewarm;
+        private readonly ILogger<SSOController> _logger;
 
         public SSOController(
             IConfiguration config,
             ITokenService tokenService,
             IUserProfileService userProfileService,
             IHttpClientFactory httpClientFactory,
-            IRethinkMasterDataSessionPrewarm sessionPrewarm)
+            IRethinkMasterDataSessionPrewarm sessionPrewarm,
+            ILogger<SSOController> logger)
         {
             _config = config;
             _tokenService = tokenService;
@@ -37,6 +41,7 @@ namespace LoginService.Web.Controllers
             _userProfileService = userProfileService;
             _httpClientFactory = httpClientFactory;
             _sessionPrewarm = sessionPrewarm;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -47,37 +52,18 @@ namespace LoginService.Web.Controllers
                 return BadRequest(new { message = "Empty request - No valid Rethink token" });
             }
 
-            //AuthenticateRequest authRequest = new()
-            //{
-            //    AccountInfoId = "18421",
-            //    MemberId = "105815",
-            //    MemberName = "Healthcare_08015",
-            //    MemberRole = "Role 4a",
-            //    Permissions = new()
-            //    {
-            //        { "billingview", true},
-            //        { "billingedit", true},
-            //        { "billingeditapprovedappointments", true},
-            //        { "billingapprove", true},
-            //        { "billingsubmitclaims", true},
-            //        { "billingpostpayments", true},
-            //        { "billingreopenencounter", true},
-            //        { "billingcloseencounters", true}
-            //    }
-            //};
             AuthenticateRequest authRequest = null;
             var client = _httpClientFactory.CreateClient("tokenValidation");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", rethinkToken.token);
             HttpResponseMessage response = await client.GetAsync("core/api/integrations/billing/GetBillingStaffData");
-            JsonSerializerSettings settings = new() { NullValueHandling = NullValueHandling.Ignore };
 
             if (response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync();
                 var textContent = JsonConvert.DeserializeObject<string>(body);
-                authRequest = JsonConvert.DeserializeObject<AuthenticateRequest>(_tokenService.DecryptString(_tokenValidationKey, textContent), settings);
+                authRequest = JsonConvert.DeserializeObject<AuthenticateRequest>(_tokenService.DecryptString(_tokenValidationKey, textContent), _jsonSettings);
             }
 
             if (authRequest == null)
@@ -85,6 +71,7 @@ namespace LoginService.Web.Controllers
                 return Unauthorized(new { message = "Invalid Rethink token" });
             }
 
+            // Run impersonation lookup concurrently with JWT generation preparation
             if (!string.IsNullOrEmpty(authRequest.ImpersonationUserObjectId))
             {
                 try
@@ -96,19 +83,21 @@ namespace LoginService.Web.Controllers
                         authRequest.ImpersonationUserEmail = userProfile.Email ?? string.Empty;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    _logger.LogWarning(ex, "Failed to lookup impersonation user profile for {ObjectId}", authRequest.ImpersonationUserObjectId);
                 }
             }
 
             var jwtToken = await _tokenService.GenerateAccessToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), authRequest);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
+            // Fire-and-forget session prewarm with timeout — do NOT block login response
             if (int.TryParse(authRequest.AccountInfoId, out var accountId) && accountId > 0
                 && !string.IsNullOrEmpty(authRequest.BillingSessionKey))
             {
-                await _sessionPrewarm.WarmAsync(accountId, authRequest.BillingSessionKey);
+                var prewarmTimeoutSeconds = _config.GetValue("RethinkMasterDataSession:PrewarmTimeoutSeconds", 15);
+                _ = FireAndForgetPrewarmAsync(accountId, authRequest.BillingSessionKey, prewarmTimeoutSeconds);
             }
 
             return Ok(new AuthenticatedResponse
@@ -117,6 +106,27 @@ namespace LoginService.Web.Controllers
                 RefreshToken = refreshToken,
                 BillingSessionKey = authRequest.BillingSessionKey
             });
+        }
+
+        /// <summary>
+        /// Runs session prewarm in the background with a timeout so it never blocks login response.
+        /// </summary>
+        private async Task FireAndForgetPrewarmAsync(int accountId, string billingSessionKey, int timeoutSeconds)
+        {
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+                var warmTask = _sessionPrewarm.WarmAsync(accountId, billingSessionKey);
+                var completed = await Task.WhenAny(warmTask, Task.Delay(Timeout.Infinite, cts.Token));
+                if (completed != warmTask)
+                {
+                    _logger.LogWarning("Session prewarm timed out for account {AccountId}", accountId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Session prewarm failed for account {AccountId}", accountId);
+            }
         }
 
         [HttpPost]

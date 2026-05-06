@@ -45,7 +45,6 @@ namespace Authentication.Middlewares
         private async Task<string> ValidateApiKeyAsync(StringValues appKey)
         {
             string errorMessage = string.Empty;
-            string apiKey = await keyVaultProviderService.GetSecretAsync(config["XApiKey"]).ConfigureAwait(false);
 
             if (appKey.Count > 1)
             {
@@ -55,9 +54,14 @@ namespace Authentication.Middlewares
             {
                 errorMessage = $"{APIKEY} is null or whitespace";
             }
-            else if (!appKey.Equals(apiKey))
+            else
             {
-                errorMessage = $"{APIKEY} is not a valid";
+                // Only fetch from Key Vault after basic input validation passes
+                string apiKey = await keyVaultProviderService.GetSecretAsync(config["XApiKey"]).ConfigureAwait(false);
+                if (!appKey.Equals(apiKey))
+                {
+                    errorMessage = $"{APIKEY} is not a valid";
+                }
             }
             return errorMessage;
         }

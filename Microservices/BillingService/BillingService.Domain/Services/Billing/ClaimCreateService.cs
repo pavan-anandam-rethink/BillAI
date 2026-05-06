@@ -13,6 +13,7 @@ using Rethink.Services.Common.Interfaces;
 using Rethink.Services.Common.Models;
 using Rethink.Services.Common.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -66,7 +67,7 @@ namespace BillingService.Domain.Services.Billing
 
         public async Task ProcessClaimCreation(ClaimCreateEnd model)
         {
-            _logger.LogInformation($"Processing claim: #{model.ClaimId} creation result");
+            _logger.LogInformation("Processing claim: #{ClaimId} creation result", model.ClaimId);
 
             try
             {
@@ -93,14 +94,12 @@ namespace BillingService.Domain.Services.Billing
                 await ImportSecondaryFunderDetails(model.AccountInfoId, model.ClaimId);
                 await MigrateLocationsToBilling();
 
-                _logger.LogInformation($"Processed claim: #{model.ClaimId}");
-
-
+                _logger.LogInformation("Processed claim: #{ClaimId}", model.ClaimId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error processing claim: #{model.ClaimId} submission result " +
-                    $"Error: {ex.Message}");
+                _logger.LogError(ex, "Error processing claim: #{ClaimId} submission result. Error: {ErrorMessage}",
+                    model.ClaimId, ex.Message);
                 throw;
             }
         }
@@ -213,7 +212,7 @@ namespace BillingService.Domain.Services.Billing
 
         private async Task ImportSecondaryFunderDetails(int accountInfoId, int claimId)
         {
-            var claim = _claimRepository.Query().FirstOrDefault(x => x.Id == claimId && x.DateDeleted == null);
+            var claim = await _claimRepository.Query().FirstOrDefaultAsync(x => x.Id == claimId && x.DateDeleted == null);
             claim.IsSecondaryPayerAvailable = false;
             var secondaryFunderDetails = await _claimUpdateService.CheckAndGetSecondaryFunderDetails(accountInfoId, claim);
             if (secondaryFunderDetails != null && secondaryFunderDetails.funders.Any())
@@ -328,16 +327,20 @@ namespace BillingService.Domain.Services.Billing
                 await _claimsSearchLocationsRepository.BulkReadContainsAsync(existingLocations);
 
                 var existingLocationsIds = existingLocations.Select(x => x.Id).ToList();
+                var locationCodeLookup = locationCodes.ToDictionary(x => x.id);
                 var createLocations = locationCodes.Where(x => !existingLocationsIds.Contains(x.id)).ToList();
 
                 var updated = false;
                 foreach (var item in existingLocations)
                 {
-                    var sourceLocation = locationCodes.First(x => x.id == item.Id);
-                    if (sourceLocation.description != item.Name)
+                    if (locationCodeLookup.TryGetValue(item.Id, out var sourceLocation) && sourceLocation.description != item.Name)
                     {
                         item.Name = sourceLocation.description;
                         updated = true;
+                    }
+                    else if (!locationCodeLookup.ContainsKey(item.Id))
+                    {
+                        _logger.LogWarning("Location ID {LocationId} not found in BH location codes during migration", item.Id);
                     }
                 }
 

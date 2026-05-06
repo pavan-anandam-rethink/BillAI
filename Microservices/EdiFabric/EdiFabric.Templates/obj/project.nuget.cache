@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "SpfmMPCiv4g=",
+  "dgSpecHash": "QfiWIvQ9T00=",
   "success": true,
-  "projectFilePath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj",
+  "projectFilePath": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\edifabric\\10.7.3\\edifabric.10.7.3.nupkg.sha512"
+    "/home/runner/.nuget/packages/edifabric/10.7.3/edifabric.10.7.3.nupkg.sha512"
   ],
   "logs": []
 }
