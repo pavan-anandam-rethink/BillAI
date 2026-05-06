@@ -97,12 +97,8 @@ namespace Rethink.Services.Common.Infrastructure.Repository
 
         public void Delete(Expression<Func<T, bool>> where)
         {
-            var objects = _dbSet.Where(where).AsEnumerable();
-            foreach (var obj in objects)
-            {
-                Delete(obj);
-                //deletedItems++;
-            }
+            var objects = _dbSet.Where(where).ToList();
+            _dbSet.RemoveRange(objects);
         }
 
         public async Task AddAsync(T entity)
@@ -119,9 +115,9 @@ namespace Rethink.Services.Common.Infrastructure.Repository
 
                 return result.Entity;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -202,9 +198,9 @@ namespace Rethink.Services.Common.Infrastructure.Repository
             {
                 await _dbContext.CommitAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -214,9 +210,9 @@ namespace Rethink.Services.Common.Infrastructure.Repository
             {
                 await _dbContext.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 

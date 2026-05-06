@@ -13,6 +13,7 @@ namespace BillingService.Web.Middlewares
     /// </summary>
     public sealed class BillingMasterDataRequestMiddleware
     {
+        private static readonly JwtSecurityTokenHandler _tokenHandler = new();
         private readonly RequestDelegate _next;
         private readonly ILogger<BillingMasterDataRequestMiddleware>? _logger;
 
@@ -42,10 +43,9 @@ namespace BillingService.Web.Middlewares
                     token = token["Bearer ".Length..].Trim();
                     try
                     {
-                        var handler = new JwtSecurityTokenHandler();
-                        if (handler.CanReadToken(token))
+                        if (_tokenHandler.CanReadToken(token))
                         {
-                            var jwt = handler.ReadJwtToken(token);
+                            var jwt = _tokenHandler.ReadJwtToken(token);
                             var sessionKey = jwt.Claims.FirstOrDefault(c => c.Type == "BillingSessionKey")?.Value;
                             var accountClaim = jwt.Claims.FirstOrDefault(c => c.Type == "AccountInfoId")?.Value;
                             if (!string.IsNullOrEmpty(sessionKey) && int.TryParse(accountClaim, out var accountId) && accountId > 0)
