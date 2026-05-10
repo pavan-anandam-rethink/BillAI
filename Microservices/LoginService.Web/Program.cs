@@ -37,6 +37,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks().AddAzureApplicationInsights(config["ApplicationInsights:InstrumentationKey"], name: "App Insights");
 builder.Services.ConfigureMongoDB(config);
 builder.Services.AddMongoRepository<UserProfileRepository>();
+builder.Services.AddMemoryCache();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddScoped<ICacheManager, RedisCacheManager>();
 builder.Services.AddTransient<IUserProfileService, UserProfileService>();

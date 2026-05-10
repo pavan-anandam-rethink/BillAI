@@ -41,8 +41,8 @@ namespace BillingService.Web.IoC
             var billingDbConnectionString = GetDBConnectionString(configuration, "Database", secretProvider);
             var reportingDbConnectionString = GetDBConnectionString(configuration, "ReportingDB", secretProvider);
 
-            _billingConfigurator.Configure(services, billingDbConnectionString, false, false);
-            _reportingConfigurator.Configure(services, reportingDbConnectionString, false, false);
+            _billingConfigurator.Configure(services, billingDbConnectionString, true, false);
+            _reportingConfigurator.Configure(services, reportingDbConnectionString, true, false);
         }
 
 
