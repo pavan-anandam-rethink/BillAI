@@ -166,7 +166,7 @@ namespace BillingService.Domain.Services.Payment
                                 : x.PaymentTypeEntity.Description : ""
                             : x.FunderName,
                     FunderId = x.FunderID,
-                    ClaimIds = x.PaymentClaims.Where(y => y.DateDeleted == null && y.ClaimId != null).Select(y => y.ClaimId.Value).ToList(),
+                    ClaimIds = x.PaymentClaims.Where(pc => pc.DateDeleted == null && pc.ClaimId != null).Select(pc => pc.ClaimId.Value).ToList(),
                     PaymentAmount = x.PaymentAmount,
                     EraPaymentMethod = x.EraPaymentMethod != null ? x.EraPaymentMethod : "",
                     PaymentMethodId = x.PaymentMethodId,
@@ -185,7 +185,7 @@ namespace BillingService.Domain.Services.Payment
                     PaymentIdentifier = x.PaymentIdentifier,
                     DeniedClaimsCount =
                             x.PaymentClaims.Where(pc => pc.DateDeleted == null).Count(c => c.ClaimStatus == ((int)PaymentClaimStatus.Denied).ToString()),
-                    AppliedAmount = x.PaymentClaims.Where(y => y.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0,
+                    AppliedAmount = x.PaymentClaims.Where(pc => pc.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0,
                     ReconcileStatus = x.IsManualReconciled ? "Fully"
                         : (x.PaymentClaims.Where(pc => pc.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0) == 0 ? "None"
                         : (x.PaymentClaims.Where(pc => pc.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0) >= x.PaymentAmount ? "Fully"
