@@ -154,7 +154,7 @@ namespace BillingService.Domain.Services.Payment
                 }
             }
 
-            var dataQuery = _paymentRepository.Query().Include(x => x.PaymentClaims)
+            var dataQuery = _paymentRepository.Query()
                     .Where(x => x.AccountInfoId == getPaymentsModel.AccountInfoId &&
                                 (x.IsManualPayment == true || (x.IsManualPayment == false && (x.EraDocumentEdi != null || (PaymentMethods)x.PaymentMethodId == PaymentMethods.RevSpring))) &&
                                 x.DateDeleted == null)
@@ -180,15 +180,15 @@ namespace BillingService.Domain.Services.Payment
                                         x.PaymentMethodId == (int)PaymentMethods.RevSpring ? "RevSpring" :
                                         "",
                     ReceivedDate = x.ReceivedDate,
-                    ClaimsCount = x.PaymentClaims.Where(x => x.DateDeleted == null).ToList().Count,
+                    ClaimsCount = x.PaymentClaims.Count(pc => pc.DateDeleted == null),
                     Reference = x.ReferenceNumber != null ? x.ReferenceNumber : "",
                     PaymentIdentifier = x.PaymentIdentifier,
                     DeniedClaimsCount =
-                            x.PaymentClaims.Where(x => x.DateDeleted == null).Count(c => c.ClaimStatus == ((int)PaymentClaimStatus.Denied).ToString()),
+                            x.PaymentClaims.Where(pc => pc.DateDeleted == null).Count(c => c.ClaimStatus == ((int)PaymentClaimStatus.Denied).ToString()),
                     AppliedAmount = x.PaymentClaims.Where(y => y.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0,
                     ReconcileStatus = x.IsManualReconciled ? "Fully"
-                        : (x.PaymentClaims.Where(x => x.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0) == 0 ? "None"
-                        : (x.PaymentClaims.Where(x => x.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0) >= x.PaymentAmount ? "Fully"
+                        : (x.PaymentClaims.Where(pc => pc.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0) == 0 ? "None"
+                        : (x.PaymentClaims.Where(pc => pc.DateDeleted == null).Sum(c => c.TotalPayment) ?? 0) >= x.PaymentAmount ? "Fully"
                         : "Partially",
                     IsManual = x.IsManualPayment,
                     PaymentType = (PaymentTypes)x.PaymentTypeId,
@@ -201,7 +201,15 @@ namespace BillingService.Domain.Services.Payment
                 }).OrderBy(getPaymentsModel.SortingModels)
                 .Filter(getPaymentsModel.FilterModels);
 
-            var selectQuery = getPaymentsModel.Take == 0 ? dataQuery.Skip(getPaymentsModel.Skip).ToList() : dataQuery.Skip(getPaymentsModel.Skip).Take(getPaymentsModel.Take).ToList();
+            // Get total count before pagination to avoid re-executing the full query after materialization
+            var totalCount = await dataQuery.CountAsync();
+
+            var paginatedQuery = dataQuery.Skip(getPaymentsModel.Skip);
+            if (getPaymentsModel.Take > 0)
+            {
+                paginatedQuery = paginatedQuery.Take(getPaymentsModel.Take);
+            }
+            var selectQuery = await paginatedQuery.ToListAsync();
 
             // Calculate DeniedClaimsCount if not already set
             var claimIds = selectQuery.SelectMany(x => x.ClaimIds).Distinct().ToList();
@@ -216,23 +224,23 @@ namespace BillingService.Domain.Services.Payment
                         x.ClaimStatus
                     }).ToListAsync();
 
+                // Build a lookup for O(1) access instead of O(claims) per payment
+                var deniedClaimIds = new HashSet<int>(claims.Where(c => c.ClaimStatus == ClaimStatus.Denied).Select(c => c.Id));
+
                 // Update the selectQuery with the claim statuses
                 foreach (var payment in selectQuery)
                 {
-                    payment.DeniedClaimsCount = payment.DeniedClaimsCount == 0 ?
-                        claims.Count(c => payment.ClaimIds.Contains(c.Id) && c.ClaimStatus == ClaimStatus.Denied)
-                        : payment.DeniedClaimsCount;
+                    if (payment.DeniedClaimsCount == 0)
+                    {
+                        payment.DeniedClaimsCount = payment.ClaimIds.Count(id => deniedClaimIds.Contains(id));
+                    }
                     payment.ClaimIds = [];
                 }
             }
 
-            var result = selectQuery.ToList();
-
-            var totalCount = dataQuery.Count();
-
             var response = new PaymentsResponseModel
             {
-                Data = result,
+                Data = selectQuery,
                 TotalCount = totalCount
             };
 
