@@ -17,6 +17,7 @@ using Rethink.Services.Common.Enums.Billing;
 using Rethink.Services.Common.Infrastructure.Context.Billing;
 using Rethink.Services.Common.Infrastructure.Repository;
 using Rethink.Services.Common.Interfaces;
+using Rethink.Services.Common.Models.ClientMicroServicesModels;
 using Rethink.Services.Common.Services;
 using StackExchange.Redis;
 using System;
@@ -759,8 +760,9 @@ namespace BillingService.Domain.Services.PatientInvoice
 
             foreach (var inv in invoiceModels)
             {
+                RethinkGuarantorDetails.ClientModel g = null;
                 var hasGuarantor = guarantorDict != null &&
-                    guarantorDict.TryGetValue(inv.Id, out var g) &&
+                    guarantorDict.TryGetValue(inv.Id, out g) &&
                     g?.Address != null;
                 inv.GuarantorName = hasGuarantor
                     ? $"{g.Name.FirstName} {g.Name.MiddleName} {g.Name.LastName}"

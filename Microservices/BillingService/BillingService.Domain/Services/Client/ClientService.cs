@@ -434,7 +434,8 @@ namespace BillingService.Domain.Services.Client
                            
                                    var serviceDict = serviceResults
                            .Where(s => s != null)
-                           .ToDictionary(s => s.id, s => s.name);
+                           .GroupBy(s => s.id)
+                           .ToDictionary(g => g.Key, g => g.First().name);
 
 
             var billingCodes = filtered
