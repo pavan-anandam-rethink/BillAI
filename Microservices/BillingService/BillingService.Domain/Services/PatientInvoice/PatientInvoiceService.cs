@@ -17,6 +17,7 @@ using Rethink.Services.Common.Enums.Billing;
 using Rethink.Services.Common.Infrastructure.Context.Billing;
 using Rethink.Services.Common.Infrastructure.Repository;
 using Rethink.Services.Common.Interfaces;
+using Rethink.Services.Common.Models.ClientMicroServicesModels;
 using Rethink.Services.Common.Services;
 using StackExchange.Redis;
 using System;
@@ -117,9 +118,6 @@ namespace BillingService.Domain.Services.PatientInvoice
 
             var paymentChargeEntryIds = await _paymentClaimService.GetAllPaymentChargeIds(model);
 
-            var filteredPayments = paymentChargeEntryIds.AsQueryable();
-
-            paymentChargeEntryIds = filteredPayments.ToList();
             var invoicedChargeIds = invoiceDetails.ToHashSet();
             var chargeEntryIds = paymentChargeEntryIds
                 .Where(c => c.ChargeId > 0 && !invoicedChargeIds.Contains(c.ChargeId.Value))
@@ -753,13 +751,23 @@ namespace BillingService.Domain.Services.PatientInvoice
             var guarantorMap = await _rethinkServices
                 .GetClientDetailsGuarantor(filter.AccountInfoId);
 
+            var guarantorLookup = guarantorMap?
+                .Where(x => x.UserId != 0)
+                .GroupBy(x => x.UserId)
+                .ToDictionary(g => g.Key, g => g.First());
+
             foreach (var inv in invoiceModels)
             {
-                var g = guarantorMap?.FirstOrDefault(x => x.UserId == inv.Id);
+                RethinkGuarantorDetails.ClientModel g = null;
+                guarantorLookup?.TryGetValue(inv.Id, out g);
                 inv.GuarantorName = g?.Address != null
                     ? $"{g.Name.FirstName} {g.Name.MiddleName} {g.Name.LastName}"
                     : "Missing Guarantor";
             }
+
+            var billingDetailsByClient = allBillingDetails
+                .GroupBy(b => b.ClientId)
+                .ToDictionary(g => g.Key, g => g.ToList());
 
             var result = invoiceModels
                 .GroupBy(x => x.Id)
@@ -773,7 +781,7 @@ namespace BillingService.Domain.Services.PatientInvoice
                     TotalInsurancePayments = g.Sum(x => x.TotalInsurancePayments),
                     TotalPatientPayments = g.Sum(x => x.TotalPatientPayments),
                     TotalPatientBalance = g.Sum(x => x.TotalPatientBalance),
-                    BillingDetails = allBillingDetails.Where(b => b.ClientId == g.Key).ToList(),
+                    BillingDetails = billingDetailsByClient.TryGetValue(g.Key, out var details) ? details : new List<BillingDetailViewModel>(),
                     GuarantorName = g.First().GuarantorName
                 })
                 .ToList();
@@ -896,7 +904,15 @@ namespace BillingService.Domain.Services.PatientInvoice
         private async Task<List<ChargeDetails>> getChargeDetails(List<int> chargeEntryIds)
         {
             _logger.LogInformation("getChargeDetails started :");
-           
+
+                // Batch-load write-off sums instead of per-row correlated subquery
+                var writeOffLookup = await _claimChargeEntryWriteOffEntity.Query()
+                    .AsNoTracking()
+                    .Where(w => chargeEntryIds.Contains(w.ClaimChargeEntryId) && w.DateDeleted == null)
+                    .GroupBy(w => w.ClaimChargeEntryId)
+                    .Select(g => new { ChargeId = g.Key, Total = g.Sum(w => (decimal?)w.WriteOffAmount) ?? 0m })
+                    .ToDictionaryAsync(x => x.ChargeId, x => x.Total);
+
                 var result =
                     await _chargeEntryRepository
                         .Query()
@@ -909,14 +925,13 @@ namespace BillingService.Domain.Services.PatientInvoice
                             Units = c.Units,
                             DateOfService = c.DateOfService,
                             BilledAmount = c.Charges,
-                            WriteOffAmount =
-                                _claimChargeEntryWriteOffEntity.Query()
-                                    .Where(w =>
-                                        w.ClaimChargeEntryId == c.Id &&
-                                        w.DateDeleted == null)
-                                    .Sum(w => (decimal?)w.WriteOffAmount) ?? 0m
                         })
                         .ToListAsync();
+
+                foreach (var charge in result)
+                {
+                    charge.WriteOffAmount = writeOffLookup.TryGetValue(charge.Id, out var wo) ? wo : 0m;
+                }
 
                 _logger.LogInformation("getChargeDetails ended :");
                 return result;           
