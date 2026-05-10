@@ -11,6 +11,7 @@ namespace Authentication
     {
         public static void Register(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddMemoryCache();
             services.AddTransient<ITokenService, TokenService>();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Authentication.Interfaces;
 using Authentication.Models;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Rethink.Services.Common.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -14,6 +15,8 @@ namespace Authentication.Services
     {
         private const double EXPIRY_DURATION_MINUTES = 5;
         private readonly IRethinkMasterDataMicroServices _rethinkServices;
+        private readonly IMemoryCache _memoryCache;
+        private static readonly TimeSpan AccountCacheDuration = TimeSpan.FromMinutes(5);
         public const string BillingView = "BillingView";
         public const string BillingPostPayments = "BillingPostPayments";
         public const string BillingReopenEncounter = "BillingReopenEncounter";
@@ -30,9 +33,10 @@ namespace Authentication.Services
             BillingClientHistory
         };
 
-        public TokenService(IRethinkMasterDataMicroServices rethinkMasterData)
+        public TokenService(IRethinkMasterDataMicroServices rethinkMasterData, IMemoryCache memoryCache)
         {
             _rethinkServices = rethinkMasterData;
+            _memoryCache = memoryCache;
         }
 
         public async Task<string> GenerateAccessToken(string key, string issuer, AuthenticateRequest authRequest)
@@ -47,13 +51,19 @@ namespace Authentication.Services
             {
                 try
                 {
-                    var accountInfo = await _rethinkServices.GetAccountReturningEntityAsync(int.Parse(authRequest.AccountInfoId), false);
+                    var accountId = int.Parse(authRequest.AccountInfoId);
+                    var cacheKey = $"account_info_{accountId}";
+                    var accountInfo = await _memoryCache.GetOrCreateAsync(cacheKey, async entry =>
+                    {
+                        entry.AbsoluteExpirationRelativeToNow = AccountCacheDuration;
+                        return await _rethinkServices.GetAccountReturningEntityAsync(accountId, false);
+                    });
                     osbEnabled = accountInfo.subscriptionFeatures != null
                                  && accountInfo.subscriptionFeatures.TryGetValue("showOSBFlag", out var flagValue)
                                  && flagValue is true;
-                    var accountId = accountInfo?.Id ?? 0;
+                    var acctId = accountInfo?.Id ?? 0;
                     var accountName = accountInfo?.Name;
-                    accountDetail = $"{accountName} ({accountId})";
+                    accountDetail = $"{accountName} ({acctId})";
 
                 }
                 catch (Exception ex)

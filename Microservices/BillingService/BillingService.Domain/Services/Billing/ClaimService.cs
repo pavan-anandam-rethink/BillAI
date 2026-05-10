@@ -2247,9 +2247,16 @@ namespace BillingService.Domain.Services.Billing
                 claim.AuthorizationNumber = saveModel.ClaimInfo.AuthorizationNumber.Trim();
             }
 
-            var providerLocation = saveModel.Provider.BillingProviderId.HasValue ?
-                await _rethinkServices.GetProviderLocation(model.AccountInfoId, (int)saveModel.Provider.BillingProviderId) :
-                null;
+            // Parallelize independent external API calls to reduce latency under load
+            var providerLocationTask = saveModel.Provider.BillingProviderId.HasValue
+                ? _rethinkServices.GetProviderLocation(model.AccountInfoId, (int)saveModel.Provider.BillingProviderId)
+                : Task.FromResult<ProviderLocations>(null);
+            var renderingProvidersTask = _rethinkServices.GetAllRenderingProvidersAsync(claim.AccountInfoId);
+            var funderMappings2Task = _rethinkServices.GetChildProfileFunderMappingByMappingId(claim.AccountInfoId, claim.ChildProfileId, saveModel.ClaimInfo.ClientFunderId);
+
+            await Task.WhenAll(providerLocationTask, renderingProvidersTask, funderMappings2Task);
+
+            var providerLocation = await providerLocationTask;
             claim.ProviderLocationId = saveModel?.Provider.BillingProviderId;
             if (providerLocation != null
                 && !providerLocation.isBillingLocation
@@ -2265,7 +2272,7 @@ namespace BillingService.Domain.Services.Billing
             claim.ClientFunderServiceLineId = saveModel.ClaimInfo.ServiceLineId;
             claim.ClaimStatus = ClaimStatus.PendingReview;
             claim.RenderingStaffMemberId = renderingProviderId;
-            var renderingProviders = await _rethinkServices.GetAllRenderingProvidersAsync(claim.AccountInfoId);
+            var renderingProviders = await renderingProvidersTask;
             var rpType = renderingProviders.data.FirstOrDefault(x => x.memberId == claim.RenderingStaffMemberId);
             if (rpType != null)
             {
@@ -2276,12 +2283,12 @@ namespace BillingService.Domain.Services.Billing
             claim.LocationCodeId = saveModel.ClaimInfo.PlaceOfServiceCodeId;
             claim.BillTo = saveModel.Provider.BillingProviderId;
 
-            var funderMappings2 = await _rethinkServices.GetChildProfileFunderMappingByMappingId(claim.AccountInfoId, claim.ChildProfileId, claim.ClientFunderId.Value);
+            var funderMappings2 = await funderMappings2Task;
             claim.ReleaseOfInformationConfirmationTypeId = funderMappings2.releaseOfInformationConfirmationTypeId ?? (int)AuthoriseReleaseInfo.NoSingatureOnFile;
             claim.AuthorizedPaymentConfirmationTypeId = funderMappings2.authorizedPaymentConfirmationTypeId;
             claim.BenefitAssignmentId = (funderMappings2.isAutismCoveredBenefit == true || funderMappings2.isAutismCoveredBenefit == null) ? 1 : 2;
 
-            // check if the secondary funder is available & update the flag
+            // check if the secondary funder is available & update the flag (after claim properties are set, since it reads claim.ClientFunderServiceLineId)
             claim.IsSecondaryPayerAvailable = false;
             var secondaryFunderDetails = await _claimUpdateService.CheckAndGetSecondaryFunderDetails(model.AccountInfoId, claim);
             if (secondaryFunderDetails != null && secondaryFunderDetails.funders.Any())
@@ -2319,11 +2326,44 @@ namespace BillingService.Domain.Services.Billing
                     firstClaimDiagnosisCode = claimDiagnosisCode;
                 }
             }
+            // Pre-fetch all billing code data in parallel instead of sequential calls in the loop
+            var billingCodes = saveModel.DiagnosisCode.BillingCodes;
+            var billingCodeTasks = billingCodes
+                .Select(bc => _rethinkServices.GetProviderBillingCode(claim.AccountInfoId, bc.BillingCodeId))
+                .ToList();
+            var billingCodeResults = await Task.WhenAll(billingCodeTasks);
+
+            // Pre-fetch diagnosis data once (instead of repeating for every billing code in the loop)
+            DiagnosisEntityModel diagnosisEntityForCharges = null;
+            if (firstClaimDiagnosisCode != null)
+            {
+                var diagnos = await _rethinkServices.GetClientDiagnosisAsync(claim.AccountInfoId, claim.ChildProfileId);
+                var diagnosisCodes = diagnos.FirstOrDefault(x => x.diagnosisId == firstClaimDiagnosisCode.DiagnosisId);
+                if (diagnosisCodes != null)
+                {
+                    diagnosisEntityForCharges = new DiagnosisEntityModel()
+                    {
+                        Id = diagnosisCodes.diagnosisId,
+                        DiagnosisCode = diagnosisCodes.diagnosisCode,
+                    };
+                }
+                else
+                {
+                    var diagnosisCode = await _rethinkServices.GetDiagnosisById(firstClaimDiagnosisCode.DiagnosisId);
+                    diagnosisEntityForCharges = new DiagnosisEntityModel()
+                    {
+                        Id = diagnosisCode.id,
+                        DiagnosisCode = diagnosisCode.diagnosisCode
+                    };
+                }
+            }
+
             /*billingCodes*/
             int? lastBillingCodeRenderingProviderId = null;
-            foreach (var billingCode in saveModel.DiagnosisCode.BillingCodes)
+            for (int i = 0; i < billingCodes.Count; i++)
             {
-                var provider = await _rethinkServices.GetProviderBillingCode(claim.AccountInfoId, billingCode.BillingCodeId);
+                var billingCode = billingCodes[i];
+                var provider = billingCodeResults[i];
                 var providerBillingCodes = new BillingCodeData()
                 {
                     billingCode = provider.billingCode,
@@ -2378,32 +2418,10 @@ namespace BillingService.Domain.Services.Billing
                 }
 
 
-                // RICH: I am not sure how this is supposed to work. The code was only setting the diagnosis code if there was only
-                //       one in the dx code list. I changed it to set it to the first dxCode.
-                if (firstClaimDiagnosisCode != null)
+                // Use pre-fetched diagnosis data instead of re-fetching per billing code
+                if (diagnosisEntityForCharges != null)
                 {
-                    var diagnos = await _rethinkServices.GetClientDiagnosisAsync(claim.AccountInfoId, claim.ChildProfileId);
-                    var diagnosisCodes = diagnos.FirstOrDefault(x => x.diagnosisId == firstClaimDiagnosisCode.DiagnosisId);
-                    DiagnosisEntityModel diagnosisEntity = null;
-                    if (diagnosisCodes != null)
-                    {
-                        diagnosisEntity = new DiagnosisEntityModel()
-                        {
-                            Id = diagnosisCodes.diagnosisId,
-                            DiagnosisCode = diagnosisCodes.diagnosisCode,
-                        };
-                    }
-                    else
-                    {
-                        var diagnosisCode = await _rethinkServices.GetDiagnosisById(firstClaimDiagnosisCode.DiagnosisId);
-                        diagnosisEntity = new DiagnosisEntityModel()
-                        {
-                            Id = diagnosisCode.id,
-                            DiagnosisCode = diagnosisCode.diagnosisCode
-                        };
-                    }
-                    var diagnosis = diagnosisEntity;
-                    claimChargeEntry.DiagnosisCode = diagnosis.DiagnosisCode;
+                    claimChargeEntry.DiagnosisCode = diagnosisEntityForCharges.DiagnosisCode;
                 }
 
                 MarkCreated(claimChargeEntry, model.MemberId);
