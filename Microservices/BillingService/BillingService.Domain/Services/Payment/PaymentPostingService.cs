@@ -180,7 +180,7 @@ namespace BillingService.Domain.Services.Payment
                                         x.PaymentMethodId == (int)PaymentMethods.RevSpring ? "RevSpring" :
                                         "",
                     ReceivedDate = x.ReceivedDate,
-                    ClaimsCount = x.PaymentClaims.Where(x => x.DateDeleted == null).ToList().Count,
+                    ClaimsCount = x.PaymentClaims.Where(x => x.DateDeleted == null).Count(),
                     Reference = x.ReferenceNumber != null ? x.ReferenceNumber : "",
                     PaymentIdentifier = x.PaymentIdentifier,
                     DeniedClaimsCount =
@@ -216,19 +216,25 @@ namespace BillingService.Domain.Services.Payment
                         x.ClaimStatus
                     }).ToListAsync();
 
+                var deniedClaimIds = claims
+                    .Where(c => c.ClaimStatus == ClaimStatus.Denied)
+                    .Select(c => c.Id)
+                    .ToHashSet();
+
                 // Update the selectQuery with the claim statuses
                 foreach (var payment in selectQuery)
                 {
-                    payment.DeniedClaimsCount = payment.DeniedClaimsCount == 0 ?
-                        claims.Count(c => payment.ClaimIds.Contains(c.Id) && c.ClaimStatus == ClaimStatus.Denied)
-                        : payment.DeniedClaimsCount;
+                    if (payment.DeniedClaimsCount == 0)
+                    {
+                        payment.DeniedClaimsCount = payment.ClaimIds.Count(id => deniedClaimIds.Contains(id));
+                    }
                     payment.ClaimIds = [];
                 }
             }
 
             var result = selectQuery.ToList();
 
-            var totalCount = dataQuery.Count();
+            var totalCount = await dataQuery.CountAsync();
 
             var response = new PaymentsResponseModel
             {

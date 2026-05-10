@@ -753,13 +753,23 @@ namespace BillingService.Domain.Services.PatientInvoice
             var guarantorMap = await _rethinkServices
                 .GetClientDetailsGuarantor(filter.AccountInfoId);
 
+            var guarantorDict = guarantorMap?
+                .GroupBy(x => x.UserId)
+                .ToDictionary(g => g.Key, g => g.First());
+
             foreach (var inv in invoiceModels)
             {
-                var g = guarantorMap?.FirstOrDefault(x => x.UserId == inv.Id);
-                inv.GuarantorName = g?.Address != null
+                var hasGuarantor = guarantorDict != null &&
+                    guarantorDict.TryGetValue(inv.Id, out var g) &&
+                    g?.Address != null;
+                inv.GuarantorName = hasGuarantor
                     ? $"{g.Name.FirstName} {g.Name.MiddleName} {g.Name.LastName}"
                     : "Missing Guarantor";
             }
+
+            var billingDetailsByClient = allBillingDetails
+                .GroupBy(b => b.ClientId)
+                .ToDictionary(g => g.Key, g => g.ToList());
 
             var result = invoiceModels
                 .GroupBy(x => x.Id)
@@ -773,7 +783,7 @@ namespace BillingService.Domain.Services.PatientInvoice
                     TotalInsurancePayments = g.Sum(x => x.TotalInsurancePayments),
                     TotalPatientPayments = g.Sum(x => x.TotalPatientPayments),
                     TotalPatientBalance = g.Sum(x => x.TotalPatientBalance),
-                    BillingDetails = allBillingDetails.Where(b => b.ClientId == g.Key).ToList(),
+                    BillingDetails = billingDetailsByClient.TryGetValue(g.Key, out var details) ? details : new List<BillingDetailViewModel>(),
                     GuarantorName = g.First().GuarantorName
                 })
                 .ToList();
