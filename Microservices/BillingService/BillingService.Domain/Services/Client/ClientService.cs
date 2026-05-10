@@ -420,9 +420,14 @@ namespace BillingService.Domain.Services.Client
                                !x.inactive)
                            .ToList() ?? new List<BillingCodes>();
                            
-                                   var serviceTasks = filtered
-                           .Select(x => _rethinkMicroservicesRepository
-                               .GetProviderService(accountInfoId, x.serviceId))
+                                   var distinctServiceIds = filtered
+                           .Select(x => x.serviceId)
+                           .Distinct()
+                           .ToList();
+
+                                   var serviceTasks = distinctServiceIds
+                           .Select(id => _rethinkMicroservicesRepository
+                               .GetProviderService(accountInfoId, id))
                            .ToList();
                            
                                    var serviceResults = await Task.WhenAll(serviceTasks);
