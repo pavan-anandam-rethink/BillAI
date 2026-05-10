@@ -61,9 +61,9 @@ namespace Authentication.Services
                     osbEnabled = accountInfo.subscriptionFeatures != null
                                  && accountInfo.subscriptionFeatures.TryGetValue("showOSBFlag", out var flagValue)
                                  && flagValue is true;
-                    var acctId = accountInfo?.Id ?? 0;
+                    var resolvedAccountId = accountInfo?.Id ?? 0;
                     var accountName = accountInfo?.Name;
-                    accountDetail = $"{accountName} ({acctId})";
+                    accountDetail = $"{accountName} ({resolvedAccountId})";
 
                 }
                 catch (Exception ex)
