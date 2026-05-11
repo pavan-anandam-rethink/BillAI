@@ -1,42 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\ClearingHouseService.Web\\ClearingHouseService.Web.csproj": {}
+    "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Web/ClearingHouseService.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
         "projectName": "Authentication",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj"
               }
             }
           }
@@ -51,7 +42,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -68,6 +59,10 @@
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.5, )"
+            },
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             }
           },
           "imports": [
@@ -86,55 +81,46 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\BillingService.Domain.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/BillingService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\BillingService.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/BillingService.Domain.csproj",
         "projectName": "BillingService.Domain",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\BillingService.Domain.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/BillingService.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj"
               }
             }
           }
@@ -149,7 +135,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -187,6 +173,10 @@
               "target": "Package",
               "version": "[7.0.13, )"
             },
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "PuppeteerSharp": {
               "target": "Package",
               "version": "[20.0.0, )"
@@ -220,43 +210,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj",
         "projectName": "Billing.FolderStructure.Core",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               }
             }
           }
@@ -271,7 +252,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -310,52 +291,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\ClearingHouseService.Web\\ClearingHouseService.Web.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Application/ClearingHouseService.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\ClearingHouseService.Web\\ClearingHouseService.Web.csproj",
-        "projectName": "ClearingHouseService.Web",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\ClearingHouseService.Web\\ClearingHouseService.Web.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\ClearingHouseService.Web\\obj\\",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Application/ClearingHouseService.Application.csproj",
+        "projectName": "ClearingHouseService.Application",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Application/ClearingHouseService.Application.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Application/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\BillingService.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\BillingService.Domain.csproj"
-              },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj"
-              },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\EraParserService.Domain\\EraParserService.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\EraParserService.Domain\\EraParserService.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/ClearingHouseService.Infrastructure.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/ClearingHouseService.Infrastructure.csproj"
               }
             }
           }
@@ -370,7 +336,226 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj",
+        "projectName": "ClearingHouseService.Domain",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/ClearingHouseService.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/ClearingHouseService.Infrastructure.csproj",
+        "projectName": "ClearingHouseService.Infrastructure",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/ClearingHouseService.Infrastructure.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Http.Polly": {
+              "target": "Package",
+              "version": "[8.0.12, )"
+            },
+            "SSH.NET": {
+              "target": "Package",
+              "version": "[2024.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Web/ClearingHouseService.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Web/ClearingHouseService.Web.csproj",
+        "projectName": "ClearingHouseService.Web",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Web/ClearingHouseService.Web.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/BillingService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/BillingService.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Application/ClearingHouseService.Application.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Application/ClearingHouseService.Application.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Domain/ClearingHouseService.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/ClearingHouseService.Infrastructure.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/ClearingHouseService.Infrastructure/ClearingHouseService.Infrastructure.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/EraParserService.Domain/EraParserService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/EraParserService.Domain/EraParserService.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -432,55 +617,46 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\EraParserService.Domain\\EraParserService.Domain.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/EraParserService.Domain/EraParserService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\EraParserService.Domain\\EraParserService.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/EraParserService.Domain/EraParserService.Domain.csproj",
         "projectName": "EraParserService.Domain",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\EraParserService.Domain\\EraParserService.Domain.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\ClearingHouseService\\EraParserService.Domain\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/EraParserService.Domain/EraParserService.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/ClearingHouseService/EraParserService.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\BillingService.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\BillingService.Domain\\BillingService.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/BillingService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/BillingService.Domain/BillingService.Domain.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\BillingService\\Rethink.Billing.FolderStructure.Core\\Billing.FolderStructure.Core.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/BillingService/Rethink.Billing.FolderStructure.Core/Billing.FolderStructure.Core.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj"
               }
             }
           }
@@ -495,7 +671,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -522,36 +698,27 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj",
         "projectName": "EdiFabric.Templates",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\EdiFabric.Templates.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\EdiFabric\\EdiFabric.Templates\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
@@ -569,7 +736,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -596,36 +763,27 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
         "projectName": "Rethink.Services.Common",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
@@ -643,7 +801,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -722,46 +880,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
         "projectName": "Rethink.Services.Domain",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj"
               }
             }
           }
@@ -776,7 +925,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -802,9 +951,21 @@
               "target": "Package",
               "version": "[9.0.3, )"
             },
+            "Microsoft.Extensions.Http.Resilience": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "RethinkCore.Messaging.Contracts": {
               "target": "Package",
               "version": "[2024.3.4.3, )"
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.8.16, )"
             }
           },
           "imports": [
@@ -823,43 +984,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
         "projectName": "SummationService.Domain",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               }
             }
           }
@@ -874,7 +1026,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -905,7 +1057,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

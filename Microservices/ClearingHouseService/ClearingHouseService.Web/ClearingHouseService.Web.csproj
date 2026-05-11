@@ -23,6 +23,9 @@
     <ProjectReference Include="..\..\BillingService\BillingService.Domain\BillingService.Domain.csproj" />
     <ProjectReference Include="..\..\BillingService\Rethink.Billing.FolderStructure.Core\Billing.FolderStructure.Core.csproj" />
     <ProjectReference Include="..\EraParserService.Domain\EraParserService.Domain.csproj" />
+    <ProjectReference Include="..\ClearingHouseService.Domain\ClearingHouseService.Domain.csproj" />
+    <ProjectReference Include="..\ClearingHouseService.Infrastructure\ClearingHouseService.Infrastructure.csproj" />
+    <ProjectReference Include="..\ClearingHouseService.Application\ClearingHouseService.Application.csproj" />
   </ItemGroup>
 
 </Project>

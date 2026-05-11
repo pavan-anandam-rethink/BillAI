@@ -111,7 +111,7 @@ namespace ClearingHouseService.Infrastructure.Clients
                     {
                         var result = Regex.Replace(
                             JsonSerializer.Deserialize<string>(responseData) ?? string.Empty,
-                            "[\"""]",
+                            "[\"\\u201C\\u201D]",
                             string.Empty);
                         return (true, result);
                     }
@@ -120,7 +120,7 @@ namespace ClearingHouseService.Infrastructure.Clients
                     {
                         var result = Regex.Replace(
                             JsonSerializer.Deserialize<string>(responseData) ?? string.Empty,
-                            "[\"""]",
+                            "[\"\\u201C\\u201D]",
                             string.Empty);
                         return (false, result);
                     }
