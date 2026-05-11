@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clearinghouse-config
+  namespace: {{ .Values.global.namespace }}
+data:
+  ASPNETCORE_ENVIRONMENT: {{ .Values.global.environment }}
+  OTEL_SERVICE_NAME: clearinghouse-platform
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+  KeyVault__VaultUri: {{ .Values.global.azure.keyVault.vaultUri }}
