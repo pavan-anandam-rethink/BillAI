@@ -49,11 +49,17 @@ namespace ProcessAsyncClaimSubmission.Func.Services
         public async Task CallPusherNotificationApi(ClaimProcessRequestModel claim, HttpResponseMessage apiResponse)
         {
 
+            var claimId = claim.RequestModel.Ids?.FirstOrDefault() ?? 0;
+            if (claimId == 0)
+            {
+                _logger.LogWarning("ProcessAsyncClaimSubmission--> Claim Ids is null or empty for BatchId: {BatchId}, AccountId: {AccountId}. This may indicate an upstream data issue.", claim.BatchId, claim.RequestModel.AccountInfoId);
+            }
+
             var payload = new ClaimStatusUpdate
             {
                 AccountId = claim.RequestModel.AccountInfoId,
                 UserId = claim.RequestModel.MemberId,
-                ClaimId = claim.RequestModel.Ids?.FirstOrDefault() ?? 0,
+                ClaimId = claimId,
                 BatchId = claim.BatchId,
                 Total = claim.TotalClaims,
                 Status = claim.ClaimStatus,
