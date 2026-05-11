@@ -1,0 +1,75 @@
+<Solution>
+  <Folder Name="/Services/" />
+  <Folder Name="/Services/BatchOrchestration/">
+    <Project Path="src/Services/BatchOrchestration/BatchOrchestration.Api/BatchOrchestration.Api.csproj" />
+    <Project Path="src/Services/BatchOrchestration/BatchOrchestration.Application/BatchOrchestration.Application.csproj" />
+    <Project Path="src/Services/BatchOrchestration/BatchOrchestration.Domain/BatchOrchestration.Domain.csproj" />
+    <Project Path="src/Services/BatchOrchestration/BatchOrchestration.Infrastructure/BatchOrchestration.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/BlobManagement/">
+    <Project Path="src/Services/BlobManagement/BlobManagement.Api/BlobManagement.Api.csproj" />
+    <Project Path="src/Services/BlobManagement/BlobManagement.Application/BlobManagement.Application.csproj" />
+    <Project Path="src/Services/BlobManagement/BlobManagement.Domain/BlobManagement.Domain.csproj" />
+    <Project Path="src/Services/BlobManagement/BlobManagement.Infrastructure/BlobManagement.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/ClearinghousePlugins/">
+    <Project Path="src/Services/ClearinghousePlugins/ClearinghousePlugins.Ability/ClearinghousePlugins.Ability.csproj" />
+    <Project Path="src/Services/ClearinghousePlugins/ClearinghousePlugins.Abstractions/ClearinghousePlugins.Abstractions.csproj" />
+    <Project Path="src/Services/ClearinghousePlugins/ClearinghousePlugins.Availity/ClearinghousePlugins.Availity.csproj" />
+    <Project Path="src/Services/ClearinghousePlugins/ClearinghousePlugins.Sandata/ClearinghousePlugins.Sandata.csproj" />
+    <Project Path="src/Services/ClearinghousePlugins/ClearinghousePlugins.Stedi/ClearinghousePlugins.Stedi.csproj" />
+    <Project Path="src/Services/ClearinghousePlugins/ClearinghousePlugins.TriZetto/ClearinghousePlugins.TriZetto.csproj" />
+    <Project Path="src/Services/ClearinghousePlugins/ClearinghousePlugins.Waystar/ClearinghousePlugins.Waystar.csproj" />
+  </Folder>
+  <Folder Name="/Services/EdiProcessing/">
+    <Project Path="src/Services/EdiProcessing/EdiProcessing.Application/EdiProcessing.Application.csproj" />
+    <Project Path="src/Services/EdiProcessing/EdiProcessing.Domain/EdiProcessing.Domain.csproj" />
+    <Project Path="src/Services/EdiProcessing/EdiProcessing.Infrastructure/EdiProcessing.Infrastructure.csproj" />
+    <Project Path="src/Services/EdiProcessing/EdiProcessing.Worker/EdiProcessing.Worker.csproj" />
+  </Folder>
+  <Folder Name="/Services/FileMetadata/">
+    <Project Path="src/Services/FileMetadata/FileMetadata.Api/FileMetadata.Api.csproj" />
+    <Project Path="src/Services/FileMetadata/FileMetadata.Application/FileMetadata.Application.csproj" />
+    <Project Path="src/Services/FileMetadata/FileMetadata.Domain/FileMetadata.Domain.csproj" />
+    <Project Path="src/Services/FileMetadata/FileMetadata.Infrastructure/FileMetadata.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/FileTracking/">
+    <Project Path="src/Services/FileTracking/FileTracking.Api/FileTracking.Api.csproj" />
+    <Project Path="src/Services/FileTracking/FileTracking.Application/FileTracking.Application.csproj" />
+    <Project Path="src/Services/FileTracking/FileTracking.Domain/FileTracking.Domain.csproj" />
+    <Project Path="src/Services/FileTracking/FileTracking.Infrastructure/FileTracking.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/Notification/">
+    <Project Path="src/Services/Notification/Notification.Api/Notification.Api.csproj" />
+    <Project Path="src/Services/Notification/Notification.Application/Notification.Application.csproj" />
+    <Project Path="src/Services/Notification/Notification.Domain/Notification.Domain.csproj" />
+    <Project Path="src/Services/Notification/Notification.Infrastructure/Notification.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/Reconciliation/">
+    <Project Path="src/Services/Reconciliation/Reconciliation.Api/Reconciliation.Api.csproj" />
+    <Project Path="src/Services/Reconciliation/Reconciliation.Application/Reconciliation.Application.csproj" />
+    <Project Path="src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj" />
+    <Project Path="src/Services/Reconciliation/Reconciliation.Infrastructure/Reconciliation.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/SftpIngestion/">
+    <Project Path="src/Services/SftpIngestion/SftpIngestion.Api/SftpIngestion.Api.csproj" />
+    <Project Path="src/Services/SftpIngestion/SftpIngestion.Application/SftpIngestion.Application.csproj" />
+    <Project Path="src/Services/SftpIngestion/SftpIngestion.Domain/SftpIngestion.Domain.csproj" />
+    <Project Path="src/Services/SftpIngestion/SftpIngestion.Infrastructure/SftpIngestion.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/StediIntegration/">
+    <Project Path="src/Services/StediIntegration/StediIntegration.Api/StediIntegration.Api.csproj" />
+    <Project Path="src/Services/StediIntegration/StediIntegration.Application/StediIntegration.Application.csproj" />
+    <Project Path="src/Services/StediIntegration/StediIntegration.Domain/StediIntegration.Domain.csproj" />
+    <Project Path="src/Services/StediIntegration/StediIntegration.Infrastructure/StediIntegration.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="src/Shared/ClearingHouse.Contracts/ClearingHouse.Contracts.csproj" />
+    <Project Path="src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/ClearingHouse.ArchitectureTests/ClearingHouse.ArchitectureTests.csproj" />
+    <Project Path="tests/ClearingHouse.IntegrationTests/ClearingHouse.IntegrationTests.csproj" />
+    <Project Path="tests/ClearingHouse.UnitTests/ClearingHouse.UnitTests.csproj" />
+  </Folder>
+</Solution>

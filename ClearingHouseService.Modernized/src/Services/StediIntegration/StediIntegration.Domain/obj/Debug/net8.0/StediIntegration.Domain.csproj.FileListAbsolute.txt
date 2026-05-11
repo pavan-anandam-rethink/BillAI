@@ -1,0 +1,16 @@
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/bin/Debug/net8.0/StediIntegration.Domain.deps.json
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/bin/Debug/net8.0/StediIntegration.Domain.dll
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/bin/Debug/net8.0/StediIntegration.Domain.pdb
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/bin/Debug/net8.0/ClearingHouse.SharedKernel.dll
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/bin/Debug/net8.0/ClearingHouse.SharedKernel.pdb
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.csproj.AssemblyReference.cache
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.AssemblyInfoInputs.cache
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.AssemblyInfo.cs
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.csproj.CoreCompileInputs.cache
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.sourcelink.json
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediInt.FAEB8818.Up2Date
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.dll
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/refint/StediIntegration.Domain.dll
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/StediIntegration.Domain.pdb
+/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/StediIntegration/StediIntegration.Domain/obj/Debug/net8.0/ref/StediIntegration.Domain.dll

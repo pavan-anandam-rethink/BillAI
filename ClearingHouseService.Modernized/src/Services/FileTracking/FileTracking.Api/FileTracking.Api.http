@@ -1,0 +1,6 @@
+@FileTracking.Api_HostAddress = http://localhost:5115
+
+GET {{FileTracking.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

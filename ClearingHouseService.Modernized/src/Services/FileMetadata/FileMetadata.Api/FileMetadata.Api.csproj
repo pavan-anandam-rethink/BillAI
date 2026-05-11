@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.25" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FileMetadata.Infrastructure\FileMetadata.Infrastructure.csproj" />
+    <ProjectReference Include="..\FileMetadata.Application\FileMetadata.Application.csproj" />
+    <ProjectReference Include="..\FileMetadata.Domain\FileMetadata.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ClearingHouse.SharedKernel\ClearingHouse.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ClearingHouse.Contracts\ClearingHouse.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

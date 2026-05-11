@@ -1,0 +1,7 @@
+namespace ClearingHouse.SharedKernel.Interfaces;
+
+public interface ICorrelationIdProvider
+{
+    string GetCorrelationId();
+    void SetCorrelationId(string correlationId);
+}

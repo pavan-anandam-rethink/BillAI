@@ -1,0 +1,6 @@
+@StediIntegration.Api_HostAddress = http://localhost:5111
+
+GET {{StediIntegration.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

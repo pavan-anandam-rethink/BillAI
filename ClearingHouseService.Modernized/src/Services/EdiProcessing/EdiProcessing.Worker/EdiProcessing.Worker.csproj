@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-EdiProcessing.Worker-c6ee3ffd-290e-4966-b803-6253d6b28765</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EdiProcessing.Infrastructure\EdiProcessing.Infrastructure.csproj" />
+    <ProjectReference Include="..\EdiProcessing.Application\EdiProcessing.Application.csproj" />
+    <ProjectReference Include="..\EdiProcessing.Domain\EdiProcessing.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ClearingHouse.SharedKernel\ClearingHouse.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ClearingHouse.Contracts\ClearingHouse.Contracts.csproj" />
+  </ItemGroup>
+</Project>

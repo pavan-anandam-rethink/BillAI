@@ -1,0 +1,333 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Infrastructure/Reconciliation.Infrastructure.csproj": {}
+  },
+  "projects": {
+    "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Application/Reconciliation.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Application/Reconciliation.Application.csproj",
+        "projectName": "Reconciliation.Application",
+        "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Application/Reconciliation.Application.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.Contracts/ClearingHouse.Contracts.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.Contracts/ClearingHouse.Contracts.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj",
+        "projectName": "Reconciliation.Domain",
+        "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Infrastructure/Reconciliation.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Infrastructure/Reconciliation.Infrastructure.csproj",
+        "projectName": "Reconciliation.Infrastructure",
+        "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Infrastructure/Reconciliation.Infrastructure.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Application/Reconciliation.Application.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Application/Reconciliation.Application.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/Reconciliation/Reconciliation.Domain/Reconciliation.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.Contracts/ClearingHouse.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.Contracts/ClearingHouse.Contracts.csproj",
+        "projectName": "ClearingHouse.Contracts",
+        "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.Contracts/ClearingHouse.Contracts.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj",
+        "projectName": "ClearingHouse.SharedKernel",
+        "projectPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/ClearingHouse.SharedKernel.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Shared/ClearingHouse.SharedKernel/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MediatR.Contracts": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
