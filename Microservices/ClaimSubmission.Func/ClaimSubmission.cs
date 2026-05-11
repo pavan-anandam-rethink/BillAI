@@ -20,8 +20,8 @@ namespace ClaimSubmission.Func
         {
             _logger = logger;
             _configuration = configuration;
-            _ApiUrl = _configuration["ApiUrl"].ToString();
-            _XApiKey = _configuration["XApiKey"].ToString();
+            _ApiUrl = _configuration["ApiUrl"] ?? throw new InvalidOperationException("Configuration 'ApiUrl' is required.");
+            _XApiKey = _configuration["XApiKey"] ?? throw new InvalidOperationException("Configuration 'XApiKey' is required.");
 
         }
 
@@ -37,7 +37,7 @@ namespace ClaimSubmission.Func
 
             var str = message.Body.ToString();
             ClearingHouseClaimModel claimDetails = JsonConvert.DeserializeObject<ClearingHouseClaimModel>(str.ToString());
-            HttpClient httpClient = new HttpClient();
+            using HttpClient httpClient = new HttpClient();
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -47,7 +47,7 @@ namespace ClaimSubmission.Func
             {
                 try
                 {
-                    HttpResponseMessage result = httpClient.PostAsync(_ApiUrl, content).Result;
+                    HttpResponseMessage result = await httpClient.PostAsync(_ApiUrl, content);
                     {
                         if (result.StatusCode == HttpStatusCode.OK)
                         {

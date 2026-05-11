@@ -19,8 +19,8 @@ namespace ProcessEligibilityRequest.Func
         {
             _logger = logger;
             _configuration = configuration;
-            _ApiUrl = _configuration["ApiUrl"].ToString();
-            _XApiKey = _configuration["XApiKey"].ToString();
+            _ApiUrl = _configuration["ApiUrl"] ?? throw new InvalidOperationException("Configuration 'ApiUrl' is required.");
+            _XApiKey = _configuration["XApiKey"] ?? throw new InvalidOperationException("Configuration 'XApiKey' is required.");
         }
 
         [Function("ProcessEligibilityRequest")]
@@ -38,7 +38,7 @@ namespace ProcessEligibilityRequest.Func
             {
                 eligilibilityModel = JsonSerializer.Deserialize<Eligibility270Request>(message.Body.ToString());
                 _logger.LogInformation("Raw ServiceBus Body: {Body}", message.Body.ToString());
-                HttpClient httpClient = new HttpClient();
+                using HttpClient httpClient = new HttpClient();
 
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

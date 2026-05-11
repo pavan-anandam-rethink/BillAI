@@ -13,6 +13,7 @@ using Rethink.Services.Common.Infrastructure.Context.Billing;
 using Rethink.Services.Common.Infrastructure.Repository;
 using Rethink.Services.Common.Interfaces;
 using Rethink.Services.Common.Models;
+using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace BillingService.XUnit.Tests.Billing.PaymentPosting
         }
 
         [Fact]
-        public async void GetAll_ShouldReturnAllPaymentNotes()
+        public async Task GetAll_ShouldReturnAllPaymentNotes()
         {
             var paymentId = Fixture.Create<int>();
             var accountInfoId = Fixture.Create<int>();
@@ -74,7 +75,7 @@ namespace BillingService.XUnit.Tests.Billing.PaymentPosting
         }
 
         [Fact]
-        public async void AddNote_ShouldReturnId()
+        public async Task AddNote_ShouldReturnId()
         {
             var model = Fixture.Create<PaymentNoteSaveModel>();
 
@@ -84,7 +85,7 @@ namespace BillingService.XUnit.Tests.Billing.PaymentPosting
         }
 
         [Fact]
-        public async void DeleteNote_ShouldReturnId()
+        public async Task DeleteNote_ShouldReturnId()
         {
             var model = Fixture.Create<PaymentNoteDeleteModel>();
 

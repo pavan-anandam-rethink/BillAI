@@ -74,14 +74,14 @@ public class ProcessAsyncClaimSubmission
             var apiResponse = await CallWithRetry(() => _apiClient.CallClaimApprovalApi(claim.RequestModel), MaxRetryAttempts, "ProcessAsyncClaimApproval");
 
             // Log ClaimApproval API response
-            _logger.LogInformation($"ProcessAsyncClaimApproval--> ApproveClaim API response for claim {claim.RequestModel.Ids.First()}: {apiResponse.StatusCode}");
+            _logger.LogInformation($"ProcessAsyncClaimApproval--> ApproveClaim API response for claim {claim.RequestModel.Ids?.FirstOrDefault()}: {apiResponse.StatusCode}");
 
             // Notify frontend via Pusher API
             model.ClaimStatus = apiResponse.IsSuccessStatusCode ? "Approved" : "Rejected";
             await _apiClient.CallPusherNotificationApi(model, apiResponse);
 
             // Log Pusher API response
-            _logger.LogInformation($"ProcessAsyncClaimApproval--> Pusher API notification sent for claim {claim.RequestModel.Ids.First()}");
+            _logger.LogInformation($"ProcessAsyncClaimApproval--> Pusher API notification sent for claim {claim.RequestModel.Ids?.FirstOrDefault()}");
 
             // Complete message
             await messageActions.CompleteMessageAsync(message);
@@ -113,18 +113,25 @@ public class ProcessAsyncClaimSubmission
 
             claim = JsonSerializer.Deserialize<ClaimProcessRequestModel>(message.Body.ToString());
 
+            if (claim == null || claim.RequestModel == null)
+            {
+                _logger.LogError("ProcessAsyncClaimSubmission--> Failed to deserialize claim. Message body was null or in an unexpected format.");
+                await messageActions.DeadLetterMessageAsync(message);
+                return;
+            }
+
             // Call Claim Processing API with retry
             var apiResponse = await CallWithRetry(() => _apiClient.CallClaimProcessingApi(claim.RequestModel), MaxRetryAttempts, nameof(ProcessAsyncClaimSubmission));
 
             // Log ClaimSubmission API response
-            _logger.LogInformation($"ProcessAsyncClaimSubmission--> Claim Processing API response for claim {claim.RequestModel.Ids.First()}: {apiResponse.StatusCode}");
+            _logger.LogInformation($"ProcessAsyncClaimSubmission--> Claim Processing API response for claim {claim.RequestModel.Ids?.FirstOrDefault()}: {apiResponse.StatusCode}");
 
             // Notify frontend via Pusher API
             claim.ClaimStatus = apiResponse.IsSuccessStatusCode ? "Success" : "Failure";
             await _apiClient.CallPusherNotificationApi(claim, apiResponse);
 
             // Log Pusher API response
-            _logger.LogInformation($"ProcessAsyncClaimSubmission--> Pusher API notification sent for claim {claim.RequestModel.Ids.First()}");
+            _logger.LogInformation($"ProcessAsyncClaimSubmission--> Pusher API notification sent for claim {claim.RequestModel.Ids?.FirstOrDefault()}");
 
             // Complete message
             await messageActions.CompleteMessageAsync(message);
@@ -166,7 +173,7 @@ public class ProcessAsyncClaimSubmission
             {
                 retryCount++;
                 _logger.LogWarning($"{functionName}-- > Retry {retryCount}/{maxRetries} due to {ex.Message}");
-                await Task.Delay(InitialDelayMilliseconds);
+                await Task.Delay(delay);
                 delay *= 2; // exponential backoff
             }
         }

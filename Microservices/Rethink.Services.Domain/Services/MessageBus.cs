@@ -29,7 +29,9 @@ namespace Rethink.Services.Domain.Services
         public async Task SendBatchAsync<T>(string entityName, List<T> batch)
         {
             var client = new ServiceBusClient(_namespaceConnectionString);
+            await using var _ = client.ConfigureAwait(false);
             var sender = client.CreateSender(entityName);
+            await using var __ = sender.ConfigureAwait(false);
             using ServiceBusMessageBatch messageBatch = await sender.CreateMessageBatchAsync();
             foreach (var message in batch)
             {
@@ -44,13 +46,15 @@ namespace Rethink.Services.Domain.Services
         /// </summary>
         /// <typeparam name="T">Batch DataType</typeparam>
         /// <param name="entityName">Topic/Queue</param>
-        /// <param name="batch"Message to send></param>
+        /// <param name="batch">Message to send</param>
         /// <param name="chunkSize">Chunk Size</param>
         /// <returns></returns>
         public async Task SendBatchAsync<T>(string entityName, List<T> batch, int chunkSize)
         {
             var client = new ServiceBusClient(_namespaceConnectionString);
+            await using var _ = client.ConfigureAwait(false);
             var sender = client.CreateSender(entityName);
+            await using var __ = sender.ConfigureAwait(false);
 
             foreach (var chunk in batch.Chunk(chunkSize))
             {

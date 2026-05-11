@@ -53,7 +53,7 @@ namespace ProcessAsyncClaimSubmission.Func.Services
             {
                 AccountId = claim.RequestModel.AccountInfoId,
                 UserId = claim.RequestModel.MemberId,
-                ClaimId = claim.RequestModel.Ids.First(),
+                ClaimId = claim.RequestModel.Ids?.FirstOrDefault() ?? 0,
                 BatchId = claim.BatchId,
                 Total = claim.TotalClaims,
                 Status = claim.ClaimStatus,

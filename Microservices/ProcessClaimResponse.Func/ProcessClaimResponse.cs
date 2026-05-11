@@ -20,8 +20,8 @@ namespace ProcessClaimResponse.Func
         {
             _logger = logger;
             _configuration = configuration;
-            _ApiUrl = _configuration["ApiUrl"].ToString();
-            _XApiKey = _configuration["XApiKey"].ToString();
+            _ApiUrl = _configuration["ApiUrl"] ?? throw new InvalidOperationException("Configuration 'ApiUrl' is required.");
+            _XApiKey = _configuration["XApiKey"] ?? throw new InvalidOperationException("Configuration 'XApiKey' is required.");
         }
 
         [Function(nameof(ProcessClaimResponse))]
@@ -36,7 +36,7 @@ namespace ProcessClaimResponse.Func
 
             var str = message.Body.ToString();
             EdiDownloadData claimDetails = JsonConvert.DeserializeObject<EdiDownloadData>(str.ToString());
-            HttpClient httpClient = new HttpClient();
+            using HttpClient httpClient = new HttpClient();
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -46,7 +46,7 @@ namespace ProcessClaimResponse.Func
             {
                 try
                 {
-                    HttpResponseMessage result = httpClient.PostAsync(_ApiUrl, content).Result;
+                    HttpResponseMessage result = await httpClient.PostAsync(_ApiUrl, content);
                     {
                         if (result.StatusCode == HttpStatusCode.OK)
                         {

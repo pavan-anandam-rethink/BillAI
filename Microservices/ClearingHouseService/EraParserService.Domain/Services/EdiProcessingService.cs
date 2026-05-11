@@ -572,7 +572,7 @@ namespace EraParserService.Domain.Services
             {
                 await _messageBus.SendBatchAsync(Topics.RT_Billing_ProcessClaimTxn, claimTransactionData);
             }
-            catch (Exception) { }
+            catch (Exception ex) { _logger.LogError(ex, "Failed to send claim transaction batch to Service Bus topic."); }
         }
 
         private void LogMsg(string msg)

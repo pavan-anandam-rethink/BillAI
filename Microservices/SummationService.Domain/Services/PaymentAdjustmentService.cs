@@ -268,7 +268,7 @@ public class PaymentAdjustmentService(IRepository<ReportingDbContext, PaymentsAd
 
                     isColor = !isColor;
                 }
-                catch (Exception) { }
+                catch (Exception ex) { System.Diagnostics.Trace.TraceError($"Error processing Excel row: {ex.Message}"); }
 
             }
             workBookPart.Workbook.Save();
@@ -391,7 +391,7 @@ public class PaymentAdjustmentService(IRepository<ReportingDbContext, PaymentsAd
 
                     isColor = !isColor;
                 }
-                catch (Exception) { }
+                catch (Exception ex) { System.Diagnostics.Trace.TraceError($"Error processing Excel row: {ex.Message}"); }
 
             }
             workBookPart.Workbook.Save();

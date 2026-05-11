@@ -19,7 +19,7 @@ namespace ProcessClaimCreation.Func
         {
             _logger = logger;
             _configuration = configuration;
-            _apiUrl = _configuration["ApiUrl"].ToString();
+            _apiUrl = _configuration["ApiUrl"] ?? throw new InvalidOperationException("Configuration 'ApiUrl' is required.");
         }
 
         [Function(nameof(ProcessClaimCreation))]
@@ -34,7 +34,7 @@ namespace ProcessClaimCreation.Func
                 client.BaseAddress = new Uri(_apiUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("XApiKey", _configuration["XApiKey"].ToString());
+                client.DefaultRequestHeaders.Add("XApiKey", _configuration["XApiKey"] ?? throw new InvalidOperationException("Configuration 'XApiKey' is required."));
 
                 ClaimCreateEnd claimCreateEnd = JsonConvert.DeserializeObject<ClaimCreateEnd>(message.Body.ToString());
                 StringContent content = new StringContent(JsonConvert.SerializeObject(claimCreateEnd), Encoding.UTF8, "application/json");

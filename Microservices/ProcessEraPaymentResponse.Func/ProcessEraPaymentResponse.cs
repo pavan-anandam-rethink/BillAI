@@ -32,12 +32,12 @@ namespace ProcessEraPaymentResponse.Func
             _configuration = configuration;
 
             // ERA API
-            _ApiUrl = _configuration["ApiUrl"];
-            _XApiKey = _configuration["XApiKey"];
+            _ApiUrl = _configuration["ApiUrl"] ?? throw new InvalidOperationException("Configuration 'ApiUrl' is required.");
+            _XApiKey = _configuration["XApiKey"] ?? throw new InvalidOperationException("Configuration 'XApiKey' is required.");
 
             // Billing API
-            _billingApiUrl = _configuration["BillingApiUrl"];
-            _billingXApiKey = _configuration["BillingXApiKey"];
+            _billingApiUrl = _configuration["BillingApiUrl"] ?? throw new InvalidOperationException("Configuration 'BillingApiUrl' is required.");
+            _billingXApiKey = _configuration["BillingXApiKey"] ?? throw new InvalidOperationException("Configuration 'BillingXApiKey' is required.");
         }
 
         [Function(nameof(ProcessEraPaymentResponse))]
@@ -52,7 +52,7 @@ namespace ProcessEraPaymentResponse.Func
 
             var str = message.Body.ToString();
             EdiDownloadData claimDetails = JsonConvert.DeserializeObject<EdiDownloadData>(str.ToString());
-            HttpClient httpClient = new HttpClient();
+            using HttpClient httpClient = new HttpClient();
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -62,7 +62,7 @@ namespace ProcessEraPaymentResponse.Func
             {
                 try
                 {
-                    HttpResponseMessage result = httpClient.PostAsync(_ApiUrl, content).Result;
+                    HttpResponseMessage result = await httpClient.PostAsync(_ApiUrl, content);
                     {
                         if (result.StatusCode == HttpStatusCode.OK)
                         {
