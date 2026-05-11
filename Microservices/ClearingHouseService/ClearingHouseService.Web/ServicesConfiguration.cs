@@ -8,6 +8,13 @@ using BillingService.Domain.Interfaces.Files;
 using BillingService.Domain.Services.Billing;
 using BillingService.Domain.Services.Files;
 using BillingService.Domain.Services.RethinkMasterDataMicroservices;
+using ClearingHouseService.Application.Orchestrators;
+using ClearingHouseService.Application.Pipelines;
+using ClearingHouseService.Domain.Interfaces;
+using ClearingHouseService.Domain.Services;
+using ClearingHouseService.Infrastructure.Clients;
+using ClearingHouseService.Infrastructure.Configuration;
+using ClearingHouseService.Infrastructure.Transport;
 using ClearingHouseService.Web.BackgroundWorker;
 using ClearingHouseService.Web.Factories;
 using ClearingHouseService.Web.Helpers;
@@ -130,6 +137,39 @@ namespace ClearingHouseService.Web
 
             serviceCollection.AddRethinkLogging(configuration);
             loggingBuilder.AddAppInsightLogger(configuration);
+
+            // === New Architecture Layer Registrations (additive — existing registrations preserved above) ===
+
+            // Domain services
+            serviceCollection.AddScoped<ITransactionTracker, TransactionTracker>();
+            serviceCollection.AddScoped<IEdiValidator, DefaultEdiValidator>();
+
+            // Infrastructure: Transport
+            serviceCollection.AddScoped<SftpTransport>();
+            serviceCollection.AddScoped<StediApiTransport>();
+            serviceCollection.AddScoped<ITransportFactory, TransportFactory>();
+
+            // Infrastructure: BillingServiceClient (extracted from CommonHelper)
+            serviceCollection.AddHttpClient<IBillingServiceClient, BillingServiceClient>(client =>
+            {
+                var billingApiUrl = keyVaultProviderService.GetSecretAsync(configuration["BillingApiUrl"]).Result;
+                var billingApiKey = keyVaultProviderService.GetSecretAsync(configuration["BillingApiKey"]).Result;
+                client.BaseAddress = new Uri(billingApiUrl);
+                client.DefaultRequestHeaders.Add("XApiKey", billingApiKey);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+
+            // Infrastructure: Strongly-typed configuration options
+            serviceCollection.Configure<ClearingHouseOptions>(configuration.GetSection(ClearingHouseOptions.SectionName));
+
+            // Application: Orchestrators
+            serviceCollection.AddScoped<IClearingHouseOrchestrator, ClearingHouseOrchestrator>();
+            serviceCollection.AddScoped<IEligibilityOrchestrator, EligibilityOrchestrator>();
+
+            // Application: Pipelines
+            serviceCollection.AddScoped<ClaimSubmissionPipeline>();
+            serviceCollection.AddScoped<ResponseProcessingPipeline>();
 
             var mgmtClient = new ManagementClient(svcBusConnStrBuilder);
         }

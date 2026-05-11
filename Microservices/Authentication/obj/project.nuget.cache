@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3Nk5EhVD1ag=",
+  "dgSpecHash": "SI4pLvULpws=",
   "success": false,
   "projectFilePath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
   "expectedPackageFiles": [
@@ -43,8 +43,8 @@
     "/home/runner/.nuget/packages/microsoft.entityframeworkcore.sqlserver/7.0.10/microsoft.entityframeworkcore.sqlserver.7.0.10.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.entityframeworkcore.sqlserver.nettopologysuite/7.0.10/microsoft.entityframeworkcore.sqlserver.nettopologysuite.7.0.10.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.ambientmetadata.application/9.0.0/microsoft.extensions.ambientmetadata.application.9.0.0.nupkg.sha512",
-    "/home/runner/.nuget/packages/microsoft.extensions.caching.abstractions/7.0.0/microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
-    "/home/runner/.nuget/packages/microsoft.extensions.caching.memory/7.0.0/microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
+    "/home/runner/.nuget/packages/microsoft.extensions.caching.abstractions/8.0.0/microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
+    "/home/runner/.nuget/packages/microsoft.extensions.caching.memory/8.0.1/microsoft.extensions.caching.memory.8.0.1.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.compliance.abstractions/9.0.0/microsoft.extensions.compliance.abstractions.9.0.0.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.configuration/9.0.3/microsoft.extensions.configuration.9.0.3.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.3/microsoft.extensions.configuration.abstractions.9.0.3.nupkg.sha512",
