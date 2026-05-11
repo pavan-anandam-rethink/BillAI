@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "t/GHQOCXJvU=",
+  "dgSpecHash": "Iy3Hp8Un8PM=",
   "success": true,
   "projectFilePath": "/home/runner/work/BillAI/BillAI/ClearingHouseService.Modernized/src/Services/ClearinghousePlugins/ClearinghousePlugins.TriZetto/ClearinghousePlugins.TriZetto.csproj",
   "expectedPackageFiles": [
-    "/home/runner/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512"
+    "/home/runner/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
+    "/home/runner/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "/home/runner/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512"
   ],
   "logs": []
 }

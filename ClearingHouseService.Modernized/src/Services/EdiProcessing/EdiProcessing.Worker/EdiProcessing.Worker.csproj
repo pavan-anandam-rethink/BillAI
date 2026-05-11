@@ -18,4 +18,12 @@
     <ProjectReference Include="..\..\..\Shared\ClearingHouse.SharedKernel\ClearingHouse.SharedKernel.csproj" />
     <ProjectReference Include="..\..\..\Shared\ClearingHouse.Contracts\ClearingHouse.Contracts.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.2" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+  </ItemGroup>
+
 </Project>

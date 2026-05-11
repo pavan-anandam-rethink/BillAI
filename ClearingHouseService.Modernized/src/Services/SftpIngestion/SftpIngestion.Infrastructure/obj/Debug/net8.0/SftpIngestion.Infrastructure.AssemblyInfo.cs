@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SftpIngestion.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+947223021e52f909af2d275b3bb3d6f1a2d3b6ff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+118708e1e8654cfe1478b9c33c7f65a868a580bd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SftpIngestion.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SftpIngestion.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
