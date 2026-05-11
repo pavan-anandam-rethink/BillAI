@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClearingHouseService.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+31e5534d96959c1291a5f599271112165f3b3623")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+71398bb278cb3deeab56aa75cfa74e6c7968e607")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClearingHouseService.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClearingHouseService.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

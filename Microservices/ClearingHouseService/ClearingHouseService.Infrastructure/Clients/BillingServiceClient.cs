@@ -93,10 +93,15 @@ namespace ClearingHouseService.Infrastructure.Clients
             }
         }
 
+        private const int MaxRetryAttempts = 10;
+
         private async Task<(bool Success, string Result)> PostWithRetryAsync(string endpoint, object payload, CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            var attempt = 0;
+
+            while (!cancellationToken.IsCancellationRequested && attempt < MaxRetryAttempts)
             {
+                attempt++;
                 try
                 {
                     var content = new StringContent(
@@ -125,10 +130,11 @@ namespace ClearingHouseService.Infrastructure.Clients
                         return (false, result);
                     }
 
-                    // Retry on server errors
-                    _logger.LogWarning("BillingService call to {Endpoint} returned {Status}, retrying in 30s",
-                        endpoint, response.StatusCode);
-                    await Task.Delay(TimeSpan.FromSeconds(30), cancellationToken);
+                    // Retry on server errors with exponential backoff
+                    var delay = TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempt)));
+                    _logger.LogWarning("BillingService call to {Endpoint} returned {Status}, attempt {Attempt}/{MaxRetries}, retrying in {Delay}s",
+                        endpoint, response.StatusCode, attempt, MaxRetryAttempts, delay.TotalSeconds);
+                    await Task.Delay(delay, cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -136,13 +142,15 @@ namespace ClearingHouseService.Infrastructure.Clients
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error calling BillingService endpoint {Endpoint}, retrying in 30s", endpoint);
-                    await Task.Delay(TimeSpan.FromSeconds(30), cancellationToken);
+                    var delay = TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempt)));
+                    _logger.LogError(ex, "Error calling BillingService endpoint {Endpoint}, attempt {Attempt}/{MaxRetries}, retrying in {Delay}s",
+                        endpoint, attempt, MaxRetryAttempts, delay.TotalSeconds);
+                    await Task.Delay(delay, cancellationToken);
                 }
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            return (false, "Operation was cancelled");
+            return (false, $"Max retry attempts ({MaxRetryAttempts}) exceeded for endpoint {endpoint}");
         }
     }
 }
