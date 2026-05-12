@@ -15,6 +15,7 @@ public sealed class SftpConnectionPool : ISftpConnectionPool
 {
     private readonly ConcurrentDictionary<string, ConcurrentBag<ISftpClient>> _pool = new();
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _semaphores = new();
+    private readonly ConcurrentDictionary<ISftpClient, string> _clientPoolKeys = new();
     private readonly ILogger<SftpConnectionPool> _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly SftpIngestionOptions _options;
@@ -62,12 +63,14 @@ public sealed class SftpConnectionPool : ISftpConnectionPool
                 if (existingClient.IsConnected)
                 {
                     Interlocked.Increment(ref _activeConnections);
+                    _clientPoolKeys[existingClient] = poolKey;
                     _logger.LogDebug("Reusing pooled SFTP connection for {PoolKey}", poolKey);
                     return existingClient;
                 }
 
                 // Dispose stale connection
                 _logger.LogDebug("Disposing stale SFTP connection for {PoolKey}", poolKey);
+                _clientPoolKeys.TryRemove(existingClient, out _);
                 await existingClient.DisposeAsync();
                 Interlocked.Decrement(ref _totalConnections);
             }
@@ -77,6 +80,7 @@ public sealed class SftpConnectionPool : ISftpConnectionPool
             await client.ConnectAsync(connectionDetails, cancellationToken);
             Interlocked.Increment(ref _totalConnections);
             Interlocked.Increment(ref _activeConnections);
+            _clientPoolKeys[client] = poolKey;
 
             _logger.LogInformation("Created new SFTP connection for {PoolKey}. Total: {TotalConnections}", poolKey, _totalConnections);
             return client;
@@ -95,28 +99,25 @@ public sealed class SftpConnectionPool : ISftpConnectionPool
 
         Interlocked.Decrement(ref _activeConnections);
 
-        if (_disposed || !client.IsConnected)
+        if (!_clientPoolKeys.TryRemove(client, out var poolKey) || _disposed || !client.IsConnected)
         {
             _ = DisposeClientAsync(client);
-            return;
-        }
-
-        // Return to pool — determine pool key by iterating (or use a known key)
-        foreach (var (key, bag) in _pool)
-        {
-            bag.Add(client);
-            _logger.LogDebug("Released SFTP connection back to pool {PoolKey}", key);
-
-            // Release semaphore for this pool
-            if (_semaphores.TryGetValue(key, out var semaphore))
+            if (poolKey is not null && _semaphores.TryGetValue(poolKey, out var sem))
             {
-                semaphore.Release();
+                sem.Release();
             }
             return;
         }
 
-        // If no pool found, dispose
-        _ = DisposeClientAsync(client);
+        // Return to correct pool using tracked key
+        var pool = _pool.GetOrAdd(poolKey, _ => new ConcurrentBag<ISftpClient>());
+        pool.Add(client);
+        _logger.LogDebug("Released SFTP connection back to pool {PoolKey}", poolKey);
+
+        if (_semaphores.TryGetValue(poolKey, out var semaphore))
+        {
+            semaphore.Release();
+        }
     }
 
     /// <inheritdoc />

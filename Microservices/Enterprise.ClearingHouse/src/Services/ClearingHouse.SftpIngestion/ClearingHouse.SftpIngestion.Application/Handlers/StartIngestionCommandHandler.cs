@@ -103,15 +103,17 @@ public sealed class StartIngestionCommandHandler : IRequestHandler<StartIngestio
             {
                 await using (file.Content)
                 {
+                    var fileSize = file.Content.CanSeek ? file.Content.Length : 0L;
+
                     var processCommand = new ProcessDiscoveredFileCommand(
                         FileName: file.FileName,
-                        FileSize: file.Content.Length,
+                        FileSize: fileSize,
                         ClearinghouseIdentifier: request.ClearinghouseIdentifier,
                         CorrelationId: request.CorrelationId,
                         SftpConnectionDetails: SftpIngestion.Domain.ValueObjects.SftpConnectionDetails.Create(
-                            host: "configured-via-options",
+                            host: "placeholder-uses-plugin",
                             port: 22,
-                            username: "configured-via-options",
+                            username: "placeholder-uses-plugin",
                             encryptedPassword: string.Empty,
                             downloadDirectory: "/inbound"),
                         IngestionJobId: job.Id);

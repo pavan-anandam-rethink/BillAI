@@ -20,7 +20,6 @@ namespace ClearingHouse.SftpIngestion.Application.Handlers;
 public sealed class ProcessDiscoveredFileCommandHandler : IRequestHandler<ProcessDiscoveredFileCommand, ProcessDiscoveredFileResult>
 {
     private static readonly ActivitySource ActivitySource = new("ClearingHouse.SftpIngestion");
-    private const int StreamBufferSize = 81920; // 80 KB buffer for stream copy operations
 
     private readonly ILogger<ProcessDiscoveredFileCommandHandler> _logger;
     private readonly ISftpConnectionPool _connectionPool;
@@ -224,10 +223,10 @@ internal sealed class HashComputingStream : Stream
     public override bool CanRead => _innerStream.CanRead;
     public override bool CanSeek => false;
     public override bool CanWrite => false;
-    public override long Length => _innerStream.Length;
+    public override long Length => throw new NotSupportedException();
     public override long Position
     {
-        get => _innerStream.Position;
+        get => throw new NotSupportedException();
         set => throw new NotSupportedException();
     }
 
