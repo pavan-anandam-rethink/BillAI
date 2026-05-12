@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edi-processing-worker
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: edi-processing-worker
+    app.kubernetes.io/name: edi-processing-worker
+    app.kubernetes.io/component: processing
+    app.kubernetes.io/part-of: clearinghouse-platform
+spec:
+  replicas: {{ .Values.ediProcessing.replicaCount }}
+  selector:
+    matchLabels:
+      app: edi-processing-worker
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: edi-processing-worker
+        azure.workload.identity/use: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      serviceAccountName: clearinghouse-workload-identity
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: edi-processing-worker
+          image: "{{ .Values.global.registry }}/{{ .Values.ediProcessing.image.repository }}:{{ .Values.ediProcessing.image.tag }}"
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.global.environment }}
+            - name: KeyVault__VaultUri
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: keyvault-uri
+            - name: ConnectionStrings__ServiceBus
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: servicebus-connection
+            - name: ConnectionStrings__EdiProcessingDb
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: database-connection
+            - name: ApplicationInsights__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: appinsights-connection
+            - name: Processing__MaxConcurrentFiles
+              value: "{{ .Values.ediProcessing.concurrency.maxConcurrentFiles }}"
+            - name: Processing__ChunkSizeMB
+              value: "{{ .Values.ediProcessing.concurrency.chunkSizeMB }}"
+          resources:
+            {{- toYaml .Values.ediProcessing.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edi-processing-worker
+  namespace: {{ .Values.global.namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: edi-processing-worker
+---
+{{- if .Values.ediProcessing.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: edi-processing-worker-hpa
+  namespace: {{ .Values.global.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: edi-processing-worker
+  minReplicas: {{ .Values.ediProcessing.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.ediProcessing.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.ediProcessing.autoscaling.targetCPUUtilization }}
+    - type: Pods
+      pods:
+        metric:
+          name: servicebus_queue_length
+        target:
+          type: AverageValue
+          averageValue: "5"
+{{- end }}

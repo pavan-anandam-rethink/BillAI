@@ -1,0 +1,121 @@
+trigger:
+  branches:
+    include:
+      - main
+      - release/*
+  paths:
+    include:
+      - 'Microservices/ClearingHouseService.Modernized/**'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: clearinghouse-platform-vars
+  - name: dockerRegistry
+    value: 'acrclearinghouse.azurecr.io'
+  - name: helmChartPath
+    value: 'Microservices/ClearingHouseService.Modernized/deploy/helm/clearinghouse-platform'
+  - name: aksClusterName
+    value: 'aks-clearinghouse-prod'
+  - name: aksResourceGroup
+    value: 'rg-clearinghouse-prod'
+
+stages:
+  - stage: Build
+    displayName: 'Build & Test'
+    jobs:
+      - job: BuildAndTest
+        displayName: 'Build, Test, Analyze'
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              version: '8.0.x'
+
+          - script: |
+              cd Microservices/ClearingHouseService.Modernized
+              dotnet restore
+              dotnet build --configuration Release --no-restore
+            displayName: 'Build Solution'
+
+          - script: |
+              cd Microservices/ClearingHouseService.Modernized
+              dotnet test --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./TestResults
+            displayName: 'Run Unit Tests'
+
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: '**/coverage.cobertura.xml'
+
+  - stage: Docker
+    displayName: 'Build Docker Images'
+    dependsOn: Build
+    jobs:
+      - job: BuildImages
+        displayName: 'Build & Push Images'
+        steps:
+          - task: Docker@2
+            displayName: 'Build SFTP Ingestion'
+            inputs:
+              containerRegistry: 'ACR-Connection'
+              repository: 'clearinghouse/sftp-ingestion'
+              command: 'buildAndPush'
+              Dockerfile: 'Microservices/ClearingHouseService.Modernized/src/Services/SftpIngestion/SftpIngestion.Api/Dockerfile'
+              buildContext: 'Microservices/ClearingHouseService.Modernized'
+              tags: |
+                $(Build.BuildId)
+                latest
+
+  - stage: DeployDev
+    displayName: 'Deploy to Development'
+    dependsOn: Docker
+    condition: succeeded()
+    jobs:
+      - deployment: DeployDev
+        displayName: 'Deploy to Dev AKS'
+        environment: 'clearinghouse-dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: HelmDeploy@0
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscription: 'Azure-Subscription'
+                    azureResourceGroup: '$(aksResourceGroup)'
+                    kubernetesCluster: '$(aksClusterName)'
+                    namespace: 'clearinghouse-dev'
+                    command: 'upgrade'
+                    chartType: 'FilePath'
+                    chartPath: '$(helmChartPath)'
+                    releaseName: 'clearinghouse-platform'
+                    overrideValues: 'global.environment=development'
+                    waitForExecution: true
+
+  - stage: DeployProd
+    displayName: 'Deploy to Production'
+    dependsOn: DeployDev
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeployProd
+        displayName: 'Deploy to Prod AKS'
+        environment: 'clearinghouse-prod'
+        strategy:
+          canary:
+            increments: [25, 50, 100]
+            deploy:
+              steps:
+                - task: HelmDeploy@0
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscription: 'Azure-Subscription'
+                    azureResourceGroup: '$(aksResourceGroup)'
+                    kubernetesCluster: '$(aksClusterName)'
+                    namespace: 'clearinghouse'
+                    command: 'upgrade'
+                    chartType: 'FilePath'
+                    chartPath: '$(helmChartPath)'
+                    releaseName: 'clearinghouse-platform'
+                    overrideValues: 'global.environment=production'
+                    waitForExecution: true

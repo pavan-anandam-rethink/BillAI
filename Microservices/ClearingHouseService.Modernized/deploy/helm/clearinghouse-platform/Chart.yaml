@@ -1,0 +1,14 @@
+apiVersion: v2
+name: clearinghouse-platform
+description: Enterprise ClearingHouse Microservice Platform for AKS
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - healthcare
+  - edi
+  - clearinghouse
+  - microservices
+maintainers:
+  - name: Platform Engineering
+    email: platform@enterprise.com

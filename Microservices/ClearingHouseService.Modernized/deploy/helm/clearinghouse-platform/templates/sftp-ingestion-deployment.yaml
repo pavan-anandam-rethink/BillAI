@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sftp-ingestion
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: sftp-ingestion
+    app.kubernetes.io/name: sftp-ingestion
+    app.kubernetes.io/component: ingestion
+    app.kubernetes.io/part-of: clearinghouse-platform
+spec:
+  replicas: {{ .Values.sftpIngestion.replicaCount }}
+  selector:
+    matchLabels:
+      app: sftp-ingestion
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: sftp-ingestion
+        azure.workload.identity/use: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: clearinghouse-workload-identity
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: sftp-ingestion
+          image: "{{ .Values.global.registry }}/{{ .Values.sftpIngestion.image.repository }}:{{ .Values.sftpIngestion.image.tag }}"
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.global.environment }}
+            - name: KeyVault__VaultUri
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: keyvault-uri
+            - name: ConnectionStrings__ServiceBus
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: servicebus-connection
+            - name: ConnectionStrings__SftpIngestionDb
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: database-connection
+            - name: ApplicationInsights__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: clearinghouse-secrets
+                  key: appinsights-connection
+          resources:
+            {{- toYaml .Values.sftpIngestion.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 30
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: sftp-ingestion
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sftp-ingestion
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: sftp-ingestion
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: sftp-ingestion
+---
+{{- if .Values.sftpIngestion.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sftp-ingestion-hpa
+  namespace: {{ .Values.global.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sftp-ingestion
+  minReplicas: {{ .Values.sftpIngestion.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.sftpIngestion.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.sftpIngestion.autoscaling.targetCPUUtilization }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.sftpIngestion.autoscaling.targetMemoryUtilization }}
+{{- end }}

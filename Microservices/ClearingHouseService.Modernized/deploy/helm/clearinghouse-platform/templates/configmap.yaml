@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clearinghouse-config
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: clearinghouse-platform
+data:
+  ASPNETCORE_ENVIRONMENT: {{ .Values.global.environment | quote }}
+  ServiceBus__FileIngestedTopic: {{ .Values.serviceBus.topics.fileIngested | quote }}
+  ServiceBus__EdiProcessedTopic: {{ .Values.serviceBus.topics.ediProcessed | quote }}
+  ServiceBus__BatchCompletedTopic: {{ .Values.serviceBus.topics.batchCompleted | quote }}
+  BlobStorage__InboundContainer: {{ .Values.blobStorage.containers.inbound | quote }}
+  BlobStorage__OutboundContainer: {{ .Values.blobStorage.containers.outbound | quote }}
+  BlobStorage__ArchiveContainer: {{ .Values.blobStorage.containers.archive | quote }}
+  BlobStorage__FailedContainer: {{ .Values.blobStorage.containers.failed | quote }}

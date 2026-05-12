@@ -1,0 +1,170 @@
+# Global configuration
+global:
+  environment: production
+  namespace: clearinghouse
+  registry: acrclearinghouse.azurecr.io
+  imagePullPolicy: Always
+  imagePullSecrets:
+    - name: acr-secret
+
+# Azure Service Bus
+serviceBus:
+  connectionString: ""
+  topics:
+    fileIngested: file-ingested-topic
+    ediProcessed: edi-processed-topic
+    batchCompleted: batch-completed-topic
+    reconciliationCompleted: reconciliation-completed-topic
+    alertRaised: alert-raised-topic
+
+# Azure Blob Storage
+blobStorage:
+  connectionString: ""
+  containers:
+    inbound: inbound-files
+    outbound: outbound-files
+    archive: archive-files
+    failed: failed-files
+
+# Azure SQL Database
+database:
+  connectionString: ""
+
+# Azure Key Vault
+keyVault:
+  vaultUri: ""
+  tenantId: ""
+
+# Azure Application Insights
+appInsights:
+  connectionString: ""
+
+# SFTP Ingestion Service
+sftpIngestion:
+  replicaCount: 2
+  image:
+    repository: clearinghouse/sftp-ingestion
+    tag: latest
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilization: 70
+    targetMemoryUtilization: 80
+  pollingInterval: 300
+
+# EDI Processing Worker
+ediProcessing:
+  replicaCount: 3
+  image:
+    repository: clearinghouse/edi-processing-worker
+    tag: latest
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 50
+    targetCPUUtilization: 60
+  concurrency:
+    maxConcurrentFiles: 10
+    chunkSizeMB: 4
+
+# Batch Orchestration Service
+batchOrchestration:
+  replicaCount: 2
+  image:
+    repository: clearinghouse/batch-orchestration
+    tag: latest
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+
+# Reconciliation Service
+reconciliation:
+  replicaCount: 2
+  image:
+    repository: clearinghouse/reconciliation
+    tag: latest
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+
+# File Tracking API
+fileTracking:
+  replicaCount: 3
+  image:
+    repository: clearinghouse/file-tracking-api
+    tag: latest
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 15
+    targetCPUUtilization: 70
+
+# Notification Service
+notification:
+  replicaCount: 2
+  image:
+    repository: clearinghouse/notification
+    tag: latest
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Clearinghouse Plugins
+plugins:
+  availity:
+    enabled: true
+    replicaCount: 2
+  stedi:
+    enabled: true
+    replicaCount: 2
+  trizetto:
+    enabled: true
+    replicaCount: 2
+  sandata:
+    enabled: true
+    replicaCount: 1
+  waystar:
+    enabled: true
+    replicaCount: 1
