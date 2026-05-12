@@ -55,13 +55,13 @@ public sealed class EdiProcessingController : ControllerBase
 
         var command = new ProcessEdiFileCommand(
             FileReference: request.FileReference,
-            TransactionType: request.TransactionType,
+            EdiTransactionType: request.TransactionType,
             ClearinghouseType: request.ClearinghouseType,
             CorrelationId: request.CorrelationId);
 
         var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
 
-        if (!result.IsSuccess)
+        if (result.Status == Domain.Enums.EdiProcessingStatus.Failed)
         {
             _logger.LogWarning("EDI processing failed: {Error}", result.ErrorMessage);
             return BadRequest(new { error = result.ErrorMessage });
@@ -93,7 +93,7 @@ public sealed class EdiProcessingController : ControllerBase
             FileName: file.FileName,
             Status: file.Status.ToString(),
             CreatedAt: file.CreatedAt,
-            CompletedAt: file.CompletedAt);
+            CompletedAt: file.ProcessingCompletedAt);
 
         return Ok(response);
     }
@@ -137,12 +137,15 @@ public sealed class EdiProcessingController : ControllerBase
             return NotFound(new { error = $"EDI file with ID '{fileId}' not found." });
         }
 
-        var command = new RetryFailedSegmentsCommand(FileId: fileId);
+        var command = new RetryFailedSegmentsCommand(
+            EdiFileId: fileId,
+            SegmentSequences: Array.Empty<int>(),
+            CorrelationId: CorrelationId.Generate());
         var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
 
-        if (!result.IsSuccess)
+        if (result.FailedCount > 0)
         {
-            return BadRequest(new { error = result.ErrorMessage });
+            return BadRequest(new { errors = result.Errors });
         }
 
         return Ok(result);
