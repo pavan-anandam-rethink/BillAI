@@ -1,5 +1,3 @@
-using ClearingHouse.SharedKernel.Domain.Enums;
-
 namespace ClearingHouse.SharedKernel.Domain.ValueObjects;
 
 /// <summary>

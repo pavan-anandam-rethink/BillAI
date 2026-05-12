@@ -7,7 +7,7 @@ namespace ClearingHouse.SharedKernel.Infrastructure.Security;
 /// <summary>
 /// Provides Azure Managed Identity token acquisition for service-to-service authentication.
 /// </summary>
-public sealed class ManagedIdentityTokenProvider
+public sealed class ManagedIdentityTokenProvider : IDisposable
 {
     private readonly ILogger<ManagedIdentityTokenProvider> _logger;
     private readonly HttpClient _httpClient;
@@ -77,6 +77,14 @@ public sealed class ManagedIdentityTokenProvider
     {
         var token = await GetAccessTokenAsync(resource, cancellationToken);
         return new AuthenticationHeaderValue("Bearer", token);
+    }
+
+    /// <summary>
+    /// Disposes the semaphore used for thread-safe token caching.
+    /// </summary>
+    public void Dispose()
+    {
+        _semaphore.Dispose();
     }
 
     private async Task<string> RequestTokenAsync(string resource, CancellationToken cancellationToken)
