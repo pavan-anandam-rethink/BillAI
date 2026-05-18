@@ -10,7 +10,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Authentication\Authentication.csproj" />
+      <ProjectReference Include="..\BillingService.Application\BillingService.Application.csproj" />
       <ProjectReference Include="..\BillingService.Domain\BillingService.Domain.csproj" />
+      <ProjectReference Include="..\BillingService.LegacyAdapters\BillingService.LegacyAdapters.csproj" />
       <ProjectReference Include="..\Rethink.Billing.FolderStructure.Core\Billing.FolderStructure.Core.csproj" />
     </ItemGroup>
 

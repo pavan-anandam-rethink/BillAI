@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: billingservice-config
+  namespace: billing
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  BillingService__Modernization__EnableCleanArchitectureAdapters: "true"
+  BillingService__Modernization__EnableDistributedCacheDecorators: "false"
+  BillingService__Modernization__EnableOutboxPublisher: "false"
+  BillingService__Modernization__EnableReadModelQueries: "false"
+  BillingService__OpenTelemetry__ServiceName: "BillingService"

@@ -1,0 +1,42 @@
+name: BillingService Modernization CI
+
+on:
+  pull_request:
+    paths:
+      - 'Microservices/BillingService/**'
+      - 'Microservices/Test/BillingServiceTests/**'
+      - 'k8s/billingservice/**'
+      - 'helm/billingservice/**'
+      - 'scripts/sql/billingservice/**'
+      - 'tests/LoadTests/billingservice/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore BillingService
+        run: dotnet restore Microservices/Microservices.sln
+
+      - name: Build BillingService
+        run: dotnet build Microservices/Microservices.sln --configuration Release --no-restore
+
+      - name: Run BillingService tests
+        run: dotnet test Microservices/Microservices.sln --configuration Release --no-build --filter "FullyQualifiedName~BillingService"
+
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lint chart
+        run: helm lint helm/billingservice

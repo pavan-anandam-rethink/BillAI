@@ -1,6 +1,8 @@
 using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
+using BillingService.Application;
+using BillingService.LegacyAdapters;
 using BillingService.Web.IoC;
 using BillingService.Web.Middlewares;
 using BillingService.Web.Servers;
@@ -43,6 +45,8 @@ namespace BillingService.Web
             IoCContainer.RegisterRedisCacheAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
 
             services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
+            services.AddBillingApplication(Configuration);
+            services.AddBillingLegacyAdapters();
             services.AddMemoryCache();
             services.AddControllers();
             services.AddSwaggerGen(c =>

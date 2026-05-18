@@ -1,0 +1,34 @@
+replicaCount: 3
+
+image:
+  repository: myacr.azurecr.io/rtabilling/billingserviceweb
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 3Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 65
+  targetMemoryUtilizationPercentage: 75
+
+modernization:
+  enableCleanArchitectureAdapters: true
+  enableDistributedCacheDecorators: false
+  enableOutboxPublisher: false
+  enableReadModelQueries: false
+
+keyVaultUri: "https://replace-with-billing-keyvault.vault.azure.net/"
+workloadIdentityClientId: "<managed-identity-client-id>"
