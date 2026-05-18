@@ -1,0 +1,51 @@
+replicaCount: 3
+
+image:
+  repository: replace.azurecr.io/billingservice-web
+  tag: latest
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: billingservice-api
+  workloadIdentityClientId: replace-managed-identity-client-id
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+config:
+  aspnetcoreEnvironment: production
+  keyVaultUri: https://replace-with-billing-keyvault.vault.azure.net/
+  otlpEndpoint: http://otel-collector.observability:4317
+  responseCompressionEnabled: true
+  rateLimitingEnabled: false
+  rateLimitPermitLimit: 300
+  rateLimitQueueLimit: 0
+  rateLimitWindowSeconds: 60
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 3Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 65
+  targetMemoryUtilizationPercentage: 75
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+ingress:
+  enabled: false
+  className: nginx
+  host: billing.example.com
+  tlsSecretName: billingservice-tls

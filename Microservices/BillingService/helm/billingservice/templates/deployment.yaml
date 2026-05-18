@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "billingservice.fullname" . }}
+  labels:
+    {{- include "billingservice.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      {{- include "billingservice.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "billingservice.selectorLabels" . | nindent 8 }}
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: {{ include "billingservice.serviceAccountName" . }}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: billingservice-api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.config.aspnetcoreEnvironment | quote }}
+            - name: ASPNETCORE_URLS
+              value: "http://+:{{ .Values.service.targetPort }}"
+            - name: KeyVaultUri
+              value: {{ .Values.config.keyVaultUri | quote }}
+            - name: BillingModernization__ResponseCompression__Enabled
+              value: {{ .Values.config.responseCompressionEnabled | quote }}
+            - name: BillingModernization__RateLimiting__Enabled
+              value: {{ .Values.config.rateLimitingEnabled | quote }}
+            - name: BillingModernization__RateLimiting__PermitLimit
+              value: {{ .Values.config.rateLimitPermitLimit | quote }}
+            - name: BillingModernization__RateLimiting__QueueLimit
+              value: {{ .Values.config.rateLimitQueueLimit | quote }}
+            - name: BillingModernization__RateLimiting__WindowSeconds
+              value: {{ .Values.config.rateLimitWindowSeconds | quote }}
+            - name: OTEL_SERVICE_NAME
+              value: "BillingService"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.config.otlpEndpoint | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            periodSeconds: 10
+            failureThreshold: 18
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 20"]

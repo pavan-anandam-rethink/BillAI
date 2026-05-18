@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using BillingService.Web.Telemetry;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -29,6 +30,10 @@ namespace BillingService.Web.Middlewares
             }
 
             var sw = Stopwatch.StartNew();
+            using var activity = BillingTelemetry.ActivitySource.StartActivity($"{context.Request.Method} {path}", ActivityKind.Server);
+            activity?.SetTag("http.request.method", context.Request.Method);
+            activity?.SetTag("url.path", path);
+
             try
             {
                 await _next(context);
@@ -36,6 +41,9 @@ namespace BillingService.Web.Middlewares
             finally
             {
                 sw.Stop();
+                activity?.SetTag("http.response.status_code", context.Response.StatusCode);
+                BillingTelemetry.HttpServerRequests.Add(1);
+                BillingTelemetry.HttpServerDurationMs.Record(sw.Elapsed.TotalMilliseconds);
                 _logger.LogInformation(
                     "HTTP {Method} {Path} completed in {ElapsedMs} ms with status {StatusCode}",
                     context.Request.Method,

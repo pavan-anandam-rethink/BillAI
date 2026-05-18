@@ -1,6 +1,7 @@
 using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
+using BillingService.Web.Extensions;
 using BillingService.Web.IoC;
 using BillingService.Web.Middlewares;
 using BillingService.Web.Servers;
@@ -45,6 +46,7 @@ namespace BillingService.Web
             services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
             services.AddMemoryCache();
             services.AddControllers();
+            services.AddBillingEnterpriseModernization(Configuration);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -134,8 +136,10 @@ namespace BillingService.Web
             //app.UseDeveloperExceptionPage();
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            app.UseBillingEnterpriseModernization();
             app.UseMiddleware<RequestLatencyLoggingMiddleware>();
             app.UseRouting();
+            app.UseBillingEnterpriseRateLimiting();
             app.UseAuthentication();
             app.UseAuthorization();
 
