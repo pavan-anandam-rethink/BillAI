@@ -11,6 +11,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,8 +46,15 @@ namespace BillingService.Web
             IoCContainer.RegisterRedisCacheAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
 
             services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
-            services.AddBillingApplication(Configuration);
-            services.AddBillingLegacyAdapters();
+            var enableCleanArchitectureAdapters = string.Equals(
+                Configuration["BillingService:Modernization:EnableCleanArchitectureAdapters"],
+                "true",
+                StringComparison.OrdinalIgnoreCase);
+            if (enableCleanArchitectureAdapters)
+            {
+                services.AddBillingApplication(Configuration);
+                services.AddBillingLegacyAdapters();
+            }
             services.AddMemoryCache();
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -167,6 +175,7 @@ namespace BillingService.Web
             });
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/health/live", async context => await context.Response.WriteAsync("Healthy"));
                 endpoints.MapDefaultControllerRoute();
             });
 

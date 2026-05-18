@@ -22,6 +22,7 @@ spec:
       labels:
         app.kubernetes.io/name: billingservice
         app.kubernetes.io/component: api
+        azure.workload.identity/use: "true"
     spec:
       serviceAccountName: billingservice
       automountServiceAccountToken: false
@@ -53,7 +54,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /api/health
+              path: /health/live
               port: http
             initialDelaySeconds: 60
             periodSeconds: 20

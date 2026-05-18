@@ -27,7 +27,7 @@
       <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
       <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
       <PackageReference Include="Azure.Identity" Version="1.14.1" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.16" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
       <PackageReference Include="PuppeteerSharp" Version="20.0.0" />
       <PackageReference Include="PusherServer-net8-fork" Version="8.0.0" />

@@ -17,7 +17,7 @@ public sealed class AzureServiceBusEventBus(
 
     public async Task PublishAsync(IntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
     {
-        var sender = serviceBusClient.CreateSender(options.Value.TopicName);
+        await using var sender = serviceBusClient.CreateSender(options.Value.TopicName);
         var message = new ServiceBusMessage(JsonSerializer.Serialize(integrationEvent, integrationEvent.GetType(), SerializerOptions))
         {
             MessageId = integrationEvent.EventId.ToString("N"),

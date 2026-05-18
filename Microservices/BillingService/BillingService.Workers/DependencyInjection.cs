@@ -5,9 +5,15 @@ namespace BillingService.Workers;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddBillingWorkers(this IServiceCollection services)
+    public static IServiceCollection AddBillingWorkers(
+        this IServiceCollection services,
+        bool enableOutboxPublisher = false)
     {
-        services.AddHostedService<OutboxPublisherWorker>();
+        if (enableOutboxPublisher)
+        {
+            services.AddHostedService<OutboxPublisherWorker>();
+        }
+
         return services;
     }
 }

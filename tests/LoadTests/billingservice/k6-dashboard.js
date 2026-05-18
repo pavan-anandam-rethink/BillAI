@@ -41,7 +41,7 @@ export default function () {
   );
 
   check(response, {
-    'dashboard endpoint returns success': (r) => r.status >= 200 && r.status < 500,
+    'dashboard endpoint returns success': (r) => r.status >= 200 && r.status < 300,
     'dashboard endpoint p95 candidate under 1s': (r) => r.timings.duration < 1000,
   });
 

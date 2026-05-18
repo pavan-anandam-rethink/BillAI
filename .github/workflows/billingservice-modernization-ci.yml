@@ -21,14 +21,20 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore BillingService
-        run: dotnet restore Microservices/Microservices.sln
+      - name: Restore modernization tests
+        run: dotnet restore Microservices/Test/BillingServiceTests/BillingService.Architecture.XUnit.Tests/BillingService.Architecture.XUnit.Tests.csproj
 
-      - name: Build BillingService
-        run: dotnet build Microservices/Microservices.sln --configuration Release --no-restore
+      - name: Build modernization infrastructure
+        run: dotnet build Microservices/BillingService/BillingService.Infrastructure/BillingService.Infrastructure.csproj --configuration Release
 
-      - name: Run BillingService tests
-        run: dotnet test Microservices/Microservices.sln --configuration Release --no-build --filter "FullyQualifiedName~BillingService"
+      - name: Build modernization workers
+        run: dotnet build Microservices/BillingService/BillingService.Workers/BillingService.Workers.csproj --configuration Release
+
+      - name: Build modernization persistence compatibility
+        run: dotnet build Microservices/BillingService/BillingService.Persistence/BillingService.Persistence.csproj --configuration Release
+
+      - name: Run modernization tests
+        run: dotnet test Microservices/Test/BillingServiceTests/BillingService.Architecture.XUnit.Tests/BillingService.Architecture.XUnit.Tests.csproj --configuration Release --no-restore
 
   helm-lint:
     runs-on: ubuntu-latest

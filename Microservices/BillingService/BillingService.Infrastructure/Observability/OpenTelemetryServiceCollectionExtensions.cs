@@ -29,7 +29,10 @@ public static class OpenTelemetryServiceCollectionExtensions
 
                 if (!string.IsNullOrWhiteSpace(telemetryOptions.OtlpEndpoint))
                 {
-                    builder.AddOtlpExporter();
+                    builder.AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(telemetryOptions.OtlpEndpoint);
+                    });
                 }
             });
 
