@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: billingservice-app-config
+  namespace: {{ .Values.namespace }}
+data:
+  ASPNETCORE_ENVIRONMENT: {{ .Values.env.ASPNETCORE_ENVIRONMENT | quote }}
+  BillingModernization__UseLegacyProxyFallback: {{ .Values.env.BillingModernization__UseLegacyProxyFallback | quote }}
+  BillingModernization__ClaimHeadersMigrationMode: {{ .Values.env.BillingModernization__ClaimHeadersMigrationMode | quote }}
+  LegacyBilling__BaseUrl: {{ .Values.env.LegacyBilling__BaseUrl | quote }}
+  Telemetry__ServiceName: {{ .Values.env.Telemetry__ServiceName | quote }}
+  Telemetry__OtlpEndpoint: {{ .Values.env.Telemetry__OtlpEndpoint | quote }}
+

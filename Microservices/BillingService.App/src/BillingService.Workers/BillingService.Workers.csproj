@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BillingService.App.Workers</AssemblyName>
+    <RootNamespace>BillingService.App.Workers</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BillingService.Infrastructure\BillingService.Infrastructure.csproj" />
+    <ProjectReference Include="..\BillingService.Persistence\BillingService.Persistence.csproj" />
+  </ItemGroup>
+</Project>
+

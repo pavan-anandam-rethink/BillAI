@@ -1,0 +1,33 @@
+name: billingservice-app-ci
+
+on:
+  pull_request:
+    paths:
+      - "Microservices/BillingService.App/**"
+  push:
+    branches: [ "main" ]
+    paths:
+      - "Microservices/BillingService.App/**"
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Microservices/BillingService.App
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build -c Release --no-restore
+      - name: Unit tests
+        run: dotnet test tests/UnitTests/UnitTests.csproj -c Release --no-restore
+      - name: Contract tests
+        run: dotnet test tests/ContractTests/ContractTests.csproj -c Release --no-restore
+      - name: Regression tests
+        run: dotnet test tests/RegressionTests/RegressionTests.csproj -c Release --no-restore
+
