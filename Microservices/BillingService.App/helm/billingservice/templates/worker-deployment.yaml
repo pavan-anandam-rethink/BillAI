@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billingservice-app-workers
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.workerReplicaCount }}
+  selector:
+    matchLabels:
+      app: billingservice-app-workers
+  template:
+    metadata:
+      labels:
+        app: billingservice-app-workers
+    spec:
+      containers:
+        - name: workers
+          image: "{{ .Values.workerImage.repository }}:{{ .Values.workerImage.tag }}"
+          imagePullPolicy: {{ .Values.workerImage.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: billingservice-app-config
+            - secretRef:
+                name: billingservice-app-secrets
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep -f BillingService.App.Workers >/dev/null
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep -f BillingService.App.Workers >/dev/null
+

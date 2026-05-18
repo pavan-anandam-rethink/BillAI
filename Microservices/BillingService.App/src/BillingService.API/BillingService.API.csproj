@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BillingService.App.API</AssemblyName>
+    <RootNamespace>BillingService.App.API</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BillingService.Application\BillingService.Application.csproj" />
+    <ProjectReference Include="..\BillingService.Contracts\BillingService.Contracts.csproj" />
+    <ProjectReference Include="..\BillingService.Domain\BillingService.Domain.csproj" />
+    <ProjectReference Include="..\BillingService.Infrastructure\BillingService.Infrastructure.csproj" />
+    <ProjectReference Include="..\BillingService.LegacyAdapters\BillingService.LegacyAdapters.csproj" />
+    <ProjectReference Include="..\BillingService.Persistence\BillingService.Persistence.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+    <PackageReference Include="Yarp.ReverseProxy" Version="2.1.0" />
+  </ItemGroup>
+</Project>
+

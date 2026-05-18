@@ -1,0 +1,41 @@
+namespace: billingservice
+
+image:
+  repository: yourregistry.azurecr.io/billingservice-app-api
+  tag: "1.0.0"
+  pullPolicy: Always
+
+workerImage:
+  repository: yourregistry.azurecr.io/billingservice-app-workers
+  tag: "1.0.0"
+  pullPolicy: Always
+
+replicaCount: 3
+workerReplicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 50
+  cpuUtilization: 65
+  memoryUtilization: 75
+
+env:
+  ASPNETCORE_ENVIRONMENT: Production
+  BillingModernization__UseLegacyProxyFallback: "true"
+  BillingModernization__ClaimHeadersMigrationMode: "Off"
+  LegacyBilling__BaseUrl: http://billingservice-web.default.svc.cluster.local
+  Telemetry__ServiceName: billingservice-app
+  Telemetry__OtlpEndpoint: http://otel-collector.monitoring:4317
+
+secrets:
+  ConnectionStrings__Database: ""
+  ConnectionStrings__BillingOutbox: ""
+  ConnectionStrings__Redis: ""
+  ConnectionStrings__ServiceBus: ""
+

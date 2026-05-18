@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  billingservice-app-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Redis: redis:6379
+      LegacyBilling__BaseUrl: http://legacy-billingservice-web
+    ports:
+      - "8081:8080"
+    depends_on:
+      - redis
+
+  billingservice-app-workers:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.worker
+    environment:
+      ConnectionStrings__Redis: redis:6379
+      LegacyBilling__BaseUrl: http://legacy-billingservice-web
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+

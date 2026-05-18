@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billingservice-app-workers
+  namespace: billingservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: billingservice-app-workers
+  template:
+    metadata:
+      labels:
+        app: billingservice-app-workers
+    spec:
+      containers:
+        - name: workers
+          image: yourregistry.azurecr.io/billingservice-app-workers:1.0.0
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: billingservice-app-config
+            - secretRef:
+                name: billingservice-app-secrets
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep -f BillingService.App.Workers >/dev/null
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep -f BillingService.App.Workers >/dev/null
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+

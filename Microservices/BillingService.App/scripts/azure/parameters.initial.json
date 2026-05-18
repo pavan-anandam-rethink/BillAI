@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": { "value": "initial" },
+    "aksNodeCount": { "value": 3 },
+    "aksVmSize": { "value": "Standard_D4s_v5" },
+    "sqlSkuName": { "value": "BC_Gen5_4" },
+    "redisSkuName": { "value": "Premium" },
+    "redisCapacity": { "value": 2 },
+    "sqlAdminUser": { "value": "sqladminuser" },
+    "sqlAdminPassword": { "value": "REPLACE_SECURELY" }
+  }
+}
+
