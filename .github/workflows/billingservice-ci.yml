@@ -1,0 +1,54 @@
+name: BillingService CI
+
+on:
+  pull_request:
+    paths:
+      - 'Microservices/BillingService/**'
+      - 'Microservices/Test/BillingServiceTests/**'
+      - '.github/workflows/billingservice-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Microservices/BillingService/**'
+      - 'Microservices/Test/BillingServiceTests/**'
+
+jobs:
+  build-test-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Configure private NuGet feeds
+        env:
+          AZURE_DEVOPS_NUGET_PAT: ${{ secrets.AZURE_DEVOPS_NUGET_PAT }}
+        run: |
+          if [ -n "${AZURE_DEVOPS_NUGET_PAT:-}" ]; then
+            dotnet nuget add source https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json --name RethinkBHFeed --username any --password "$AZURE_DEVOPS_NUGET_PAT" --store-password-in-clear-text
+            dotnet nuget add source https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json --name RethinkCommon --username any --password "$AZURE_DEVOPS_NUGET_PAT" --store-password-in-clear-text
+          fi
+
+      - name: Restore
+        run: dotnet restore Microservices/BillingService/BillingService.Web/BillingService.Web.csproj
+
+      - name: Build
+        run: dotnet build Microservices/BillingService/BillingService.Web/BillingService.Web.csproj --configuration Release --no-restore
+
+      - name: Unit and web tests
+        run: |
+          dotnet test Microservices/Test/BillingServiceTests/BillingService.Web.XUnit.Tests/BillingService.Web.XUnit.Tests.csproj --configuration Release --logger trx
+          dotnet test Microservices/Test/BillingServiceTests/BillingService.XUnit.Tests/BillingService.XUnit.Tests/BillingService.XUnit.Tests.csproj --configuration Release --logger trx
+
+      - name: Build container
+        env:
+          AZURE_DEVOPS_NUGET_PAT: ${{ secrets.AZURE_DEVOPS_NUGET_PAT }}
+        run: docker build -f Microservices/BillingService/docker/BillingService.Dockerfile --build-arg ACCESS_TOKEN="$AZURE_DEVOPS_NUGET_PAT" -t billingservice:${{ github.sha }} .

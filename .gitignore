@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+TestResults/
+testresults/
+coveragereport/
+.vs/
+.idea/
+.vscode/
