@@ -1,0 +1,48 @@
+name: BillingService Modernization CI
+
+on:
+  pull_request:
+    paths:
+      - 'Microservices/BillingService/**'
+      - 'Microservices/Test/BillingServiceTests/**'
+      - 'k8s/billingservice/**'
+      - 'helm/billingservice/**'
+      - 'scripts/sql/billingservice/**'
+      - 'tests/LoadTests/billingservice/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore modernization tests
+        run: dotnet restore Microservices/Test/BillingServiceTests/BillingService.Architecture.XUnit.Tests/BillingService.Architecture.XUnit.Tests.csproj
+
+      - name: Build modernization infrastructure
+        run: dotnet build Microservices/BillingService/BillingService.Infrastructure/BillingService.Infrastructure.csproj --configuration Release
+
+      - name: Build modernization workers
+        run: dotnet build Microservices/BillingService/BillingService.Workers/BillingService.Workers.csproj --configuration Release
+
+      - name: Build modernization persistence compatibility
+        run: dotnet build Microservices/BillingService/BillingService.Persistence/BillingService.Persistence.csproj --configuration Release
+
+      - name: Run modernization tests
+        run: dotnet test Microservices/Test/BillingServiceTests/BillingService.Architecture.XUnit.Tests/BillingService.Architecture.XUnit.Tests.csproj --configuration Release --no-restore
+
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lint chart
+        run: helm lint helm/billingservice

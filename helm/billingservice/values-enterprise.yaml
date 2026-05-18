@@ -1,0 +1,22 @@
+replicaCount: 8
+
+resources:
+  requests:
+    cpu: "1"
+    memory: 2Gi
+  limits:
+    cpu: "3"
+    memory: 6Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 8
+  maxReplicas: 40
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
+
+modernization:
+  enableCleanArchitectureAdapters: true
+  enableDistributedCacheDecorators: true
+  enableOutboxPublisher: true
+  enableReadModelQueries: true
