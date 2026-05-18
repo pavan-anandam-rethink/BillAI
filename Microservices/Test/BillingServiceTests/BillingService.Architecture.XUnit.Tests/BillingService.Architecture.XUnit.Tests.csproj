@@ -25,4 +25,8 @@
     <ProjectReference Include="..\..\..\BillingService\BillingService.SharedKernel\BillingService.SharedKernel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
 </Project>

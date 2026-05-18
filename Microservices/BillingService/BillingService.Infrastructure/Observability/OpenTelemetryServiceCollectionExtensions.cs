@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -12,14 +11,12 @@ public static class OpenTelemetryServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<OpenTelemetryOptions>(configuration.GetSection(OpenTelemetryOptions.SectionName));
+        var telemetryOptions = configuration.GetSection(OpenTelemetryOptions.SectionName).Get<OpenTelemetryOptions>()
+            ?? new OpenTelemetryOptions();
 
         services.AddOpenTelemetry()
-            .ConfigureResource((serviceProvider, resourceBuilder) =>
-            {
-                var options = serviceProvider.GetRequiredService<IOptions<OpenTelemetryOptions>>().Value;
-                resourceBuilder.AddService(options.ServiceName, serviceVersion: options.ServiceVersion);
-            })
+            .ConfigureResource(resourceBuilder =>
+                resourceBuilder.AddService(telemetryOptions.ServiceName, serviceVersion: telemetryOptions.ServiceVersion))
             .WithTracing(builder =>
             {
                 builder
@@ -28,11 +25,9 @@ public static class OpenTelemetryServiceCollectionExtensions
                     .AddSqlClientInstrumentation(options =>
                     {
                         options.RecordException = true;
-                        options.SetDbStatementForText = false;
                     });
 
-                var options = configuration.GetSection(OpenTelemetryOptions.SectionName).Get<OpenTelemetryOptions>();
-                if (!string.IsNullOrWhiteSpace(options?.OtlpEndpoint))
+                if (!string.IsNullOrWhiteSpace(telemetryOptions.OtlpEndpoint))
                 {
                     builder.AddOtlpExporter();
                 }
