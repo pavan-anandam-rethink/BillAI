@@ -124,3 +124,5 @@
 /home/runner/work/BillAI/BillAI/Microservices/IdentityService/src/Api/obj/Debug/net8.0/Api.pdb
 /home/runner/work/BillAI/BillAI/Microservices/IdentityService/src/Api/obj/Debug/net8.0/Api.genruntimeconfig.cache
 /home/runner/work/BillAI/BillAI/Microservices/IdentityService/src/Api/obj/Debug/net8.0/ref/Api.dll
+/home/runner/work/BillAI/BillAI/Microservices/IdentityService/src/Api/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
+/home/runner/work/BillAI/BillAI/Microservices/IdentityService/src/Api/bin/Debug/net8.0/System.Diagnostics.DiagnosticSource.dll

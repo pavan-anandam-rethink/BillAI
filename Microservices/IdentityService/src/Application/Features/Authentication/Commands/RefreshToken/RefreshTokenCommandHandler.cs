@@ -18,6 +18,8 @@ public class RefreshTokenCommandHandler(
 {
     public async Task<AuthenticatedResponseDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Processing token refresh request");
+
         var jwtSettings = new JwtSettings
         {
             Key = config["Jwt:Key"]!,

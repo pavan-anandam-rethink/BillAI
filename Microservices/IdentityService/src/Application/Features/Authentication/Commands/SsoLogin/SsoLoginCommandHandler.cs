@@ -17,7 +17,6 @@ public class SsoLoginCommandHandler(
     ITokenValidationApiService tokenValidationApi,
     IUserProfileRepository userProfileRepository,
     ICacheService cacheService,
-    IAccountService accountService,
     ISessionPrewarmService sessionPrewarm,
     IConfiguration config,
     ICurrentUserService currentUserService,
