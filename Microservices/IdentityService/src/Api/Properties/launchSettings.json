@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft/2020-12/schema",
+    "profiles": {
+        "Development": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "https://localhost:7200;http://localhost:5200",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
