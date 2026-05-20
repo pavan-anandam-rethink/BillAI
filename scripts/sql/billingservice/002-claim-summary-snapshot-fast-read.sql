@@ -209,6 +209,16 @@ BEGIN
     DECLARE @TakeRows INT = CASE WHEN ISNULL(@Take, 0) = 0 THEN 2147483647 ELSE @Take END;
     DECLARE @TotalCount INT = 0;
     DECLARE @HasNoErrorValidation BIT = 0;
+    DECLARE @HasClaimIdFilter BIT = CASE WHEN @ClaimIds IS NOT NULL AND @ClaimIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasPatientIdFilter BIT = CASE WHEN @PatientIds IS NOT NULL AND @PatientIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasFunderIdFilter BIT = CASE WHEN @FunderIds IS NOT NULL AND @FunderIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasAssigneeIdFilter BIT = CASE WHEN @AssigneeIds IS NOT NULL AND @AssigneeIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasLocationIdFilter BIT = CASE WHEN @LocationIds IS NOT NULL AND @LocationIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasReasonIdFilter BIT = CASE WHEN @ReasonIds IS NOT NULL AND @ReasonIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasRenderingProviderIdFilter BIT = CASE WHEN @RenderingProviderIds IS NOT NULL AND @RenderingProviderIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasStatusIdFilter BIT = CASE WHEN @StatusIds IS NOT NULL AND @StatusIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasValidationIdFilter BIT = CASE WHEN @ValidationIds IS NOT NULL AND @ValidationIds <> '' THEN 1 ELSE 0 END;
+    DECLARE @HasResponseIdFilter BIT = CASE WHEN @ResponseIds IS NOT NULL AND @ResponseIds <> '' THEN 1 ELSE 0 END;
 
     IF @Skip IS NULL OR @Skip < 0
         SET @Skip = 0;
@@ -318,25 +328,25 @@ WHERE s.AccountInfoId = @AccountInfoId';
     IF @ClaimNumber IS NOT NULL AND @ClaimNumber <> ''
         SET @FromWhereSql += N' AND s.ClaimNumber LIKE @ClaimNumber + N''%''';
 
-    IF EXISTS (SELECT 1 FROM #PatientIdFilter)
+    IF @HasPatientIdFilter = 1
         SET @FromWhereSql += N' AND s.ChildProfileId IN (SELECT Id FROM #PatientIdFilter)';
 
-    IF EXISTS (SELECT 1 FROM #ClaimIdFilter)
+    IF @HasClaimIdFilter = 1
         SET @FromWhereSql += N' AND s.ClaimId IN (SELECT Id FROM #ClaimIdFilter)';
 
-    IF EXISTS (SELECT 1 FROM #ReasonIdFilter)
+    IF @HasReasonIdFilter = 1
         SET @FromWhereSql += N' AND s.ReasonId IN (SELECT Id FROM #ReasonIdFilter)';
 
-    IF EXISTS (SELECT 1 FROM #FunderIdFilter)
+    IF @HasFunderIdFilter = 1
         SET @FromWhereSql += N' AND s.FunderId IN (SELECT Id FROM #FunderIdFilter)';
 
-    IF EXISTS (SELECT 1 FROM #AssigneeIdFilter)
+    IF @HasAssigneeIdFilter = 1
         SET @FromWhereSql += N' AND s.AssigneeId IN (SELECT Id FROM #AssigneeIdFilter)';
 
-    IF EXISTS (SELECT 1 FROM #LocationIdFilter)
+    IF @HasLocationIdFilter = 1
         SET @FromWhereSql += N' AND s.hcProviderLocationId IN (SELECT Id FROM #LocationIdFilter)';
 
-    IF EXISTS (SELECT 1 FROM #RenderingProviderIdFilter)
+    IF @HasRenderingProviderIdFilter = 1
         SET @FromWhereSql += N' AND (
             s.RenderingProviderId IN (SELECT Id FROM #RenderingProviderIdFilter)
             OR (
@@ -379,10 +389,10 @@ WHERE s.AccountInfoId = @AccountInfoId';
     IF @BilledTo IS NOT NULL
         SET @FromWhereSql += N' AND @BilledTo >= s.BilledAmount';
 
-    IF EXISTS (SELECT 1 FROM #StatusIdFilter)
+    IF @HasStatusIdFilter = 1
         SET @FromWhereSql += N' AND s.Status IN (SELECT Id FROM #StatusIdFilter)';
 
-    IF EXISTS (SELECT 1 FROM #ValidationIdFilter)
+    IF @HasValidationIdFilter = 1
         SET @FromWhereSql += N' AND (
             EXISTS (
                 SELECT 1
@@ -394,7 +404,7 @@ WHERE s.AccountInfoId = @AccountInfoId';
             OR (@HasNoErrorValidation = 1 AND s.HasValidationErrors = 0)
         )';
 
-    IF EXISTS (SELECT 1 FROM #ResponseIdFilter)
+    IF @HasResponseIdFilter = 1
         SET @FromWhereSql += N' AND EXISTS (
             SELECT 1
             FROM dbo.ClearingHouseResponseDetails ch
@@ -402,10 +412,6 @@ WHERE s.AccountInfoId = @AccountInfoId';
             WHERE ch.ClaimId = s.ClaimId
               AND ch.DateDeleted IS NULL
         )';
-
-    IF @ReasonCode IS NOT NULL AND @ReasonCode <> ''
-        SET @FromWhereSql += N' AND s.ReasonCodes IS NOT NULL
-            AND CHARINDEX('','' + @ReasonCode + '','', '','' + s.ReasonCodes + '','') > 0';
 
     DECLARE @OrderBySql NVARCHAR(400) = CASE
         WHEN @OrderField = N'claimNumber' AND @OrderDir = 0 THEN N's.ClaimNumber ASC, s.ClaimId ASC'
