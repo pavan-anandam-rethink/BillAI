@@ -1,23 +1,18 @@
-﻿using AutoMapper;
-using LoginService.Web.Entities;
-using LoginService.Web.Mapping;
-using LoginService.Web.Models;
-using LoginService.Web.Repositories.NoSql;
-using LoginService.Web.Services;
-using MongoDB.Driver;
+using AutoMapper;
+using LoginService.Application.Interfaces;
+using LoginService.Application.Services;
+using LoginService.Domain.Models;
+using LoginService.Infrastructure.Entities;
+using LoginService.Infrastructure.Mapping;
 using Moq;
 using Rethink.Services.Common.Cache;
-using System.Linq.Expressions;
-using System.Security.Claims;
 
 namespace LoginService.Service.Tests
 {
     public class UserProfileServiceTests
     {
-
         private readonly ICacheManager _cacheManager;
         private readonly IUserProfileRepository _userRepo;
-        private readonly IMapper _mapper;
 
         public UserProfileServiceTests()
         {
@@ -29,18 +24,17 @@ namespace LoginService.Service.Tests
                 });
 
             var mockUserRepo = new Mock<IUserProfileRepository>();
-            mockUserRepo.Setup(x => x.FindOneAsync(It.IsAny<Expression<Func<UserProfileEntity, bool>>>()))
-                .ReturnsAsync((Expression<Func<UserProfileEntity, bool>> predicate) =>
+            mockUserRepo.Setup(x => x.FindByMsalObjectIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((string msalObjectId) =>
                 {
-                    return new UserProfileEntity() { Id = Guid.NewGuid().ToString(), MsalObjectId = Guid.NewGuid().ToString() };
+                    return new UserProfile { Id = Guid.NewGuid().ToString(), MsalObjectId = Guid.NewGuid().ToString() };
                 });
-            mockUserRepo.Setup(x => x.FindAsync(It.IsAny<Expression<Func<UserProfileEntity, bool>>>(), It.IsAny<FindOptions<UserProfileEntity, UserProfileEntity>>()))
-                .ReturnsAsync((Expression<Func<UserProfileEntity, bool>> filter, FindOptions<UserProfileEntity, UserProfileEntity> findOpts) =>
+            mockUserRepo.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((string id) =>
                 {
-                    return new List<UserProfileEntity>() { new UserProfileEntity() { Id = Guid.NewGuid().ToString() } };
+                    return new UserProfile { Id = id };
                 });
 
-            _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new UserProfileMapping())));
             _cacheManager = mockCacheManager.Object;
             _userRepo = mockUserRepo.Object;
         }
@@ -48,7 +42,7 @@ namespace LoginService.Service.Tests
         [Fact]
         public async Task GetUserProfileByMsalObjectId_ById_ShouldSucceed()
         {
-            var svc = new UserProfileService(_userRepo, _mapper, _cacheManager);
+            var svc = new UserProfileService(_userRepo, _cacheManager);
             var result = await svc.GetUserProfileByMsalObjectId("objectid", false);
             Assert.NotNull(result);
         }
@@ -56,14 +50,14 @@ namespace LoginService.Service.Tests
         [Fact]
         public async Task GetUserProfileById_WithIdAndCache_ShouldSucceed()
         {
-            var svc = new UserProfileService(_userRepo, _mapper, _cacheManager);
+            var svc = new UserProfileService(_userRepo, _cacheManager);
             var result = await svc.GetUserProfileById(Guid.NewGuid().ToString(), true);
         }
 
         [Fact]
         public async Task GetUserProfileById_WithIdNoCache_ShouldSucceed()
         {
-            var svc = new UserProfileService(_userRepo, _mapper, _cacheManager);
+            var svc = new UserProfileService(_userRepo, _cacheManager);
             var result = await svc.GetUserProfileById(Guid.NewGuid().ToString(), false);
         }
 
@@ -72,31 +66,14 @@ namespace LoginService.Service.Tests
         {
             // Arrange
             IUserProfileRepository repository = null;
-            var mapper = new Mock<IMapper>().Object;
             var cacheManager = new Mock<ICacheManager>().Object;
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
-                new UserProfileService(repository, mapper, cacheManager));
+                new UserProfileService(repository, cacheManager));
 
             // Assert
             Assert.Equal("repository", ex.ParamName);
-        }
-
-        [Fact]
-        public void Constructor_NullMapper_ThrowsArgumentNullException()
-        {
-            // Arrange
-            var repository = new Mock<IUserProfileRepository>().Object;
-            IMapper mapper = null;
-            var cacheManager = new Mock<ICacheManager>().Object;
-
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() =>
-                new UserProfileService(repository, mapper, cacheManager));
-
-            // Assert
-            Assert.Equal("mapper", ex.ParamName);
         }
 
         [Fact]
@@ -104,12 +81,11 @@ namespace LoginService.Service.Tests
         {
             // Arrange
             var repository = new Mock<IUserProfileRepository>().Object;
-            var mapper = new Mock<IMapper>().Object;
             ICacheManager cacheManager = null;
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
-                new UserProfileService(repository, mapper, cacheManager));
+                new UserProfileService(repository, cacheManager));
 
             // Assert
             Assert.Equal("cacheManager", ex.ParamName);
@@ -136,14 +112,20 @@ namespace LoginService.Service.Tests
                 });
 
             var repo = new Mock<IUserProfileRepository>();
-            repo.Setup(x => x.FindOneAsync(It.IsAny<Expression<Func<UserProfileEntity, bool>>>()))
-                .ReturnsAsync(new UserProfileEntity
+            repo.Setup(x => x.FindByMsalObjectIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((string msal) => new UserProfile
                 {
                     Id = userId,
                     MsalObjectId = encodedMsalObjectId
                 });
+            repo.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((string id) => new UserProfile
+                {
+                    Id = id,
+                    MsalObjectId = encodedMsalObjectId
+                });
 
-            var service = new UserProfileService(repo.Object, _mapper, cacheManager.Object);
+            var service = new UserProfileService(repo.Object, cacheManager.Object);
 
             // Act
             var result = await service.GetUserProfileByMsalObjectId(encodedMsalObjectId, true);
@@ -152,9 +134,5 @@ namespace LoginService.Service.Tests
             Assert.NotNull(result);
             Assert.Equal(userId, result.Id);
         }
-
-
-
-
     }
 }

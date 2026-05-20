@@ -1,5 +1,5 @@
-﻿using LoginService.Web.Entities;
-using LoginService.Web.Repositories.NoSql;
+﻿using LoginService.Infrastructure.Entities;
+using LoginService.Infrastructure.Persistence;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -9,14 +9,15 @@ using RethinkCore.Common.Definitions;
 using RethinkCore.Common.MongoDB;
 using RethinkCore.Common.MongoDB.Models;
 using System.Linq.Expressions;
+using AutoMapper;
 
 namespace LoginService.Web.XUnit.Tests.Repositories
 {
     // Test helper that exposes the protected BuildSortDefinition for testing.
     internal class TestableUserProfileRepository : UserProfileRepository
     {
-        public TestableUserProfileRepository(IMongoCollectionFactory collectionFactory, ILogger<UserProfileRepository> log)
-            : base(collectionFactory, log)
+        public TestableUserProfileRepository(IMongoCollectionFactory collectionFactory, ILogger<UserProfileRepository> log, IMapper mapper)
+            : base(collectionFactory, log, mapper)
         { }
 
         public SortDefinition<UserProfileEntity> ExposeBuildSortDefinition(IPagingFilter<UserProfileEntity> filter)
@@ -27,6 +28,7 @@ namespace LoginService.Web.XUnit.Tests.Repositories
     {
         private readonly Mock<IMongoCollectionFactory> _collectionFactoryMock = new();
         private readonly Mock<ILogger<UserProfileRepository>> _loggerMock = new();
+        private readonly Mock<IMapper> _mapperMock = new();
 
         [Fact]
         public void BuildSortDefinition_Default_OrderBy_Null_Returns_Id_Descending()
@@ -37,7 +39,7 @@ namespace LoginService.Web.XUnit.Tests.Repositories
             // SortOrder doesn't matter for default path but set to Ascending
             filterMock.SetupGet(f => f.SortOrder).Returns(SortOrder.Ascending);
 
-            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object);
+            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object, _mapperMock.Object);
 
             // Act
             var sortDef = repo.ExposeBuildSortDefinition(filterMock.Object);
@@ -62,7 +64,7 @@ namespace LoginService.Web.XUnit.Tests.Repositories
             filterMock.SetupGet(f => f.OrderBy).Returns(orderBy);
             filterMock.SetupGet(f => f.SortOrder).Returns(order);
 
-            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object);
+            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object, _mapperMock.Object);
 
             // Act
             var sortDef = repo.ExposeBuildSortDefinition(filterMock.Object);
@@ -85,7 +87,7 @@ namespace LoginService.Web.XUnit.Tests.Repositories
             filterMock.SetupGet(f => f.OrderBy).Returns(orderBy);
             filterMock.SetupGet(f => f.SortOrder).Returns(order);
 
-            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object);
+            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object, _mapperMock.Object);
 
             // Act
             var sortDef = repo.ExposeBuildSortDefinition(filterMock.Object);
@@ -103,8 +105,8 @@ namespace LoginService.Web.XUnit.Tests.Repositories
         public void DeleteByIdAsync_Throws_NotImplementedException_When_Called_Via_Interface()
         {
             // Arrange
-            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object);
-            var asInterface = (IUserProfileRepository)repo;
+            var repo = new TestableUserProfileRepository(_collectionFactoryMock.Object, _loggerMock.Object, _mapperMock.Object);
+            var asInterface = (IMongoUserProfileRepository)repo;
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<NotImplementedException>(async () => await asInterface.DeleteByIdAsync("some-id", true));
