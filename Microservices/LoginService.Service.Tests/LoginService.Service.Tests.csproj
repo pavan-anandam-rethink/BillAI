@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
@@ -18,6 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LoginService.Application\LoginService.Application.csproj" />
+    <ProjectReference Include="..\LoginService.Domain\LoginService.Domain.csproj" />
+    <ProjectReference Include="..\LoginService.Infrastructure\LoginService.Infrastructure.csproj" />
     <ProjectReference Include="..\LoginService.Web\LoginService.Web.csproj" />
     <ProjectReference Include="..\Rethink.Services.Common\Rethink.Services.Common.csproj" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 using Authentication.Interfaces;
 using Authentication.Models;
-using LoginService.Web.Interfaces;
+using LoginService.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

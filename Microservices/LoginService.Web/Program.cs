@@ -2,9 +2,9 @@ using Authentication.Interfaces;
 using Authentication.Services;
 using BillingService.Domain.Services.RethinkMasterDataMicroservices;
 using HealthChecks.UI.Client;
-using LoginService.Web.Interfaces;
-using LoginService.Web.Repositories.NoSql;
-using LoginService.Web.Services;
+using LoginService.Application.Interfaces;
+using LoginService.Application.Services;
+using LoginService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Rethink.Services.Common.Cache;
 using Rethink.Services.Common.Cache.Redis;
@@ -42,7 +42,7 @@ builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddScoped<ICacheManager, RedisCacheManager>();
 builder.Services.AddTransient<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(LoginService.Infrastructure.Mapping.UserProfileMapping).Assembly);
 
 await RethinkMicroserviceHttpClientsRegistration.RegisterAsync(builder.Services, config, keyVaultProvider).ConfigureAwait(false);
 

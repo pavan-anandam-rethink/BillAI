@@ -1,0 +1,12 @@
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/bin/Debug/net8.0/LoginService.Domain.deps.json
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/bin/Debug/net8.0/LoginService.Domain.dll
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/bin/Debug/net8.0/LoginService.Domain.pdb
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/LoginService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/LoginService.Domain.AssemblyInfoInputs.cache
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/LoginService.Domain.AssemblyInfo.cs
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/LoginService.Domain.csproj.CoreCompileInputs.cache
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/LoginService.Domain.sourcelink.json
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/LoginService.Domain.dll
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/refint/LoginService.Domain.dll
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/LoginService.Domain.pdb
+/home/runner/work/BillAI/BillAI/Microservices/LoginService.Domain/obj/Debug/net8.0/ref/LoginService.Domain.dll
