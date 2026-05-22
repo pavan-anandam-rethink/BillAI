@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-rules-engine
+  labels:
+    app: ai-rules-engine
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-rules-engine
+  template:
+    metadata:
+      labels:
+        app: ai-rules-engine
+    spec:
+      containers:
+        - name: ai-rules-engine
+          image: rta/ai-rules-engine:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+          envFrom:
+            - configMapRef:
+                name: ai-rules-engine-config
+            - secretRef:
+                name: ai-rules-engine-secrets

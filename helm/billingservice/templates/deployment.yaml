@@ -41,6 +41,12 @@ spec:
               value: {{ .Values.modernization.enableOutboxPublisher | quote }}
             - name: BillingService__Modernization__EnableReadModelQueries
               value: {{ .Values.modernization.enableReadModelQueries | quote }}
+            - name: RulesEngine__BaseUrl
+              value: {{ .Values.rulesEngine.baseUrl | quote }}
+            - name: RulesEngine__DefaultRuleSetId
+              value: {{ .Values.rulesEngine.defaultRuleSetId | quote }}
+            - name: RulesEngine__ValidationEndpoint
+              value: {{ .Values.rulesEngine.validationEndpoint | quote }}
           readinessProbe:
             httpGet:
               path: /api/health

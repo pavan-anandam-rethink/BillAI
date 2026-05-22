@@ -23,4 +23,10 @@ public class FunderSettingsAuditEntity
     public string MonthlyFrequency { get; set; }
 
     public string CombineChargesForSameClient { get; set; }
+
+    public string? Requires837PEnrollment { get; set; }
+
+    public string? Is837PEnrollmentCompleted { get; set; }
+
+    public string? EnrollmentBillingProviderNpi { get; set; }
 }

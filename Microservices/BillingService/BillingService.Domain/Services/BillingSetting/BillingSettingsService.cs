@@ -274,7 +274,10 @@ namespace BillingService.Domain.Services.BillingSetting
                     MonthlyFrequency = monthlyFrequency,
                     CombineChargesForSameClient = entity.CombineChargesForSameClient,
                     ClaimFilingIndicatorId = entity.ClaimFilingIndicatorId,
-                    IncludeTaxonomyCode = entity.IncludeTaxonomyCode
+                    IncludeTaxonomyCode = entity.IncludeTaxonomyCode,
+                    Requires837PEnrollment = entity.Requires837PEnrollment,
+                    Is837PEnrollmentCompleted = entity.Is837PEnrollmentCompleted,
+                    EnrollmentBillingProviderNpi = entity.EnrollmentBillingProviderNpi
                 };
             }
             catch (Exception ex)

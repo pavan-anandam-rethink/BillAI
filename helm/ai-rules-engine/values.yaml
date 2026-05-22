@@ -1,0 +1,24 @@
+replicaCount: 2
+
+image:
+  repository: rta/ai-rules-engine
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources: {}
+
+rulesEngine:
+  defaultRuleSetId: ""
+  storageFilePath: "/data/rule-sets.json"
+  promptTemplatePath: "/app/Prompts/rule-extraction.md"
+
+aiProvider:
+  endpoint: ""
+  apiKey: ""
+  model: "gpt-4.1"
+  temperature: "0.1"

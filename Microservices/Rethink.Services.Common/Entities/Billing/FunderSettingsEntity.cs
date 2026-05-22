@@ -28,6 +28,10 @@ namespace Rethink.Services.Common.Entities.Billing
         public int? ModifiedBy { get; set; }
         public int? DeletedBy { get; set; }
 
+        public bool? Requires837PEnrollment { get; set; }
+        public bool? Is837PEnrollmentCompleted { get; set; }
+        public string? EnrollmentBillingProviderNpi { get; set; }
+
         public ClaimFilingIndicatorEntity ClaimFilingIndicator { get; set; } 
     }
 }

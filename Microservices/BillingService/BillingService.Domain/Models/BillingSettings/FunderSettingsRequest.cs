@@ -15,4 +15,8 @@ public class FunderSettingsRequest
     public bool? CombineChargesForSameClient { get; set; }
     public int ClaimFilingIndicatorId { get; set; }
     public bool IncludeTaxonomyCode { get; set; }
+
+    public bool? Requires837PEnrollment { get; set; }
+    public bool? Is837PEnrollmentCompleted { get; set; }
+    public string? EnrollmentBillingProviderNpi { get; set; }
 }

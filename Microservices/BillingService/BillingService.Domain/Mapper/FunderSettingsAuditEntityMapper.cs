@@ -25,6 +25,9 @@ public static class FunderSettingsAuditEntityMapper
                              ? Enum.GetName(typeof(MonthlyFrequency), model.Data.MonthlyFrequency)
                              : null,
             CombineChargesForSameClient = model.Data.CombineChargesForSameClient.ToString(),
+            Requires837PEnrollment = model.Data.Requires837PEnrollment?.ToString(),
+            Is837PEnrollmentCompleted = model.Data.Is837PEnrollmentCompleted?.ToString(),
+            EnrollmentBillingProviderNpi = model.Data.EnrollmentBillingProviderNpi,
         };
     }
 
@@ -43,6 +46,9 @@ public static class FunderSettingsAuditEntityMapper
             WeeklyDays = model.WeeklyDays,
             MonthlyFrequency = monthlyFrequency != null ? Enum.GetName(typeof(MonthlyFrequency), monthlyFrequency): null,
             CombineChargesForSameClient = model?.CombineChargesForSameClient?.ToString(),
+            Requires837PEnrollment = model?.Requires837PEnrollment?.ToString(),
+            Is837PEnrollmentCompleted = model?.Is837PEnrollmentCompleted?.ToString(),
+            EnrollmentBillingProviderNpi = model?.EnrollmentBillingProviderNpi,
         };
     }
 }

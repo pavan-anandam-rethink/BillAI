@@ -1,0 +1,37 @@
+@AiRulesEngineHost = http://localhost:5211
+
+GET {{AiRulesEngineHost}}/api/rulesets
+Accept: application/json
+
+###
+
+POST {{AiRulesEngineHost}}/api/validation/claim
+Content-Type: application/json
+
+{
+  "ruleSetId": "default",
+  "context": {
+    "claim": {
+      "claimId": 1,
+      "accountInfoId": 101,
+      "claimStatus": "Billed",
+      "dateCreated": "2024-01-01T00:00:00Z",
+      "startDate": "2024-01-01T00:00:00Z",
+      "endDate": "2024-01-31T00:00:00Z",
+      "claimIdentifier": "CLM-123"
+    },
+    "billingProvider": {
+      "npiNumber": "1234567890",
+      "taxId": "99-9999999",
+      "name": "Billing Provider"
+    },
+    "billingProviderAddress": {
+      "address1": "123 Main",
+      "city": "Austin",
+      "state": "TX",
+      "zip": "787010000"
+    }
+  }
+}
+
+###

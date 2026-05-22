@@ -24,6 +24,9 @@ public static class FunderSettingsMapper
             WeeklyDays = model.Data.WeeklyDays,
             MonthlyFrequency = model.Data.MonthlyFrequency,
             CombineChargesForSameClient = model.Data.CombineChargesForSameClient ?? false,
+            Requires837PEnrollment = model.Data.Requires837PEnrollment,
+            Is837PEnrollmentCompleted = model.Data.Is837PEnrollmentCompleted,
+            EnrollmentBillingProviderNpi = model.Data.EnrollmentBillingProviderNpi,
             CreatedBy = model.ChangedBy
         };
     }

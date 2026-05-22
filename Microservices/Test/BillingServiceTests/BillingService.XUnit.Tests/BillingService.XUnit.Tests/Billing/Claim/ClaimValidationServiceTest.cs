@@ -14,6 +14,7 @@ using Rethink.Services.Common.Entities.Billing.Claim;
 using Rethink.Services.Common.Entities.Billing.Claim.History;
 using Rethink.Services.Common.Entities.Billing.Payment;
 using Rethink.Services.Common.Entities.Billing.Scheduling;
+using Rethink.Services.Common.Entities.Billing;
 using Rethink.Services.Common.Enums.BH;
 using Rethink.Services.Common.Enums.Billing;
 using Rethink.Services.Common.Infrastructure.Context.Billing;
@@ -66,13 +67,16 @@ public class ClaimValidationServiceTests
         IRepository<BillingDbContext, ClaimAppointmentLinkEntity> apptRepo,
         IRepository<BillingDbContext, PaymentClaimEntity> paymentRepo,
         IRepository<BillingDbContext, ClaimErrorMessageEntity> errMsgRepo,
+        IRepository<BillingDbContext, FunderSettingsEntity> funderSettingsRepo = null,
         IClaimHistoryService history,
         IRethinkMasterDataMicroServices rethink,
         IClientService client,
         IRepository<BillingDbContext, ClaimDiagnosisCodeEntity> dxRepo,
         IStediProviderEnrollmentService stediProviderEnrollmentService,
         IClearinghouseCredentialValidationService clearinghouseCredentialValidationService, // <-- Add this parameter
-        IFeatureFlagService featureFlagService = null
+        IFeatureFlagService featureFlagService = null,
+        IEligibility271Repository eligibility271Repository = null,
+        IClaimRulesEngineClient claimRulesEngineClient = null
     )
     {
         var logger = new Mock<ILogger<ClaimValidationService>>();   
@@ -85,11 +89,14 @@ public class ClaimValidationServiceTests
             funderSeqRepo,
             paymentRepo,
             errMsgRepo,
+            funderSettingsRepo ?? new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>().Object,
             history,
             rethink,
             stediProviderEnrollmentService,
             clearinghouseCredentialValidationService,
+            eligibility271Repository ?? new Mock<IEligibility271Repository>().Object,
             featureFlagService ?? new Mock<IFeatureFlagService>().Object,
+            claimRulesEngineClient ?? new Mock<IClaimRulesEngineClient>().Object,
             logger.Object
         );
     }
@@ -104,6 +111,7 @@ public class ClaimValidationServiceTests
         var claimAppointmentLinkRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentClaimRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var claimErrorMessageRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var claimHistoryService = new Mock<IClaimHistoryService>();
         var rethinkServices = new Mock<IRethinkMasterDataMicroServices>();
         var clientService = new Mock<IClientService>();
@@ -111,6 +119,8 @@ public class ClaimValidationServiceTests
         var stediProviderEnrollmentService = new Mock<IStediProviderEnrollmentService>();
         var clearinghouseCredentialValidationService = new Mock<IClearinghouseCredentialValidationService>();
         var featureFlagService = new Mock<IFeatureFlagService>();
+        var eligibility271Repository = new Mock<IEligibility271Repository>();
+        var claimRulesEngineClient = new Mock<IClaimRulesEngineClient>();
         var logger = new Mock<ILogger<ClaimValidationService>>();
 
         return new ClaimValidationService(
@@ -122,13 +132,68 @@ public class ClaimValidationServiceTests
             claimSubmissionFunderSequenceRepo.Object,
             paymentClaimRepo.Object,
             claimErrorMessageRepo.Object,
+            funderSettingsRepo.Object,
             claimHistoryService.Object,
             rethinkServices.Object,
             stediProviderEnrollmentService.Object,
             clearinghouseCredentialValidationService.Object,
+            eligibility271Repository.Object,
             featureFlagService.Object,
+            claimRulesEngineClient.Object,
             logger.Object
         );
+    }
+
+    [Theory]
+    [InlineData("123456789", true)]
+    [InlineData("12345-6789", true)]
+    [InlineData("12345", false)]
+    [InlineData("12345-678", false)]
+    [InlineData("12345-678X", false)]
+    [InlineData("", false)]
+    public void IsNineDigitZipCode_ValidatesZipFormats(string zipCode, bool expected)
+    {
+        var result = ClaimValidationService.IsNineDigitZipCode(zipCode);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("2024-01-31", "2023-12-15", false)]
+    [InlineData("2024-01-31", "2023-12-01", true)]
+    [InlineData("2024-01-31", null, true)]
+    public void IsEligibilityVerificationStale_EvaluatesRecency(string claimCreated, string eligibilityCreated, bool expected)
+    {
+        var claimDate = DateTime.Parse(claimCreated);
+        DateTime? eligibilityDate = string.IsNullOrWhiteSpace(eligibilityCreated)
+            ? null
+            : DateTime.Parse(eligibilityCreated);
+
+        var result = ClaimValidationService.IsEligibilityVerificationStale(claimDate, eligibilityDate);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData(true, false, null, "123456789", true)]
+    [InlineData(true, true, null, "123456789", false)]
+    [InlineData(true, true, "999999999", "123456789", true)]
+    [InlineData(true, true, "123456789", "123456789", false)]
+    [InlineData(false, false, null, "123456789", false)]
+    public void IsClaimEnrollmentRequired_EvaluatesEnrollmentRules(
+        bool requiresEnrollment,
+        bool enrollmentCompleted,
+        string enrollmentNpi,
+        string billingProviderNpi,
+        bool expected)
+    {
+        var result = ClaimValidationService.IsClaimEnrollmentRequired(
+            requiresEnrollment,
+            enrollmentCompleted,
+            enrollmentNpi,
+            billingProviderNpi);
+
+        Assert.Equal(expected, result);
     }
     [Fact]
     public async Task GetClaimInformation_ShouldHydrateClaim_FromRethinkCalls()
@@ -457,6 +522,7 @@ public class ClaimValidationServiceTests
         var apptRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var errMsgRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var history = new Mock<IClaimHistoryService>();
         var rethink = new Mock<IRethinkMasterDataMicroServices>();
         var client = new Mock<IClientService>();
@@ -464,6 +530,8 @@ public class ClaimValidationServiceTests
         var stediProviderEnrollmentService = new Mock<IStediProviderEnrollmentService>();
         var clearinghouseCredentialValidationService = new Mock<IClearinghouseCredentialValidationService>();
         var featureFlagService = new Mock<IFeatureFlagService>();
+        var eligibility271Repository = new Mock<IEligibility271Repository>();
+        var claimRulesEngineClient = new Mock<IClaimRulesEngineClient>();
         var logger = new Mock<ILogger<ClaimValidationService>>();
 
         var efOptions = new DbContextOptionsBuilder<EntryOnlyContext>()
@@ -494,11 +562,14 @@ public class ClaimValidationServiceTests
             funderSeqRepo.Object,
             paymentRepo.Object,
             errMsgRepo.Object,
+            funderSettingsRepo.Object,
             history.Object,
             rethink.Object,
             stediProviderEnrollmentService.Object,
             clearinghouseCredentialValidationService.Object,
+            eligibility271Repository.Object,
             featureFlagService.Object,
+            claimRulesEngineClient.Object,
             logger.Object);
 
         var submission = new ClaimSubmissionEntity { Id = 10, ClaimId = 1 };
@@ -946,13 +1017,6 @@ public class ClaimValidationServiceTests
 
 
 }
-
-
-
-
-
-
-
 
 
 

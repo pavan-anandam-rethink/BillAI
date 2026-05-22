@@ -1,11 +1,13 @@
 ﻿using Billing.FolderStructure.Core.Enum;
 using BillingService.Domain.Interfaces.Billing;
 using BillingService.Domain.Interfaces.Payment;
+using BillingService.Domain.Models.RulesEngine;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Quartz.Util;
+using Rethink.Services.Common.Entities.Billing;
 using Rethink.Services.Common.Entities.Billing.Claim;
 using Rethink.Services.Common.Entities.Billing.Payment;
 using Rethink.Services.Common.Enums.BH;
@@ -36,6 +38,7 @@ namespace BillingService.Domain.Services.Billing
         private readonly IRethinkMasterDataMicroServices _rethinkServices;
         private readonly IClaimHistoryService _claimHistoryService;
         private readonly string _customerId;
+        private readonly string _rulesEngineRuleSetId;
         private readonly int minLengthInsuredId = 2;
         private readonly int maxLengthInsuredId = 80;
 
@@ -46,9 +49,12 @@ namespace BillingService.Domain.Services.Billing
         private readonly IRepository<BillingDbContext, ClaimSubmissionFunderSequenceEntity> _billingClaimSubmissionFunderSequenceRepository;
         private readonly IRepository<BillingDbContext, PaymentClaimEntity> _billingPaymentClaimRepository;
         private readonly IRepository<BillingDbContext, ClaimErrorMessageEntity> _billingClaimErrorMessageRepository;
+        private readonly IRepository<BillingDbContext, FunderSettingsEntity> _funderSettingsRepository;
         private readonly IStediProviderEnrollmentService _stediProviderEnrollmentService;
         private readonly IClearinghouseCredentialValidationService _clearinghouseCredentialValidationService;
+        private readonly IEligibility271Repository _eligibility271Repository;
         private readonly IFeatureFlagService _featureFlagService;
+        private readonly IClaimRulesEngineClient _claimRulesEngineClient;
         private readonly ILogger<ClaimValidationService> _logger;
 
         private List<StateModel> _states;
@@ -64,11 +70,14 @@ namespace BillingService.Domain.Services.Billing
             IRepository<BillingDbContext, ClaimSubmissionFunderSequenceEntity> billingClaimSubmissionFunderSequenceRepository,
             IRepository<BillingDbContext, PaymentClaimEntity> billingPaymentClaimRepository,
             IRepository<BillingDbContext, ClaimErrorMessageEntity> billingClaimErrorMessageRepository,
+            IRepository<BillingDbContext, FunderSettingsEntity> funderSettingsRepository,
             IClaimHistoryService claimHistoryService,
             IRethinkMasterDataMicroServices rethinkServices,
             IStediProviderEnrollmentService stediProviderEnrollmentService,
             IClearinghouseCredentialValidationService clearinghouseCredentialValidationService,
+            IEligibility271Repository eligibility271Repository,
             IFeatureFlagService featureFlagService,
+            IClaimRulesEngineClient claimRulesEngineClient,
             ILogger<ClaimValidationService> logger
             )
         {
@@ -79,12 +88,16 @@ namespace BillingService.Domain.Services.Billing
             _billingClaimSubmissionFunderSequenceRepository = billingClaimSubmissionFunderSequenceRepository;
             _billingPaymentClaimRepository = billingPaymentClaimRepository;
             _billingClaimErrorMessageRepository = billingClaimErrorMessageRepository;
+            _funderSettingsRepository = funderSettingsRepository;
             _claimHistoryService = claimHistoryService;
             _rethinkServices = rethinkServices;
             _stediProviderEnrollmentService = stediProviderEnrollmentService;  
             _customerId = configuration["EdiSettings:CustomerId"];
+            _rulesEngineRuleSetId = configuration["RulesEngine:DefaultRuleSetId"];
             _clearinghouseCredentialValidationService = clearinghouseCredentialValidationService;
+            _eligibility271Repository = eligibility271Repository;
             _featureFlagService = featureFlagService;
+            _claimRulesEngineClient = claimRulesEngineClient;
             _logger= logger;
         }
         #endregion
@@ -149,6 +162,43 @@ namespace BillingService.Domain.Services.Billing
                 var error = new ClaimValidationError((message == null && claimErrorMessage.ErrorNumber == ClaimErrorNumber.Unknown) ? errorNum.ToString() : message, claimErrorMessage, exception);
                 Errors.Add(error);
             }
+        }
+
+        internal static bool IsNineDigitZipCode(string zipCode)
+        {
+            if (string.IsNullOrWhiteSpace(zipCode))
+            {
+                return false;
+            }
+
+            var normalized = zipCode.Replace("-", string.Empty);
+            return normalized.Length == 9 && normalized.All(char.IsDigit);
+        }
+
+        internal static bool IsEligibilityVerificationStale(DateTime claimCreatedDate, DateTime? eligibilityCreatedDate)
+        {
+            if (!eligibilityCreatedDate.HasValue)
+            {
+                return true;
+            }
+
+            return eligibilityCreatedDate.Value < claimCreatedDate.AddDays(-31);
+        }
+
+        internal static bool IsClaimEnrollmentRequired(bool? requiresEnrollment, bool? enrollmentCompleted, string enrollmentBillingProviderNpi, string billingProviderNpi)
+        {
+            if (requiresEnrollment != true)
+            {
+                return false;
+            }
+
+            if (enrollmentCompleted != true)
+            {
+                return true;
+            }
+
+            return !string.IsNullOrWhiteSpace(enrollmentBillingProviderNpi)
+                   && !string.Equals(enrollmentBillingProviderNpi, billingProviderNpi, StringComparison.OrdinalIgnoreCase);
         }
 
         private class ClaimSubmissionValidationResult
@@ -1222,6 +1272,17 @@ namespace BillingService.Domain.Services.Billing
                 { str = str.Replace("-", ""); }
                 return Check((!string.IsNullOrWhiteSpace(str) && (str.Length >= minLen)), errorNum, msg);
             }
+            bool CheckZipCodeNineDigits(string str, ClaimErrorNumber errorNum, string msg = null)
+            {
+                if (string.IsNullOrWhiteSpace(str))
+                {
+                    return Check(false, errorNum, msg);
+                }
+
+                var isValid = IsNineDigitZipCode(str);
+
+                return Check(isValid, errorNum, msg);
+            }
             bool CheckDecimal(decimal? num, ClaimErrorNumber errorNum, string msg = null)
             {
                 return Check((num != null && num > 0.009m), errorNum, msg);
@@ -1253,6 +1314,93 @@ namespace BillingService.Domain.Services.Billing
             bool CheckDate(DateTime? date, ClaimErrorNumber errorNum, string msg = null)
             {
                 return Check(date != null && (date > _validDateCheck), errorNum, msg);
+            }
+
+            bool IsEligibilityFeatureEnabled(AccountInfoEntityModel accountInfo)
+            {
+                if (accountInfo?.subscriptionFeatures == null)
+                {
+                    return false;
+                }
+
+                if (!accountInfo.subscriptionFeatures.TryGetValue("showEligibility", out var flagValue))
+                {
+                    return false;
+                }
+
+                if (flagValue is bool boolFlag)
+                {
+                    return boolFlag;
+                }
+
+                return bool.TryParse(flagValue?.ToString(), out var parsedFlag) && parsedFlag;
+            }
+
+            ClaimRulesEngineRequest BuildRulesEngineRequest(ClaimSubmissionEntity currentSubmission)
+            {
+                var funderId = currentSubmission?.FunderId ?? data.FunderMappingCurrent?.funderId;
+                var funderName = data.FunderMappingCurrent?.Funder?.funderName;
+
+                return new ClaimRulesEngineRequest
+                {
+                    RuleSetId = _rulesEngineRuleSetId,
+                    Context = new ClaimRulesEngineContext
+                    {
+                        Claim = new ClaimContext
+                        {
+                            ClaimId = data.Claim.Id,
+                            AccountInfoId = data.Claim.AccountInfoId,
+                            ClaimStatus = data.Claim.ClaimStatus.ToString(),
+                            DateCreated = data.Claim.DateCreated,
+                            StartDate = data.Claim.StartDate,
+                            EndDate = data.Claim.EndDate,
+                            ClaimIdentifier = data.Claim.ClaimIdentifier
+                        },
+                        Account = new AccountContext
+                        {
+                            BillingAddress1 = data.AccountInfo?.BillingAddress1,
+                            BillingCity = data.AccountInfo?.BillingCity,
+                            BillingState = data.AccountInfo?.BillingStateId?.ToString(),
+                            BillingZip = data.AccountInfo?.BillingZip
+                        },
+                        Funder = new FunderContext
+                        {
+                            FunderId = funderId,
+                            FunderName = funderName
+                        },
+                        BillingProvider = new BillingProviderContext
+                        {
+                            NpiNumber = currentSubmission?.LocationBillingProviderNpiNumber,
+                            TaxId = currentSubmission?.LocationBillingProviderFederalTaxId,
+                            Name = currentSubmission?.LocationBillingProviderName,
+                            TaxonomyCode = currentSubmission?.LocationBillingProviderTaxonomyCode
+                        },
+                        BillingProviderAddress = new AddressContext
+                        {
+                            Address1 = currentSubmission?.LocationBillingProviderAddress1,
+                            Address2 = currentSubmission?.LocationBillingProviderAddress2,
+                            City = currentSubmission?.LocationBillingProviderCity,
+                            State = currentSubmission?.LocationBillingProviderState,
+                            Zip = currentSubmission?.LocationBillingProviderZip
+                        },
+                        ServiceLocationAddress = new AddressContext
+                        {
+                            Address1 = currentSubmission?.ServiceLocationAddress1,
+                            Address2 = currentSubmission?.ServiceLocationAddress2,
+                            City = currentSubmission?.ServiceLocationCity,
+                            State = currentSubmission?.ServiceLocationState,
+                            Zip = currentSubmission?.ServiceLocationZip
+                        },
+                        ChildProfile = new ChildProfileContext
+                        {
+                            FirstName = currentSubmission?.ChildProfileFirstName,
+                            LastName = currentSubmission?.ChildProfileLastName,
+                            DateOfBirth = currentSubmission?.ChildProfileDOB,
+                            Gender = currentSubmission?.ChildProfileGender,
+                            ZipCode = currentSubmission?.ChildProfileZip
+                        }
+                    }
+                };
             }
             //------------------------------------------------------------------------------
             #endregion
@@ -1346,13 +1494,63 @@ namespace BillingService.Domain.Services.Billing
 
             #endregion
 
+            #region Eligibility Verification Recency
+
+            var isEligibilityEnabled = IsEligibilityFeatureEnabled(data.AccountInfo);
+            if (isEligibilityEnabled)
+            {
+                var funderId = submission.FunderId ?? data.FunderMappingCurrent?.funderId;
+                if (funderId.HasValue && funderId.Value > 0)
+                {
+                    var latestEligibility = await _eligibility271Repository.GetLatestResponseAsync(data.Claim.AccountInfoId, funderId.Value);
+                    if (IsEligibilityVerificationStale(data.Claim.DateCreated, latestEligibility?.CreatedDate))
+                    {
+                        Check(false, ClaimErrorNumber.EligibilityVerificationStale);
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Claim Enrollment Validation
+
+            if (submission.FunderId.HasValue && submission.FunderId.Value > 0)
+            {
+                var funderSetting = await _funderSettingsRepository.Query()
+                    .Where(x => x.AccountInfoId == data.Claim.AccountInfoId
+                                && x.FunderId == submission.FunderId.Value
+                                && x.DateDeleted == null)
+                    .Select(x => new
+                    {
+                        x.Requires837PEnrollment,
+                        x.Is837PEnrollmentCompleted,
+                        x.EnrollmentBillingProviderNpi
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (funderSetting?.Requires837PEnrollment == true)
+                {
+                    var billingProviderNpi = submission.LocationBillingProviderNpiNumber;
+                    if (IsClaimEnrollmentRequired(
+                        funderSetting.Requires837PEnrollment,
+                        funderSetting.Is837PEnrollmentCompleted,
+                        funderSetting.EnrollmentBillingProviderNpi,
+                        billingProviderNpi))
+                    {
+                        Check(false, ClaimErrorNumber.ClaimEnrollmentRequired);
+                    }
+                }
+            }
+
+            #endregion
+
             if (data.ProviderLocationAddress != null) // it is *valid* to have a null provider location in certain
                                                       // situations. If we have it, we will validate it.
             {
                 CheckString(data.ProviderLocationAddress.street1, ClaimErrorNumber.BillingProviderAddressMissingOrInvalid);
                 CheckString(data.ProviderLocationAddress.city, ClaimErrorNumber.BillingProviderCityMissingOrInvalid);
                 CheckNotNull(data.ProviderLocationAddress.stateId, ClaimErrorNumber.BillingProviderStateMissingOrInvalid);
-                CheckStringMinLen(data.ProviderLocationAddress.zipCode, 5, ClaimErrorNumber.BillingProviderZipMissingOrInvalid);
+                CheckZipCodeNineDigits(data.ProviderLocationAddress.zipCode, ClaimErrorNumber.BillingProviderZipMissingOrInvalid);
             }
 
 
@@ -1371,6 +1569,33 @@ namespace BillingService.Domain.Services.Billing
                 CheckNotNull(data.ServiceFacilityLocation.address.stateId, ClaimErrorNumber.ServiceLocationStateMissingOrInvalid);
                 CheckStringMinLen(data.ServiceFacilityLocation.address.zip, 5, ClaimErrorNumber.ServiceLocationZipMissingOrInvalid);
             }
+
+            #region AI Rules Engine Validation
+
+            if (await _featureFlagService.IsAiClaimRulesEngineEnabledAsync())
+            {
+                if (string.IsNullOrWhiteSpace(_rulesEngineRuleSetId))
+                {
+                    _logger.LogWarning("AI rules engine is enabled but no default ruleset is configured.");
+                }
+                else
+                {
+                    var rulesRequest = BuildRulesEngineRequest(submission);
+                    var violations = await _claimRulesEngineClient.EvaluateClaimAsync(rulesRequest);
+
+                    foreach (var violation in violations)
+                    {
+                        var errorNumber = violation.Severity == ClaimRulesEngineSeverity.Warning
+                            ? ClaimErrorNumber.AiRuleValidationWarning
+                            : ClaimErrorNumber.AiRuleValidationError;
+
+                        errors.AddError(errorNumber, violation.Message);
+                    }
+                }
+            }
+
+            #endregion
+
             var isClaimManuallyCreated = data.Claim.ClaimHistory.Any(x => x.ClaimHistoryAction == ClaimHistoryAction.ClaimCreated
                         && x.Mode == ClaimActionMode.User);
             if (!isClaimManuallyCreated)

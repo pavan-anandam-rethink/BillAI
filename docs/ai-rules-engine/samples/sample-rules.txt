@@ -1,0 +1,3 @@
+Billing Provider ZIP must be 9 digits and numeric.
+Eligibility must be checked within 31 days of claim creation.
+If 837P enrollment is required, claim submission must be blocked until enrollment is completed.

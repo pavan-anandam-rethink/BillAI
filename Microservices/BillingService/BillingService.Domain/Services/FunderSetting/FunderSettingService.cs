@@ -167,6 +167,9 @@ public class FunderSettingService : IFunderSettingService
         existing.WeeklyDays = data.WeeklyDays;
         existing.MonthlyFrequency = data.MonthlyFrequency;
         existing.CombineChargesForSameClient = data.CombineChargesForSameClient ?? false;
+        existing.Requires837PEnrollment = data.Requires837PEnrollment;
+        existing.Is837PEnrollmentCompleted = data.Is837PEnrollmentCompleted;
+        existing.EnrollmentBillingProviderNpi = data.EnrollmentBillingProviderNpi;
         existing.DateLastModified = DateTime.UtcNow;
         existing.ModifiedBy = model.ChangedBy;
     }

@@ -10,3 +10,6 @@ data:
   BillingService__Modernization__EnableOutboxPublisher: "false"
   BillingService__Modernization__EnableReadModelQueries: "false"
   BillingService__OpenTelemetry__ServiceName: "BillingService"
+  RulesEngine__BaseUrl: ""
+  RulesEngine__DefaultRuleSetId: ""
+  RulesEngine__ValidationEndpoint: "api/validation/claim"

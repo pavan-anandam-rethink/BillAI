@@ -98,4 +98,28 @@ public class FeatureFlagServiceTests
             x => x.GetSecretAsync("EnableProviderEnrollmentValidation"),
             Times.Exactly(2));
     }
+
+    [Fact]
+    public async Task IsAiClaimRulesEngineEnabledAsync_WhenKeyVaultReturnsTrue_ReturnsTrue()
+    {
+        _keyVaultMock
+            .Setup(x => x.GetSecretAsync("EnableAiClaimRulesEngine"))
+            .ReturnsAsync("true");
+
+        var result = await _sut.IsAiClaimRulesEngineEnabledAsync();
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public async Task IsAiClaimRulesEngineEnabledAsync_WhenKeyVaultThrows_ReturnsFalseDefault()
+    {
+        _keyVaultMock
+            .Setup(x => x.GetSecretAsync("EnableAiClaimRulesEngine"))
+            .ThrowsAsync(new Exception("Key Vault unavailable"));
+
+        var result = await _sut.IsAiClaimRulesEngineEnabledAsync();
+
+        Assert.False(result);
+    }
 }

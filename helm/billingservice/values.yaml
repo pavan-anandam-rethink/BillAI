@@ -30,5 +30,10 @@ modernization:
   enableOutboxPublisher: false
   enableReadModelQueries: false
 
+rulesEngine:
+  baseUrl: ""
+  defaultRuleSetId: ""
+  validationEndpoint: "api/validation/claim"
+
 keyVaultUri: "https://replace-with-billing-keyvault.vault.azure.net/"
 workloadIdentityClientId: "<managed-identity-client-id>"

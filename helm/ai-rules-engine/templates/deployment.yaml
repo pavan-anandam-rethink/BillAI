@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-rules-engine.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "ai-rules-engine.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "ai-rules-engine.name" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "ai-rules-engine.name" . }}
+    spec:
+      containers:
+        - name: ai-rules-engine
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:{{ .Values.service.targetPort }}"
+            - name: RulesEngine__DefaultRuleSetId
+              value: {{ .Values.rulesEngine.defaultRuleSetId | quote }}
+            - name: RulesEngine__Storage__FilePath
+              value: {{ .Values.rulesEngine.storageFilePath | quote }}
+            - name: RulesEngine__Ai__PromptTemplatePath
+              value: {{ .Values.rulesEngine.promptTemplatePath | quote }}
+            - name: RulesEngine__Ai__Endpoint
+              value: {{ .Values.aiProvider.endpoint | quote }}
+            - name: RulesEngine__Ai__ApiKey
+              value: {{ .Values.aiProvider.apiKey | quote }}
+            - name: RulesEngine__Ai__Model
+              value: {{ .Values.aiProvider.model | quote }}
+            - name: RulesEngine__Ai__Temperature
+              value: {{ .Values.aiProvider.temperature | quote }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

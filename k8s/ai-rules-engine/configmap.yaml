@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-rules-engine-config
+data:
+  RulesEngine__DefaultRuleSetId: ""
+  RulesEngine__Storage__FilePath: "/data/rule-sets.json"
+  RulesEngine__Ai__PromptTemplatePath: "/app/Prompts/rule-extraction.md"
+  RulesEngine__Ai__Endpoint: ""
+  RulesEngine__Ai__Model: "gpt-4.1"
+  RulesEngine__Ai__Temperature: "0.1"

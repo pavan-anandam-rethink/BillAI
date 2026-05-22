@@ -32,6 +32,8 @@ using Rethink.Services.Common.Cache.Memory;
 using Rethink.Services.Common.Cache.Redis;
 using Rethink.Services.Common.Interfaces;
 using Rethink.Services.Common.Utils;
+using Rethink.Services.Common.Infrastructure.Repository;
+using System;
 using Rethink.Services.Domain.Interfaces;
 using Rethink.Services.Domain.Services;
 using SummationService.Domain.Interfaces;
@@ -110,6 +112,15 @@ namespace BillingService.Domain
             services.AddScoped<IBillingSettingsService, BillingSettingsService>();
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<IFunderSettingService, FunderSettingService>();
+            services.AddScoped<IEligibility271Repository, Eligibility271Repository>();
+            services.AddHttpClient<IClaimRulesEngineClient, ClaimRulesEngineClient>((serviceProvider, client) =>
+            {
+                var baseUrl = serviceProvider.GetRequiredService<IConfiguration>()["RulesEngine:BaseUrl"];
+                if (!string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    client.BaseAddress = new Uri(baseUrl);
+                }
+            });
         }
     }
 }

@@ -63,6 +63,14 @@ namespace Rethink.Services.Common.Infrastructure.Configuration.Billing.Claim
                  .IsRequired(false);
             builder.Property(x => x.CombineChargesForSameClient)
                  .IsRequired(false);
+
+            builder.Property(x => x.Requires837PEnrollment)
+                 .IsRequired(false);
+            builder.Property(x => x.Is837PEnrollmentCompleted)
+                 .IsRequired(false);
+            builder.Property(x => x.EnrollmentBillingProviderNpi)
+                 .IsRequired(false)
+                 .HasMaxLength(25);
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Rethink.Services.Common.Entities.Billing.Claim;
 using Rethink.Services.Common.Infrastructure.Context.Billing;
 using Rethink.Services.Common.Interfaces;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +30,16 @@ namespace Rethink.Services.Common.Infrastructure.Repository
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Eligibility 271 Saved successfully. TransactionControlNumber={TransactionControlNumber}", eligibility271ResponseEntity.TransactionControlNumber);
+        }
+
+        public async Task<Eligibility271ResponseEntity> GetLatestResponseAsync(int accountId, int funderId, CancellationToken ct = default)
+        {
+            return await _dbContext.Eligibility271Responses
+                .AsNoTracking()
+                .Where(x => x.AccountId == accountId
+                            && x.FunderId == funderId)
+                .OrderByDescending(x => x.CreatedDate ?? x.ModifiedDate ?? DateTime.MinValue)
+                .FirstOrDefaultAsync(ct);
         }
     }
 }

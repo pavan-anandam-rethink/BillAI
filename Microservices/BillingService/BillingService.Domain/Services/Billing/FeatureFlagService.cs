@@ -9,6 +9,7 @@ namespace BillingService.Domain.Services.Billing
     public class FeatureFlagService : IFeatureFlagService
     {
         private const string EnableProviderEnrollmentValidationKey = "EnableProviderEnrollmentValidation";
+        private const string EnableAiClaimRulesEngineKey = "EnableAiClaimRulesEngine";
 
         private readonly IKeyVaultProviderService _keyVaultProviderService;
         private readonly ILogger<FeatureFlagService> _logger;
@@ -45,6 +46,34 @@ namespace BillingService.Domain.Services.Billing
                 _logger.LogWarning(ex,
                     "Failed to retrieve feature flag '{FlagName}' from Key Vault. Falling back to default={Default}",
                     EnableProviderEnrollmentValidationKey, false);
+                return false;
+            }
+        }
+
+        public async Task<bool> IsAiClaimRulesEngineEnabledAsync()
+        {
+            try
+            {
+                var secretValue = await _keyVaultProviderService.GetSecretAsync(EnableAiClaimRulesEngineKey);
+
+                if (bool.TryParse(secretValue, out var parsedValue))
+                {
+                    _logger.LogDebug(
+                        "Feature flag '{FlagName}' loaded from Key Vault. Value={FlagValue}",
+                        EnableAiClaimRulesEngineKey, parsedValue);
+                    return parsedValue;
+                }
+
+                _logger.LogWarning(
+                    "Feature flag '{FlagName}' has unparseable value '{RawValue}'. Falling back to default={Default}",
+                    EnableAiClaimRulesEngineKey, secretValue, false);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex,
+                    "Failed to retrieve feature flag '{FlagName}' from Key Vault. Falling back to default={Default}",
+                    EnableAiClaimRulesEngineKey, false);
                 return false;
             }
         }

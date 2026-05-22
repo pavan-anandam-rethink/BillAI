@@ -139,6 +139,14 @@
         // Clearing House Upload Errors  CH   3210-3212
         ClearingHouseAuthenticationFailure = 3210,  // Authentication failure
         ClearingHouseConnectionIssue = 3211,        // Connection issue
-        ClearingHouseUploadFailed = 3212            // Upload failed
+        ClearingHouseUploadFailed = 3212,           // Upload failed
+
+        // Eligibility / Enrollment Validation  EL   3213-3214
+        EligibilityVerificationStale = 3213,        // Eligibility has not been verified in over 31 days
+        ClaimEnrollmentRequired = 3214,             // Claim enrollment must be completed prior to submission
+
+        // AI Rules Engine Validation  AI   3215-3216
+        AiRuleValidationError = 3215,               // AI rules engine error
+        AiRuleValidationWarning = 3216              // AI rules engine warning
     }
 }
