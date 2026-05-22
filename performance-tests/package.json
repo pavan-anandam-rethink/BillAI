@@ -1,0 +1,17 @@
+{
+  "name": "bh-billing-performance-tests",
+  "version": "1.0.0",
+  "description": "Production-grade k6 load testing framework for BH Billing Application",
+  "scripts": {
+    "smoke": "k6 run smoke-test.js --out json=results/smoke-results.json --out csv=results/smoke-metrics.csv",
+    "load:100": "k6 run load-test.js -e CONCURRENCY=100 --out json=results/load-100-results.json --out csv=results/load-100-metrics.csv",
+    "load:200": "k6 run load-test.js -e CONCURRENCY=200 --out json=results/load-200-results.json --out csv=results/load-200-metrics.csv",
+    "load:300": "k6 run load-test.js -e CONCURRENCY=300 --out json=results/load-300-results.json --out csv=results/load-300-metrics.csv",
+    "stress": "k6 run stress-test.js --out json=results/stress-results.json --out csv=results/stress-metrics.csv",
+    "spike": "k6 run spike-test.js --out json=results/spike-results.json --out csv=results/spike-metrics.csv",
+    "soak": "k6 run soak-test.js --out json=results/soak-results.json --out csv=results/soak-metrics.csv",
+    "report": "node scripts/generate-html-report.js"
+  },
+  "keywords": ["k6", "performance", "load-testing", "billing"],
+  "license": "PRIVATE"
+}

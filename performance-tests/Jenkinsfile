@@ -1,0 +1,92 @@
+// ============================================================================
+// Jenkinsfile - BH Billing Performance Tests
+// ============================================================================
+// Declarative pipeline for running k6 performance tests.
+// Supports parameterized builds for test type, concurrency, and environment.
+//
+// Usage:
+//   Build with Parameters in Jenkins UI
+// ============================================================================
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'TEST_TYPE',
+            choices: ['smoke', 'load', 'stress', 'spike', 'soak'],
+            description: 'Type of performance test to run'
+        )
+        choice(
+            name: 'CONCURRENCY',
+            choices: ['100', '200', '300'],
+            description: 'Number of concurrent virtual users'
+        )
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['qa', 'stg', 'prod'],
+            description: 'Target environment'
+        )
+    }
+
+    environment {
+        K6_VERSION = '0.49.0'
+    }
+
+    stages {
+        stage('Setup') {
+            steps {
+                echo "============================================"
+                echo "BH Billing Performance Test"
+                echo "Test Type:   ${params.TEST_TYPE}"
+                echo "Concurrency: ${params.CONCURRENCY} VUs"
+                echo "Environment: ${params.ENVIRONMENT}"
+                echo "============================================"
+
+                sh 'mkdir -p performance-tests/results performance-tests/reports'
+            }
+        }
+
+        stage('Install k6') {
+            steps {
+                sh '''
+                    if ! command -v k6 &> /dev/null; then
+                        sudo gpg -k
+                        sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+                        echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+                        sudo apt-get update && sudo apt-get install k6 -y
+                    fi
+                    k6 version
+                '''
+            }
+        }
+
+        stage('Run Performance Test') {
+            steps {
+                dir('performance-tests') {
+                    sh """
+                        k6 run ${params.TEST_TYPE}-test.js \
+                            -e ENV=${params.ENVIRONMENT} \
+                            -e CONCURRENCY=${params.CONCURRENCY} \
+                            --out json=results/${params.TEST_TYPE}-results.json \
+                            --out csv=results/${params.TEST_TYPE}-metrics.csv \
+                            || true
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Archive test results and reports
+            archiveArtifacts artifacts: 'performance-tests/results/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'performance-tests/reports/**', allowEmptyArchive: true
+
+            echo "Performance test completed. Check archived artifacts for results."
+        }
+        failure {
+            echo "Performance test failed! Check logs for details."
+        }
+    }
+}

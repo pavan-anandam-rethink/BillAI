@@ -1,0 +1,22 @@
+[
+  { "username": "perfuser01@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 1 },
+  { "username": "perfuser02@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 1 },
+  { "username": "perfuser03@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 1 },
+  { "username": "perfuser04@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 2 },
+  { "username": "perfuser05@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 2 },
+  { "username": "perfuser06@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 2 },
+  { "username": "perfuser07@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 3 },
+  { "username": "perfuser08@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 3 },
+  { "username": "perfuser09@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 3 },
+  { "username": "perfuser10@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 4 },
+  { "username": "perfuser11@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 4 },
+  { "username": "perfuser12@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 4 },
+  { "username": "perfuser13@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 5 },
+  { "username": "perfuser14@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 5 },
+  { "username": "perfuser15@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 5 },
+  { "username": "perfuser16@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 6 },
+  { "username": "perfuser17@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 6 },
+  { "username": "perfuser18@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 6 },
+  { "username": "perfuser19@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 7 },
+  { "username": "perfuser20@rethinkbh.com", "password": "PerfTest@2024!", "accountInfoId": 7 }
+]

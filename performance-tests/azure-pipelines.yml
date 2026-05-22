@@ -1,0 +1,101 @@
+# ============================================================================
+# Azure DevOps Pipeline - BH Billing Performance Tests
+# ============================================================================
+# Triggers performance tests as part of CI/CD pipeline.
+# Supports parameterized execution for different test types and environments.
+#
+# Pipeline Variables (set in Azure DevOps):
+#   - testType: smoke, load, stress, spike, soak
+#   - concurrency: 100, 200, 300
+#   - environment: qa, stg, prod
+# ============================================================================
+
+trigger: none  # Manual trigger only for performance tests
+
+pr: none
+
+parameters:
+  - name: testType
+    displayName: 'Test Type'
+    type: string
+    default: 'smoke'
+    values:
+      - smoke
+      - load
+      - stress
+      - spike
+      - soak
+
+  - name: concurrency
+    displayName: 'Concurrent Users'
+    type: number
+    default: 100
+    values:
+      - 100
+      - 200
+      - 300
+
+  - name: environment
+    displayName: 'Target Environment'
+    type: string
+    default: 'qa'
+    values:
+      - qa
+      - stg
+      - prod
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  k6Version: '0.49.0'
+
+stages:
+  - stage: PerformanceTest
+    displayName: 'Performance Test - ${{ parameters.testType }}'
+    jobs:
+      - job: RunK6Tests
+        displayName: 'k6 ${{ parameters.testType }} Test (${{ parameters.concurrency }} VUs)'
+        timeoutInMinutes: 120
+        steps:
+          # Install k6
+          - script: |
+              sudo gpg -k
+              sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+              echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+              sudo apt-get update
+              sudo apt-get install k6
+            displayName: 'Install k6'
+
+          # Create output directories
+          - script: |
+              mkdir -p $(Build.SourcesDirectory)/performance-tests/results
+              mkdir -p $(Build.SourcesDirectory)/performance-tests/reports
+            displayName: 'Create output directories'
+
+          # Run performance test
+          - script: |
+              cd $(Build.SourcesDirectory)/performance-tests
+              k6 run ${{ parameters.testType }}-test.js \
+                -e ENV=${{ parameters.environment }} \
+                -e CONCURRENCY=${{ parameters.concurrency }} \
+                --out json=results/${{ parameters.testType }}-results.json \
+                --out csv=results/${{ parameters.testType }}-metrics.csv
+            displayName: 'Run ${{ parameters.testType }} Test'
+            continueOnError: true
+
+          # Publish test results as pipeline artifacts
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '$(Build.SourcesDirectory)/performance-tests/results'
+              artifactName: 'performance-results-${{ parameters.testType }}-${{ parameters.concurrency }}vu'
+            displayName: 'Publish Results'
+            condition: always()
+
+          # Publish HTML reports
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '$(Build.SourcesDirectory)/performance-tests/reports'
+              artifactName: 'performance-reports-${{ parameters.testType }}-${{ parameters.concurrency }}vu'
+            displayName: 'Publish Reports'
+            condition: always()

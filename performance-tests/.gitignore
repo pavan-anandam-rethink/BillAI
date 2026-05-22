@@ -1,0 +1,21 @@
+# .gitignore for performance tests
+# Ignore generated results and reports (large files)
+results/*.json
+results/*.csv
+reports/*.html
+reports/*.json
+
+# Keep directories with .gitkeep
+!results/.gitkeep
+!reports/.gitkeep
+
+# Docker volumes
+influxdb-data/
+grafana-data/
+
+# Node modules (if any Node.js report tools are installed)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
