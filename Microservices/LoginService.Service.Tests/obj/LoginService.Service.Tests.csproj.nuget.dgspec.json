@@ -1,42 +1,34 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Service.Tests\\LoginService.Service.Tests.csproj": {}
+    "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Service.Tests/LoginService.Service.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
         "projectName": "Authentication",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj"
               }
             }
           }
@@ -51,10 +43,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Azure.Extensions.AspNetCore.Configuration.Secrets": {
@@ -68,6 +61,10 @@
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.5, )"
+            },
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             }
           },
           "imports": [
@@ -86,46 +83,38 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Service.Tests\\LoginService.Service.Tests.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Service.Tests/LoginService.Service.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Service.Tests\\LoginService.Service.Tests.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Service.Tests/LoginService.Service.Tests.csproj",
         "projectName": "LoginService.Service.Tests",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Service.Tests\\LoginService.Service.Tests.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Service.Tests\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Service.Tests/LoginService.Service.Tests.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Service.Tests/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Web\\LoginService.Web.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Web\\LoginService.Web.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Web/LoginService.Web.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Web/LoginService.Web.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               }
             }
           }
@@ -140,10 +129,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.NET.Test.Sdk": {
@@ -183,43 +173,38 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Web\\LoginService.Web.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Web/LoginService.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Web\\LoginService.Web.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Web/LoginService.Web.csproj",
         "projectName": "LoginService.Web",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Web\\LoginService.Web.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\LoginService.Web\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Web/LoginService.Web.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/LoginService.Web/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Authentication\\Authentication.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj"
               }
             }
           }
@@ -234,10 +219,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "AspNetCore.HealthChecks.AzureApplicationInsights": {
@@ -292,39 +278,31 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
         "projectName": "Rethink.Services.Common",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -339,10 +317,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "AutoMapper": {
@@ -418,46 +397,38 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
         "projectName": "Rethink.Services.Domain",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\Rethink.Services.Domain.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Domain\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               },
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj"
               }
             }
           }
@@ -472,10 +443,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Azure.Extensions.AspNetCore.Configuration.Secrets": {
@@ -498,9 +470,21 @@
               "target": "Package",
               "version": "[9.0.3, )"
             },
+            "Microsoft.Extensions.Http.Resilience": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "RethinkCore.Messaging.Contracts": {
               "target": "Package",
               "version": "[2024.3.4.3, )"
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.8.16, )"
             }
           },
           "imports": [
@@ -519,43 +503,35 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj": {
+    "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
         "projectName": "SummationService.Domain",
-        "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\SummationService.Domain.csproj",
-        "packagesPath": "C:\\Users\\PavankumarAnandam(te\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\SummationService.Domain\\obj\\",
+        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\PavankumarAnandam(te\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/Rethink-Common/nuget/v3/index.json": {},
-          "https://rethinkfirst.pkgs.visualstudio.com/RethinkFirst/_packaging/RethinkBHFeed/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj": {
-                "projectPath": "C:\\Users\\PavankumarAnandam(te\\source\\repos\\Billing\\Rethink.BH.BillingSystem.Platform\\Microservices\\Rethink.Services.Common\\Rethink.Services.Common.csproj"
+              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               }
             }
           }
@@ -570,10 +546,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "DocumentFormat.OpenXml": {
@@ -601,7 +578,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
