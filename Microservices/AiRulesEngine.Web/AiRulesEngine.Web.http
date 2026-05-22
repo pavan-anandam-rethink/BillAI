@@ -1,0 +1,20 @@
+@AiRulesEngine_HostAddress = http://localhost:5000
+
+GET {{AiRulesEngine_HostAddress}}/healthz
+Accept: application/json
+
+###
+# Replace with a stored ruleset id
+POST {{AiRulesEngine_HostAddress}}/api/validate
+Content-Type: application/json
+
+{
+  "ruleSetId": "claim-validation-v1",
+  "payload": {
+    "claim": { "createdDate": "2026-05-01" },
+    "account": { "showEligibility": true },
+    "eligibility": { "lastCheckDate": "2026-04-10" },
+    "enrollment": { "837pRequired": true, "837pCompleted": false },
+    "billingProvider": { "zip": "123456789" }
+  }
+}

@@ -21,6 +21,8 @@ namespace BillingService.Domain.Models.BillingSettings
         public string ClearingHousePayerName { get; set; }
         public string ClearingHousePayerId { get; set; }
         public string InsuranceType { get; set; }
+        public bool? Is837PEnrollmentRequired { get; set; }
+        public bool? Is837PEnrollmentCompleted { get; set; }
         
 
     }

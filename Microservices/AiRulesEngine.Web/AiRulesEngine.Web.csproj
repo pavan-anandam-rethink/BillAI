@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UglyToad.PdfPig" Version="0.1.9-alpha001-patch1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="prompts/**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Update="samples/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

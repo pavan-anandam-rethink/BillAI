@@ -159,6 +159,8 @@ public class FunderSettingService : IFunderSettingService
         existing.FunderName = model.FunderName;
         existing.ClaimFilingIndicatorId = model.ClaimFilingIndicatorId;
         existing.IncludeTaxonomyCode = model.IncludeTaxonomyCode;
+        existing.Is837PEnrollmentRequired = model.Is837PEnrollmentRequired;
+        existing.Is837PEnrollmentCompleted = model.Is837PEnrollmentCompleted;
         existing.ScheduleTime = string.IsNullOrWhiteSpace(data.ScheduleTime)
                               ? null 
                               : TimeSpan.Parse(data.ScheduleTime);

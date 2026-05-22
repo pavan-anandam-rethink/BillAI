@@ -6,4 +6,6 @@ public sealed class BillingFunderIdRequestModel : FunderSettingsRequest
     public int AccountInfoId { get; set; }
     public int FunderId { get; set; }
     public string FunderName { get; set; }
+    public bool? Is837PEnrollmentRequired { get; set; }
+    public bool? Is837PEnrollmentCompleted { get; set; }
 }

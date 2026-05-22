@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\ClearingHouseService.Web.props" />
-</Project>

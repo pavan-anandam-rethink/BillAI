@@ -139,6 +139,12 @@
         // Clearing House Upload Errors  CH   3210-3212
         ClearingHouseAuthenticationFailure = 3210,  // Authentication failure
         ClearingHouseConnectionIssue = 3211,        // Connection issue
-        ClearingHouseUploadFailed = 3212            // Upload failed
+        ClearingHouseUploadFailed = 3212,           // Upload failed
+
+        // Eligibility
+        EligibilityNotVerifiedOver31Days = 3213,
+
+        // Enrollment
+        ClaimEnrollmentRequired = 3214
     }
 }

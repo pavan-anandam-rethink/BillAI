@@ -1,0 +1,97 @@
+{
+  "id": "claim-validation-v1",
+  "name": "Claim Validation - Billing & Eligibility",
+  "description": "Sample rules for billing provider zip, eligibility recency, and claim enrollment.",
+  "version": "1.0",
+  "rules": [
+    {
+      "id": "billing-provider-zip",
+      "name": "Billing provider zip must be 9 numeric digits",
+      "severity": "Error",
+      "message": "Zip code missing or invalid. Please verify that the zip code is present, contains only numeric values and includes the 4 digit zip extension.",
+      "conditionLogic": "All",
+      "appliesWhenLogic": "All",
+      "conditions": [
+        {
+          "path": "billingProvider.zip",
+          "operator": "Required"
+        },
+        {
+          "path": "billingProvider.zip",
+          "operator": "Numeric"
+        },
+        {
+          "path": "billingProvider.zip",
+          "operator": "LengthEquals",
+          "min": 9
+        }
+      ]
+    },
+    {
+      "id": "eligibility-recency",
+      "name": "Eligibility check within 31 days of claim creation",
+      "severity": "Alert",
+      "message": "Eligibility has not been verify in over 31 days since this claim has been created. Running a new eligibility check prior to submission may help avoid claim delays.",
+      "conditionLogic": "All",
+      "appliesWhenLogic": "All",
+      "appliesWhen": [
+        {
+          "path": "account.showEligibility",
+          "operator": "Equals",
+          "value": "true"
+        }
+      ],
+      "conditions": [
+        {
+          "path": "eligibility.lastCheckDate",
+          "operator": "DateWithinDays",
+          "compareToPath": "claim.createdDate",
+          "max": 31
+        }
+      ]
+    },
+    {
+      "id": "claim-enrollment",
+      "name": "837P enrollment required",
+      "severity": "Error",
+      "message": "Claim enrollment must be completed prior to claim submission for this payer.",
+      "conditionLogic": "All",
+      "appliesWhenLogic": "All",
+      "appliesWhen": [
+        {
+          "path": "enrollment.837pRequired",
+          "operator": "Equals",
+          "value": "true"
+        }
+      ],
+      "conditions": [
+        {
+          "path": "enrollment.837pCompleted",
+          "operator": "Equals",
+          "value": "true"
+        }
+      ]
+    }
+  ],
+  "workflowRules": [
+    {
+      "id": "submit-warning",
+      "name": "Eligibility reminder workflow",
+      "conditionLogic": "All",
+      "conditions": [
+        {
+          "path": "eligibility.lastCheckDate",
+          "operator": "DateWithinDays",
+          "compareToPath": "claim.createdDate",
+          "max": 31
+        }
+      ],
+      "actions": [
+        {
+          "type": "AddWorkflowNote",
+          "message": "Eligibility verified within 31 days. Continue standard submission workflow."
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,8 @@ public sealed class FunderSettingRequest : BaseAuditRequest<FunderSettingsReques
     public int FunderId { get; set; }
     public int ClaimFilingIndicatorId { get; set; }
     public bool IncludeTaxonomyCode { get; set; }
+    public bool? Is837PEnrollmentRequired { get; set; }
+    public bool? Is837PEnrollmentCompleted { get; set; }
     public int AccountInfoId { get; set; }
     public string FunderName { get; set; }
 }

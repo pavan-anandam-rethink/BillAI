@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+**/data/rulesets/
+.vs/
+*.user
+*.suo
+*.cache

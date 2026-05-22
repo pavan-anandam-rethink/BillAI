@@ -14,6 +14,8 @@ namespace Rethink.Services.Common.Entities.Billing
 
         public int ClaimFilingIndicatorId { get; set; }
         public bool IncludeTaxonomyCode { get; set; }
+        public bool? Is837PEnrollmentRequired { get; set; }
+        public bool? Is837PEnrollmentCompleted { get; set; }
         public TimeSpan? ScheduleTime { get; set; }
         public string WeeklyDays { get; set; }
         public DateTime? NextRunDate { get; set; }

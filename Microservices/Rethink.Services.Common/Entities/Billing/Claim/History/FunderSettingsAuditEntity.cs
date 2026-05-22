@@ -12,6 +12,10 @@ public class FunderSettingsAuditEntity
 
     public string IncludeTaxonomyCode { get; set; }
 
+    public string Is837PEnrollmentRequired { get; set; }
+
+    public string Is837PEnrollmentCompleted { get; set; }
+
     public string ScheduleType { get; set; }
 
     public string ScheduleTime { get; set; }

@@ -15,6 +15,8 @@ public static class FunderSettingsMapper
             FunderName = model.FunderName,
             ClaimFilingIndicatorId = model.ClaimFilingIndicatorId,
             IncludeTaxonomyCode = model.IncludeTaxonomyCode,
+            Is837PEnrollmentRequired = model.Is837PEnrollmentRequired,
+            Is837PEnrollmentCompleted = model.Is837PEnrollmentCompleted,
             DateCreated = DateTime.UtcNow,
             ScheduleType = model.Data.ScheduleType,
             ScheduleTime = string.IsNullOrWhiteSpace(model.Data.ScheduleTime)

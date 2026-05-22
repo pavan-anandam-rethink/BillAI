@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Quartz.Util;
+using Rethink.Services.Common.Entities.Billing;
 using Rethink.Services.Common.Entities.Billing.Claim;
 using Rethink.Services.Common.Entities.Billing.Payment;
 using Rethink.Services.Common.Enums.BH;
@@ -25,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BillingService.Domain.Services.Billing
@@ -46,6 +48,8 @@ namespace BillingService.Domain.Services.Billing
         private readonly IRepository<BillingDbContext, ClaimSubmissionFunderSequenceEntity> _billingClaimSubmissionFunderSequenceRepository;
         private readonly IRepository<BillingDbContext, PaymentClaimEntity> _billingPaymentClaimRepository;
         private readonly IRepository<BillingDbContext, ClaimErrorMessageEntity> _billingClaimErrorMessageRepository;
+        private readonly IRepository<BillingDbContext, Eligibility271ResponseEntity> _eligibilityResponseRepository;
+        private readonly IRepository<BillingDbContext, FunderSettingsEntity> _funderSettingsRepository;
         private readonly IStediProviderEnrollmentService _stediProviderEnrollmentService;
         private readonly IClearinghouseCredentialValidationService _clearinghouseCredentialValidationService;
         private readonly IFeatureFlagService _featureFlagService;
@@ -64,6 +68,8 @@ namespace BillingService.Domain.Services.Billing
             IRepository<BillingDbContext, ClaimSubmissionFunderSequenceEntity> billingClaimSubmissionFunderSequenceRepository,
             IRepository<BillingDbContext, PaymentClaimEntity> billingPaymentClaimRepository,
             IRepository<BillingDbContext, ClaimErrorMessageEntity> billingClaimErrorMessageRepository,
+            IRepository<BillingDbContext, Eligibility271ResponseEntity> eligibilityResponseRepository,
+            IRepository<BillingDbContext, FunderSettingsEntity> funderSettingsRepository,
             IClaimHistoryService claimHistoryService,
             IRethinkMasterDataMicroServices rethinkServices,
             IStediProviderEnrollmentService stediProviderEnrollmentService,
@@ -79,6 +85,8 @@ namespace BillingService.Domain.Services.Billing
             _billingClaimSubmissionFunderSequenceRepository = billingClaimSubmissionFunderSequenceRepository;
             _billingPaymentClaimRepository = billingPaymentClaimRepository;
             _billingClaimErrorMessageRepository = billingClaimErrorMessageRepository;
+            _eligibilityResponseRepository = eligibilityResponseRepository;
+            _funderSettingsRepository = funderSettingsRepository;
             _claimHistoryService = claimHistoryService;
             _rethinkServices = rethinkServices;
             _stediProviderEnrollmentService = stediProviderEnrollmentService;  
@@ -1222,6 +1230,40 @@ namespace BillingService.Domain.Services.Billing
                 { str = str.Replace("-", ""); }
                 return Check((!string.IsNullOrWhiteSpace(str) && (str.Length >= minLen)), errorNum, msg);
             }
+            bool CheckBillingProviderZip(string zip, ClaimErrorNumber errorNum, string msg = null)
+            {
+                if (string.IsNullOrWhiteSpace(zip))
+                {
+                    return Check(false, errorNum, msg);
+                }
+
+                var normalizedZip = zip.Replace("-", string.Empty);
+                var isValid = normalizedZip.Length == 9 && normalizedZip.All(char.IsDigit);
+                return Check(isValid, errorNum, msg);
+            }
+            bool TryGetSubscriptionFeatureBool(Dictionary<string, object> features, string key, out bool value)
+            {
+                value = false;
+                if (features == null || !features.TryGetValue(key, out var raw) || raw == null)
+                {
+                    return false;
+                }
+
+                switch (raw)
+                {
+                    case bool boolValue:
+                        value = boolValue;
+                        return true;
+                    case JsonElement jsonElement when jsonElement.ValueKind is JsonValueKind.True or JsonValueKind.False:
+                        value = jsonElement.GetBoolean();
+                        return true;
+                    case string stringValue when bool.TryParse(stringValue, out var parsed):
+                        value = parsed;
+                        return true;
+                    default:
+                        return false;
+                }
+            }
             bool CheckDecimal(decimal? num, ClaimErrorNumber errorNum, string msg = null)
             {
                 return Check((num != null && num > 0.009m), errorNum, msg);
@@ -1292,6 +1334,12 @@ namespace BillingService.Domain.Services.Billing
                                               memberId);
 
             var submission = validationResult.ClaimSubmission;
+            const string billingProviderZipMessage =
+                "Zip code missing or invalid. Please verify that the zip code is present, contains only numeric values and includes the 4 digit zip extension.";
+            const string eligibilityNotVerifiedMessage =
+                "Eligibility has not been verify in over 31 days since this claim has been created. Running a new eligibility check prior to submission may help avoid claim delays.";
+            const string claimEnrollmentRequiredMessage =
+                "Claim enrollment must be completed prior to claim submission for this payer.";
 
             // Address validations
             CheckString(data.ChildProfile.Address, ClaimErrorNumber.ChildProfileAddressMissingOrInvalid);
@@ -1346,13 +1394,48 @@ namespace BillingService.Domain.Services.Billing
 
             #endregion
 
+            var currentFunderId = data.FunderMappingCurrent?.funderId;
+            if (currentFunderId.HasValue)
+            {
+                var subscriptionFeatures = data.AccountInfo?.subscriptionFeatures;
+                if (TryGetSubscriptionFeatureBool(subscriptionFeatures, "showEligibility", out var showEligibility) && showEligibility)
+                {
+                    var claimCreatedDate = data.Claim.DateCreated.Date;
+                    var eligibilityLookbackDate = claimCreatedDate.AddDays(-31);
+                    var recentEligibilityCheck = await _eligibilityResponseRepository.Query()
+                        .Where(x => x.AccountId == data.Claim.AccountInfoId &&
+                                    x.FunderId == currentFunderId &&
+                                    x.CreatedDate.HasValue &&
+                                    x.CreatedDate.Value.Date >= eligibilityLookbackDate &&
+                                    x.CreatedDate.Value.Date <= claimCreatedDate)
+                        .OrderByDescending(x => x.CreatedDate)
+                        .FirstOrDefaultAsync();
+
+                    Check(recentEligibilityCheck != null, ClaimErrorNumber.EligibilityNotVerifiedOver31Days, eligibilityNotVerifiedMessage);
+                }
+
+                if (documentType == ClaimDocumentType.Doc837P)
+                {
+                    var funderSettings = await _funderSettingsRepository.Query()
+                        .Where(x => x.AccountInfoId == data.Claim.AccountInfoId &&
+                                    x.FunderId == currentFunderId &&
+                                    x.DateDeleted == null)
+                        .FirstOrDefaultAsync();
+
+                    if (funderSettings?.Is837PEnrollmentRequired == true && funderSettings.Is837PEnrollmentCompleted != true)
+                    {
+                        Check(false, ClaimErrorNumber.ClaimEnrollmentRequired, claimEnrollmentRequiredMessage);
+                    }
+                }
+            }
+
             if (data.ProviderLocationAddress != null) // it is *valid* to have a null provider location in certain
                                                       // situations. If we have it, we will validate it.
             {
                 CheckString(data.ProviderLocationAddress.street1, ClaimErrorNumber.BillingProviderAddressMissingOrInvalid);
                 CheckString(data.ProviderLocationAddress.city, ClaimErrorNumber.BillingProviderCityMissingOrInvalid);
                 CheckNotNull(data.ProviderLocationAddress.stateId, ClaimErrorNumber.BillingProviderStateMissingOrInvalid);
-                CheckStringMinLen(data.ProviderLocationAddress.zipCode, 5, ClaimErrorNumber.BillingProviderZipMissingOrInvalid);
+                CheckBillingProviderZip(data.ProviderLocationAddress.zipCode, ClaimErrorNumber.BillingProviderZipMissingOrInvalid, billingProviderZipMessage);
             }
 
 

@@ -9,6 +9,8 @@ namespace BillingService.Domain.Models.BillingSettings
         public string FunderName { get; set; } = string.Empty;
         public int? ClaimFilingIndicatorId { get; set; }
         public bool IncludeTaxonomyCode { get; set; } = false;
+        public bool? Is837PEnrollmentRequired { get; set; }
+        public bool? Is837PEnrollmentCompleted { get; set; }
         public List<FeatureStatusDto> BillingFeatures { get; set; } = [];
     }
 }

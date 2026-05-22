@@ -160,6 +160,8 @@ namespace BillingService.Domain.Utils
                 .ForMember(dest => dest.FunderId, opt => opt.MapFrom(src => src.FunderId))
                 .ForMember(dest => dest.ClaimFilingIndicatorId, opt => opt.MapFrom(src => src.ClaimFilingIndicatorId))
                 .ForMember(dest => dest.IncludeTaxonomyCode, opt => opt.MapFrom(src => src.IncludeTaxonomyCode))
+                .ForMember(dest => dest.Is837PEnrollmentRequired, opt => opt.MapFrom(src => src.Is837PEnrollmentRequired))
+                .ForMember(dest => dest.Is837PEnrollmentCompleted, opt => opt.MapFrom(src => src.Is837PEnrollmentCompleted))
                 .ForMember(dest => dest.DateCreated, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.DateLastModified, opt => opt.MapFrom(src => DateTime.UtcNow));
 

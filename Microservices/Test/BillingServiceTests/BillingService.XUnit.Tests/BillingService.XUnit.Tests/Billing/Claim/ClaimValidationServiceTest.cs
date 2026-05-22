@@ -10,6 +10,7 @@ using Microsoft.Identity.Client;
 using MockQueryable;
 using MockQueryable.Moq;
 using Moq;
+using Rethink.Services.Common.Entities.Billing;
 using Rethink.Services.Common.Entities.Billing.Claim;
 using Rethink.Services.Common.Entities.Billing.Claim.History;
 using Rethink.Services.Common.Entities.Billing.Payment;
@@ -66,6 +67,8 @@ public class ClaimValidationServiceTests
         IRepository<BillingDbContext, ClaimAppointmentLinkEntity> apptRepo,
         IRepository<BillingDbContext, PaymentClaimEntity> paymentRepo,
         IRepository<BillingDbContext, ClaimErrorMessageEntity> errMsgRepo,
+        IRepository<BillingDbContext, Eligibility271ResponseEntity> eligibilityRepo,
+        IRepository<BillingDbContext, FunderSettingsEntity> funderSettingsRepo,
         IClaimHistoryService history,
         IRethinkMasterDataMicroServices rethink,
         IClientService client,
@@ -85,6 +88,8 @@ public class ClaimValidationServiceTests
             funderSeqRepo,
             paymentRepo,
             errMsgRepo,
+            eligibilityRepo,
+            funderSettingsRepo,
             history,
             rethink,
             stediProviderEnrollmentService,
@@ -104,6 +109,8 @@ public class ClaimValidationServiceTests
         var claimAppointmentLinkRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentClaimRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var claimErrorMessageRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var eligibilityRepo = new Mock<IRepository<BillingDbContext, Eligibility271ResponseEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var claimHistoryService = new Mock<IClaimHistoryService>();
         var rethinkServices = new Mock<IRethinkMasterDataMicroServices>();
         var clientService = new Mock<IClientService>();
@@ -122,6 +129,8 @@ public class ClaimValidationServiceTests
             claimSubmissionFunderSequenceRepo.Object,
             paymentClaimRepo.Object,
             claimErrorMessageRepo.Object,
+            eligibilityRepo.Object,
+            funderSettingsRepo.Object,
             claimHistoryService.Object,
             rethinkServices.Object,
             stediProviderEnrollmentService.Object,
@@ -142,6 +151,8 @@ public class ClaimValidationServiceTests
         var apptRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var errMsgRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var eligibilityRepo = new Mock<IRepository<BillingDbContext, Eligibility271ResponseEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var dxRepo = new Mock<IRepository<BillingDbContext, ClaimDiagnosisCodeEntity>>();
         var stediProviderEnrollmentService = new Mock<IStediProviderEnrollmentService>();
         var clearinghouseCredentialValidationService = new Mock<IClearinghouseCredentialValidationService>(); // <-- Add this mock
@@ -322,6 +333,8 @@ public class ClaimValidationServiceTests
             apptRepo.Object,
             paymentRepo.Object,
             errMsgRepo.Object,
+            eligibilityRepo.Object,
+            funderSettingsRepo.Object,
             history.Object,
             rethink.Object,
             client.Object,
@@ -457,6 +470,8 @@ public class ClaimValidationServiceTests
         var apptRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var errMsgRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var eligibilityRepo = new Mock<IRepository<BillingDbContext, Eligibility271ResponseEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var history = new Mock<IClaimHistoryService>();
         var rethink = new Mock<IRethinkMasterDataMicroServices>();
         var client = new Mock<IClientService>();
@@ -494,6 +509,8 @@ public class ClaimValidationServiceTests
             funderSeqRepo.Object,
             paymentRepo.Object,
             errMsgRepo.Object,
+            eligibilityRepo.Object,
+            funderSettingsRepo.Object,
             history.Object,
             rethink.Object,
             stediProviderEnrollmentService.Object,
@@ -551,6 +568,8 @@ public class ClaimValidationServiceTests
         var apptRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var errMsgRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var eligibilityRepo = new Mock<IRepository<BillingDbContext, Eligibility271ResponseEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var dxRepo = new Mock<IRepository<BillingDbContext, ClaimDiagnosisCodeEntity>>();
         var stediProviderEnrollmentService = new Mock<IStediProviderEnrollmentService>();
         var clearinghouseCredentialValidationService = new Mock<IClearinghouseCredentialValidationService>(); // <-- Add this mock
@@ -626,6 +645,8 @@ public class ClaimValidationServiceTests
             apptRepo.Object,
             paymentRepo.Object,
             errMsgRepo.Object,
+            eligibilityRepo.Object,
+            funderSettingsRepo.Object,
             history.Object,
             rethink.Object,
             client.Object,
@@ -659,6 +680,8 @@ public class ClaimValidationServiceTests
         var apptRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var errMsgRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var eligibilityRepo = new Mock<IRepository<BillingDbContext, Eligibility271ResponseEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var dxRepo = new Mock<IRepository<BillingDbContext, ClaimDiagnosisCodeEntity>>();
         var stediProviderEnrollmentService = new Mock<IStediProviderEnrollmentService>();
         var clearinghouseCredentialValidationService = new Mock<IClearinghouseCredentialValidationService>(); // <-- Add this moc
@@ -684,6 +707,8 @@ public class ClaimValidationServiceTests
             apptRepo.Object,
             paymentRepo.Object,
             errMsgRepo.Object,
+            eligibilityRepo.Object,
+            funderSettingsRepo.Object,
             history.Object,
             rethink.Object,
             client.Object,
@@ -710,6 +735,8 @@ public class ClaimValidationServiceTests
         var apptRepo = new Mock<IRepository<BillingDbContext, ClaimAppointmentLinkEntity>>();
         var paymentRepo = new Mock<IRepository<BillingDbContext, PaymentClaimEntity>>();
         var errMsgRepo = new Mock<IRepository<BillingDbContext, ClaimErrorMessageEntity>>();
+        var eligibilityRepo = new Mock<IRepository<BillingDbContext, Eligibility271ResponseEntity>>();
+        var funderSettingsRepo = new Mock<IRepository<BillingDbContext, FunderSettingsEntity>>();
         var dxRepo = new Mock<IRepository<BillingDbContext, ClaimDiagnosisCodeEntity>>();
         var stediProviderEnrollmentService = new Mock<IStediProviderEnrollmentService>();
         var clearinghouseCredentialValidationService = new Mock<IClearinghouseCredentialValidationService>(); // <-- Add this mock
@@ -737,6 +764,8 @@ public class ClaimValidationServiceTests
             apptRepo.Object,
             paymentRepo.Object,
             errMsgRepo.Object,
+            eligibilityRepo.Object,
+            funderSettingsRepo.Object,
             history.Object,
             rethink.Object,
             client.Object,
@@ -946,15 +975,6 @@ public class ClaimValidationServiceTests
 
 
 }
-
-
-
-
-
-
-
-
-
 
 
 

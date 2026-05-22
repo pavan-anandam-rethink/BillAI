@@ -212,6 +212,25 @@ namespace BillingService.Domain.Services.BillingSetting
                     })
                     .ToList();
 
+                var funderIds = result.Select(x => x.FunderId).ToList();
+                if (funderIds.Count > 0)
+                {
+                    var funderSettingsLookup = await _funderSettingRepo.Query()
+                        .Where(x => x.AccountInfoId == model.AccountInfoId &&
+                                    funderIds.Contains(x.FunderId) &&
+                                    x.DateDeleted == null)
+                        .ToDictionaryAsync(x => x.FunderId);
+
+                    foreach (var funderSetting in result)
+                    {
+                        if (funderSettingsLookup.TryGetValue(funderSetting.FunderId, out var settings))
+                        {
+                            funderSetting.Is837PEnrollmentRequired = settings.Is837PEnrollmentRequired;
+                            funderSetting.Is837PEnrollmentCompleted = settings.Is837PEnrollmentCompleted;
+                        }
+                    }
+                }
+
                 var timeZonesDictionary = _timezonesEntity.Query().Where(x => x.DateDeleted == null)
                                           .ToDictionary(x => x.Id, x => x.Name);
 
@@ -274,7 +293,9 @@ namespace BillingService.Domain.Services.BillingSetting
                     MonthlyFrequency = monthlyFrequency,
                     CombineChargesForSameClient = entity.CombineChargesForSameClient,
                     ClaimFilingIndicatorId = entity.ClaimFilingIndicatorId,
-                    IncludeTaxonomyCode = entity.IncludeTaxonomyCode
+                    IncludeTaxonomyCode = entity.IncludeTaxonomyCode,
+                    Is837PEnrollmentRequired = entity.Is837PEnrollmentRequired,
+                    Is837PEnrollmentCompleted = entity.Is837PEnrollmentCompleted
                 };
             }
             catch (Exception ex)
@@ -390,6 +411,8 @@ namespace BillingService.Domain.Services.BillingSetting
             {
                 existingEntity.ClaimFilingIndicatorId = entity.ClaimFilingIndicatorId;
                 existingEntity.IncludeTaxonomyCode = entity.IncludeTaxonomyCode;
+                existingEntity.Is837PEnrollmentRequired = entity.Is837PEnrollmentRequired;
+                existingEntity.Is837PEnrollmentCompleted = entity.Is837PEnrollmentCompleted;
                 existingEntity.DateLastModified = DateTime.UtcNow;
 
                 await _funderSettingRepo.UpdateAsync(existingEntity);
