@@ -146,6 +146,7 @@ namespace BillingService.Web
             //app.UseDeveloperExceptionPage();
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            app.UseMiddleware<CorrelationIdMiddleware>();
             app.UseMiddleware<RequestLatencyLoggingMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
