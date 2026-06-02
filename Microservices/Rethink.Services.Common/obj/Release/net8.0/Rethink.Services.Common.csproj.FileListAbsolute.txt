@@ -1,0 +1,13 @@
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/bin/Release/net8.0/Rethink.Services.Common.deps.json
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/bin/Release/net8.0/Rethink.Services.Common.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/bin/Release/net8.0/Rethink.Services.Common.pdb
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.csproj.AssemblyReference.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.GeneratedMSBuildEditorConfig.editorconfig
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.AssemblyInfoInputs.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.AssemblyInfo.cs
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.csproj.CoreCompileInputs.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.sourcelink.json
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/refint/Rethink.Services.Common.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/Rethink.Services.Common.pdb
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/Release/net8.0/ref/Rethink.Services.Common.dll

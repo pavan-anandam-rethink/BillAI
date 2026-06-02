@@ -1,3 +1,4 @@
+using BillingService.Application.Abstractions.Blob;
 using BillingService.Application.Abstractions.Caching;
 using BillingService.Application.Common.Behaviors;
 using BillingService.Application.Common.Configuration;
@@ -15,6 +16,9 @@ public static class DependencyInjection
     {
         services.Configure<ModernizationFeatureFlags>(
             configuration.GetSection(ModernizationFeatureFlags.SectionName));
+
+        services.Configure<BlobStorageOptions>(
+            configuration.GetSection(BlobStorageOptions.SectionName));
 
         services.AddSingleton<ICacheKeyBuilder, CacheKeyBuilder>();
         services.AddMediatR(options => options.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));

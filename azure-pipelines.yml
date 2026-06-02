@@ -1,0 +1,274 @@
+# BillingService Azure DevOps Multi-Stage CI/CD Pipeline
+#
+# Stages:
+#   1. Build and Test         - Restore, build, unit tests, architecture tests
+#   2. Docker Build and Push  - Containerise and push versioned image to ACR
+#   3. Deploy to QA           - Rolling deploy to billing/qa namespace (no gate)
+#   4. Deploy to Staging      - Rolling deploy to billing/staging (manual approval required)
+#   5. Deploy to Production   - Rolling deploy to billing/production (manual approval required)
+#
+# Feature flags and environment-specific config are injected via AKS ConfigMaps.
+# Secrets are resolved from Azure Key Vault at pod start-up via Workload Identity.
+# All deployments are zero-downtime rolling updates with HPA configured per environment.
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Microservices/BillingService/**
+      - k8s/billingservice/**
+      - helm/billingservice/**
+      - scripts/sql/billingservice/**
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Microservices/BillingService/**
+      - Microservices/Test/BillingServiceTests/**
+
+variables:
+  # Container registry
+  acrName: 'myacr'
+  acrLoginServer: 'myacr.azurecr.io'
+  imageRepository: 'rtabilling/billingserviceweb'
+  dockerfilePath: 'Microservices/BillingService/BillingService.Web/Dockerfile'
+
+  # Helm / AKS
+  helmChartPath: 'helm/billingservice'
+  helmReleaseName: 'billingservice'
+  aksResourceGroup: 'rg-billing-aks'
+  aksClusterName: 'aks-billing'
+
+  # Build
+  buildConfiguration: 'Release'
+  dotnetVersion: '8.0.x'
+
+  # Correlation and tracing
+  imageTag: '$(Build.BuildId)'
+
+stages:
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 1: Build and Test
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: BuildAndTest
+  displayName: 'Build and Test'
+  jobs:
+  - job: Build
+    displayName: 'Restore, Build, Test'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET $(dotnetVersion)'
+      inputs:
+        packageType: sdk
+        version: $(dotnetVersion)
+
+    - task: NuGetAuthenticate@1
+      displayName: 'Authenticate private NuGet feeds'
+
+    - script: >
+        dotnet restore
+        Microservices/BillingService/BillingService.Web/BillingService.Web.csproj
+        --configfile Microservices/nuget.config
+      displayName: 'Restore NuGet packages'
+
+    - script: >
+        dotnet build
+        Microservices/BillingService/BillingService.Infrastructure/BillingService.Infrastructure.csproj
+        --configuration $(buildConfiguration)
+        --no-restore
+      displayName: 'Build Infrastructure'
+
+    - script: >
+        dotnet build
+        Microservices/BillingService/BillingService.Persistence/BillingService.Persistence.csproj
+        --configuration $(buildConfiguration)
+        --no-restore
+      displayName: 'Build Persistence'
+
+    - script: >
+        dotnet build
+        Microservices/BillingService/BillingService.Workers/BillingService.Workers.csproj
+        --configuration $(buildConfiguration)
+        --no-restore
+      displayName: 'Build Workers'
+
+    - script: >
+        dotnet test
+        Microservices/Test/BillingServiceTests/BillingService.Architecture.XUnit.Tests/BillingService.Architecture.XUnit.Tests.csproj
+        --configuration $(buildConfiguration)
+        --no-restore
+        --logger trx
+        --results-directory $(Agent.TempDirectory)/testresults
+        /p:CollectCoverage=true
+        /p:CoverletOutputFormat=cobertura
+        /p:CoverletOutput=$(Agent.TempDirectory)/coverage/
+      displayName: 'Architecture and Unit Tests'
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      condition: always()
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '$(Agent.TempDirectory)/testresults/**/*.trx'
+        failTaskOnFailedTests: true
+
+    - task: PublishCodeCoverageResults@2
+      displayName: 'Publish Code Coverage'
+      condition: always()
+      inputs:
+        summaryFileLocation: '$(Agent.TempDirectory)/coverage/*.cobertura.xml'
+
+    - task: HelmInstaller@1
+      displayName: 'Install Helm'
+      inputs:
+        helmVersionToInstall: 'latest'
+
+    - script: helm lint $(helmChartPath)
+      displayName: 'Helm Lint'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 2: Docker Build and Push (main branch only)
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: DockerBuildPush
+  displayName: 'Docker Build and Push'
+  dependsOn: BuildAndTest
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - job: DockerBuild
+    displayName: 'Build and Push Container Image'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: NuGetAuthenticate@1
+      displayName: 'Authenticate private NuGet feeds'
+
+    - task: Docker@2
+      displayName: 'Login to ACR'
+      inputs:
+        command: login
+        containerRegistry: 'acr-billing-service-connection'
+
+    - task: Docker@2
+      displayName: 'Build and Push Image'
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: 'acr-billing-service-connection'
+        buildContext: '.'
+        tags: |
+          $(imageTag)
+          latest
+        arguments: >
+          --build-arg ACCESS_TOKEN=$(System.AccessToken)
+          --build-arg ENVIRONMENT=production
+
+    - task: Docker@2
+      displayName: 'Logout from ACR'
+      inputs:
+        command: logout
+        containerRegistry: 'acr-billing-service-connection'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 3: Deploy to QA
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: DeployQA
+  displayName: 'Deploy to QA'
+  dependsOn: DockerBuildPush
+  condition: succeeded()
+  variables:
+    aksNamespace: 'billing-qa'
+    helmValuesFile: 'helm/billingservice/values-initial.yaml'
+  jobs:
+  - deployment: DeployBillingServiceQA
+    displayName: 'Rolling Deploy - QA'
+    environment: 'billing-qa'
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: .azure/templates/helm-deploy.yml
+            parameters:
+              aksResourceGroup: $(aksResourceGroup)
+              aksClusterName: $(aksClusterName)
+              aksNamespace: $(aksNamespace)
+              helmReleaseName: $(helmReleaseName)
+              helmChartPath: $(helmChartPath)
+              helmValuesFile: $(helmValuesFile)
+              imageTag: $(imageTag)
+              acrLoginServer: $(acrLoginServer)
+              imageRepository: $(imageRepository)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 4: Deploy to Staging (manual approval gate)
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: DeployStaging
+  displayName: 'Deploy to Staging'
+  dependsOn: DeployQA
+  condition: succeeded()
+  variables:
+    aksNamespace: 'billing-staging'
+    helmValuesFile: 'helm/billingservice/values-mid.yaml'
+  jobs:
+  - deployment: DeployBillingServiceStaging
+    displayName: 'Rolling Deploy - Staging'
+    environment: 'billing-staging'
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: .azure/templates/helm-deploy.yml
+            parameters:
+              aksResourceGroup: $(aksResourceGroup)
+              aksClusterName: $(aksClusterName)
+              aksNamespace: $(aksNamespace)
+              helmReleaseName: $(helmReleaseName)
+              helmChartPath: $(helmChartPath)
+              helmValuesFile: $(helmValuesFile)
+              imageTag: $(imageTag)
+              acrLoginServer: $(acrLoginServer)
+              imageRepository: $(imageRepository)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 5: Deploy to Production (manual approval gate)
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: DeployProduction
+  displayName: 'Deploy to Production'
+  dependsOn: DeployStaging
+  condition: succeeded()
+  variables:
+    aksNamespace: 'billing'
+    helmValuesFile: 'helm/billingservice/values.yaml'
+  jobs:
+  - deployment: DeployBillingServiceProduction
+    displayName: 'Rolling Deploy - Production'
+    environment: 'billing-production'
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: .azure/templates/helm-deploy.yml
+            parameters:
+              aksResourceGroup: $(aksResourceGroup)
+              aksClusterName: $(aksClusterName)
+              aksNamespace: $(aksNamespace)
+              helmReleaseName: $(helmReleaseName)
+              helmChartPath: $(helmChartPath)
+              helmValuesFile: $(helmValuesFile)
+              imageTag: $(imageTag)
+              acrLoginServer: $(acrLoginServer)
+              imageRepository: $(imageRepository)

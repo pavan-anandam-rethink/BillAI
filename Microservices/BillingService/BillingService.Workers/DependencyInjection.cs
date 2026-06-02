@@ -11,6 +11,8 @@ public static class DependencyInjection
     {
         if (enableOutboxPublisher)
         {
+            // The OutboxPublisherWorker resolves IOutboxPoller per-batch via IServiceScopeFactory.
+            // Ensure IOutboxPoller (and its dependencies) is registered before calling this method.
             services.AddHostedService<OutboxPublisherWorker>();
         }
 
