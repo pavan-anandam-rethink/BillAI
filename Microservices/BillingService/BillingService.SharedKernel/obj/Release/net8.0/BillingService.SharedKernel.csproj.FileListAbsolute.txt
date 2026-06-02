@@ -1,0 +1,12 @@
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/bin/Release/net8.0/BillingService.SharedKernel.deps.json
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/bin/Release/net8.0/BillingService.SharedKernel.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/bin/Release/net8.0/BillingService.SharedKernel.pdb
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/BillingService.SharedKernel.GeneratedMSBuildEditorConfig.editorconfig
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/BillingService.SharedKernel.AssemblyInfoInputs.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/BillingService.SharedKernel.AssemblyInfo.cs
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/BillingService.SharedKernel.csproj.CoreCompileInputs.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/BillingService.SharedKernel.sourcelink.json
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/BillingService.SharedKernel.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/refint/BillingService.SharedKernel.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/BillingService.SharedKernel.pdb
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/Release/net8.0/ref/BillingService.SharedKernel.dll

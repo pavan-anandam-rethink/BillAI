@@ -1,0 +1,304 @@
+################################################################################
+# BillingService – Azure DevOps CI/CD Pipeline
+#
+# Stages:
+#   1. Build & Test     – restore, build, architecture tests, Helm lint
+#   2. Docker Build     – build and push versioned container image
+#   3. Deploy QA        – Helm upgrade (auto-trigger on main)
+#   4. Deploy Staging   – Helm upgrade (requires manual approval)
+#   5. Deploy Prod      – Helm upgrade (requires manual approval)
+#
+# Environment feature flags and Key Vault references are injected at deploy time
+# through environment-scoped variable groups. No secrets are stored in this file.
+################################################################################
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Microservices/BillingService/**
+      - k8s/billingservice/**
+      - helm/billingservice/**
+      - scripts/sql/billingservice/**
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Microservices/BillingService/**
+      - k8s/billingservice/**
+      - helm/billingservice/**
+
+variables:
+  - group: billingservice-common          # non-secret shared variables
+  - name:  imageRepository
+    value: rtabilling/billingserviceweb
+  - name:  dockerfilePath
+    value: Microservices/BillingService/BillingService.Web/Dockerfile
+  - name:  helmChartPath
+    value: helm/billingservice
+  - name:  buildConfiguration
+    value: Release
+  - name:  dotnetVersion
+    value: '8.0.x'
+
+stages:
+  ###############################################################################
+  # Stage 1 – Build and Test
+  ###############################################################################
+  - stage: BuildAndTest
+    displayName: Build & Test
+    jobs:
+      - job: Build
+        displayName: Build, test, and lint
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: UseDotNet@2
+            displayName: Install .NET $(dotnetVersion)
+            inputs:
+              version: $(dotnetVersion)
+              packageType: sdk
+
+          - task: DotNetCoreCLI@2
+            displayName: Restore architecture tests
+            inputs:
+              command: restore
+              projects: >
+                Microservices/Test/BillingServiceTests/BillingService.Architecture.XUnit.Tests/BillingService.Architecture.XUnit.Tests.csproj
+
+          - task: DotNetCoreCLI@2
+            displayName: Build – Infrastructure
+            inputs:
+              command: build
+              projects: >
+                Microservices/BillingService/BillingService.Infrastructure/BillingService.Infrastructure.csproj
+              arguments: --configuration $(buildConfiguration) --no-restore
+
+          - task: DotNetCoreCLI@2
+            displayName: Build – Workers
+            inputs:
+              command: build
+              projects: >
+                Microservices/BillingService/BillingService.Workers/BillingService.Workers.csproj
+              arguments: --configuration $(buildConfiguration) --no-restore
+
+          - task: DotNetCoreCLI@2
+            displayName: Build – Persistence
+            inputs:
+              command: build
+              projects: >
+                Microservices/BillingService/BillingService.Persistence/BillingService.Persistence.csproj
+              arguments: --configuration $(buildConfiguration) --no-restore
+
+          - task: DotNetCoreCLI@2
+            displayName: Run architecture tests
+            inputs:
+              command: test
+              projects: >
+                Microservices/Test/BillingServiceTests/BillingService.Architecture.XUnit.Tests/BillingService.Architecture.XUnit.Tests.csproj
+              arguments: --configuration $(buildConfiguration) --no-restore --logger trx
+              publishTestResults: true
+
+          - task: HelmInstaller@1
+            displayName: Install Helm
+            inputs:
+              helmVersionToInstall: latest
+
+          - bash: helm lint $(helmChartPath)
+            displayName: Helm lint
+
+  ###############################################################################
+  # Stage 2 – Docker Build and Push
+  ###############################################################################
+  - stage: DockerBuild
+    displayName: Docker Build & Push
+    dependsOn: BuildAndTest
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    variables:
+      - group: billingservice-acr          # ACR_NAME, ACR_LOGIN_SERVER (non-secret)
+    jobs:
+      - job: DockerBuildPush
+        displayName: Build and push container image
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: Docker@2
+            displayName: Build and push image
+            inputs:
+              command: buildAndPush
+              containerRegistry: $(acrServiceConnection)
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              buildContext: .
+              tags: |
+                $(Build.BuildId)
+                latest
+
+  ###############################################################################
+  # Stage 3 – Deploy to QA
+  ###############################################################################
+  - stage: DeployQA
+    displayName: Deploy QA
+    dependsOn: DockerBuild
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    variables:
+      - group: billingservice-qa           # QA-specific env vars, Key Vault URI
+    jobs:
+      - deployment: DeployQA
+        displayName: Helm upgrade – QA
+        pool:
+          vmImage: ubuntu-latest
+        environment: billingservice-qa
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: HelmInstaller@1
+                  displayName: Install Helm
+                  inputs:
+                    helmVersionToInstall: latest
+
+                - task: AzureCLI@2
+                  displayName: Apply SQL migrations – QA
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      sqlcmd -S $(sqlServerFqdn) -d $(sqlDatabaseName) \
+                             -G -U $(sqlManagedIdentity) \
+                             -i scripts/sql/billingservice/001-performance-indexes.sql
+                      sqlcmd -S $(sqlServerFqdn) -d $(sqlDatabaseName) \
+                             -G -U $(sqlManagedIdentity) \
+                             -i scripts/sql/billingservice/002-outbox-table.sql
+
+                - task: HelmDeploy@0
+                  displayName: Helm upgrade – QA
+                  inputs:
+                    connectionType: Kubernetes Service Connection
+                    kubernetesServiceConnection: $(aksServiceConnectionQA)
+                    namespace: billing
+                    command: upgrade
+                    chartType: FilePath
+                    chartPath: $(helmChartPath)
+                    releaseName: billingservice
+                    valueFile: $(helmChartPath)/values-initial.yaml
+                    overrideValues: >
+                      image.tag=$(Build.BuildId),
+                      keyVaultUri=$(keyVaultUri),
+                      modernization.enableCleanArchitectureAdapters=true
+
+  ###############################################################################
+  # Stage 4 – Deploy to Staging (manual approval gate)
+  ###############################################################################
+  - stage: DeployStaging
+    displayName: Deploy Staging
+    dependsOn: DeployQA
+    variables:
+      - group: billingservice-staging
+    jobs:
+      - deployment: DeployStaging
+        displayName: Helm upgrade – Staging
+        pool:
+          vmImage: ubuntu-latest
+        environment: billingservice-staging   # environment has approval check configured
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: HelmInstaller@1
+                  displayName: Install Helm
+                  inputs:
+                    helmVersionToInstall: latest
+
+                - task: AzureCLI@2
+                  displayName: Apply SQL migrations – Staging
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      sqlcmd -S $(sqlServerFqdn) -d $(sqlDatabaseName) \
+                             -G -U $(sqlManagedIdentity) \
+                             -i scripts/sql/billingservice/001-performance-indexes.sql
+                      sqlcmd -S $(sqlServerFqdn) -d $(sqlDatabaseName) \
+                             -G -U $(sqlManagedIdentity) \
+                             -i scripts/sql/billingservice/002-outbox-table.sql
+
+                - task: HelmDeploy@0
+                  displayName: Helm upgrade – Staging
+                  inputs:
+                    connectionType: Kubernetes Service Connection
+                    kubernetesServiceConnection: $(aksServiceConnectionStaging)
+                    namespace: billing
+                    command: upgrade
+                    chartType: FilePath
+                    chartPath: $(helmChartPath)
+                    releaseName: billingservice
+                    valueFile: $(helmChartPath)/values-mid.yaml
+                    overrideValues: >
+                      image.tag=$(Build.BuildId),
+                      keyVaultUri=$(keyVaultUri),
+                      modernization.enableCleanArchitectureAdapters=true,
+                      modernization.enableDistributedCacheDecorators=true
+
+  ###############################################################################
+  # Stage 5 – Deploy to Production (manual approval gate)
+  ###############################################################################
+  - stage: DeployProd
+    displayName: Deploy Production
+    dependsOn: DeployStaging
+    variables:
+      - group: billingservice-prod
+    jobs:
+      - deployment: DeployProd
+        displayName: Helm upgrade – Production
+        pool:
+          vmImage: ubuntu-latest
+        environment: billingservice-prod      # environment has approval check configured
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: HelmInstaller@1
+                  displayName: Install Helm
+                  inputs:
+                    helmVersionToInstall: latest
+
+                - task: AzureCLI@2
+                  displayName: Apply SQL migrations – Production
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      sqlcmd -S $(sqlServerFqdn) -d $(sqlDatabaseName) \
+                             -G -U $(sqlManagedIdentity) \
+                             -i scripts/sql/billingservice/001-performance-indexes.sql
+                      sqlcmd -S $(sqlServerFqdn) -d $(sqlDatabaseName) \
+                             -G -U $(sqlManagedIdentity) \
+                             -i scripts/sql/billingservice/002-outbox-table.sql
+
+                - task: HelmDeploy@0
+                  displayName: Helm upgrade – Production (rolling)
+                  inputs:
+                    connectionType: Kubernetes Service Connection
+                    kubernetesServiceConnection: $(aksServiceConnectionProd)
+                    namespace: billing
+                    command: upgrade
+                    chartType: FilePath
+                    chartPath: $(helmChartPath)
+                    releaseName: billingservice
+                    valueFile: $(helmChartPath)/values-enterprise.yaml
+                    overrideValues: >
+                      image.tag=$(Build.BuildId),
+                      keyVaultUri=$(keyVaultUri),
+                      modernization.enableCleanArchitectureAdapters=true,
+                      modernization.enableDistributedCacheDecorators=true,
+                      modernization.enableOutboxPublisher=true,
+                      modernization.enableReadModelQueries=true

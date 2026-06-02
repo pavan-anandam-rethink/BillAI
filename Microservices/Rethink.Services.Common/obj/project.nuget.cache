@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "L90sq77DUAI=",
+  "dgSpecHash": "QYg1dob0WNU=",
   "success": true,
-  "projectFilePath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
+  "projectFilePath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
   "expectedPackageFiles": [
     "/home/runner/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/runner/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
@@ -206,9 +206,9 @@
       "code": "NU1903",
       "level": "Warning",
       "message": "Package 'AutoMapper' 12.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x",
-      "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
+      "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
       "warningLevel": 1,
-      "filePath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
+      "filePath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
       "libraryId": "AutoMapper",
       "targetGraphs": [
         "net8.0"
