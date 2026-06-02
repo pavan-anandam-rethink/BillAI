@@ -5,6 +5,7 @@ namespace BillingService.Persistence.Legacy;
 public interface IBillingSqlConnectionFactory
 {
     SqlConnection CreateOpenConnection();
+    SqlConnection CreateConnection();
 }
 
 public sealed class BillingSqlConnectionFactory(string connectionString) : IBillingSqlConnectionFactory
@@ -15,4 +16,6 @@ public sealed class BillingSqlConnectionFactory(string connectionString) : IBill
         connection.Open();
         return connection;
     }
+
+    public SqlConnection CreateConnection() => new SqlConnection(connectionString);
 }

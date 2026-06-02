@@ -1,5 +1,7 @@
 replicaCount: 3
 
+environment: production
+
 image:
   repository: myacr.azurecr.io/rtabilling/billingserviceweb
   tag: latest
@@ -23,6 +25,9 @@ autoscaling:
   maxReplicas: 20
   targetCPUUtilizationPercentage: 65
   targetMemoryUtilizationPercentage: 75
+
+podDisruptionBudget:
+  minAvailable: 2
 
 modernization:
   enableCleanArchitectureAdapters: true

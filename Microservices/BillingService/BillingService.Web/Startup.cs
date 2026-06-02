@@ -2,7 +2,10 @@ using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Application;
+using BillingService.Infrastructure;
 using BillingService.LegacyAdapters;
+using BillingService.Persistence;
+using BillingService.Workers;
 using BillingService.Web.IoC;
 using BillingService.Web.Middlewares;
 using BillingService.Web.Servers;
@@ -54,6 +57,26 @@ namespace BillingService.Web
             {
                 services.AddBillingApplication(Configuration);
                 services.AddBillingLegacyAdapters();
+
+                var enableDistributedCache = string.Equals(
+                    Configuration["BillingService:Modernization:EnableDistributedCacheDecorators"],
+                    "true",
+                    StringComparison.OrdinalIgnoreCase);
+                var enableEventBus = string.Equals(
+                    Configuration["BillingService:Modernization:EnableOutboxPublisher"],
+                    "true",
+                    StringComparison.OrdinalIgnoreCase);
+                services.AddBillingInfrastructure(
+                    Configuration,
+                    enableDistributedCache: enableDistributedCache,
+                    enableEventBus: enableEventBus,
+                    enableOpenTelemetry: true,
+                    enableBlobStorage: true);
+
+                var billingConnectionString = IoCContainer.GetDBConnectionString(Configuration, "Database", KeyVaultProviderService);
+                services.AddBillingPersistenceCompatibility(billingConnectionString);
+
+                services.AddBillingWorkers(enableOutboxPublisher: enableEventBus);
             }
             services.AddMemoryCache();
             services.AddControllers();
@@ -146,6 +169,7 @@ namespace BillingService.Web
             //app.UseDeveloperExceptionPage();
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            app.UseMiddleware<CorrelationIdMiddleware>();
             app.UseMiddleware<RequestLatencyLoggingMiddleware>();
             app.UseRouting();
             app.UseAuthentication();

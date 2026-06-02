@@ -1,7 +1,10 @@
 using Azure.Messaging.ServiceBus;
+using Azure.Storage.Blobs;
+using BillingService.Application.Abstractions.BlobStorage;
 using BillingService.Application.Abstractions.Caching;
 using BillingService.Application.Abstractions.Clock;
 using BillingService.Application.Abstractions.Messaging;
+using BillingService.Infrastructure.BlobStorage;
 using BillingService.Infrastructure.Caching;
 using BillingService.Infrastructure.Messaging;
 using BillingService.Infrastructure.Observability;
@@ -17,7 +20,8 @@ public static class DependencyInjection
         IConfiguration configuration,
         bool enableDistributedCache = false,
         bool enableEventBus = false,
-        bool enableOpenTelemetry = true)
+        bool enableOpenTelemetry = true,
+        bool enableBlobStorage = false)
     {
         services.Configure<RedisCacheOptions>(configuration.GetSection(RedisCacheOptions.SectionName));
         services.Configure<ServiceBusOptions>(configuration.GetSection(ServiceBusOptions.SectionName));
@@ -61,6 +65,12 @@ public static class DependencyInjection
         if (enableOpenTelemetry)
         {
             services.AddBillingOpenTelemetry(configuration);
+        }
+
+        if (enableBlobStorage)
+        {
+            services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
+            services.AddScoped<IBlobStorageService, AzureBlobStorageService>();
         }
 
         return services;

@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "billingservice.fullname" . }}-pdb
+  labels:
+    app.kubernetes.io/name: billingservice
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable | default 2 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: billingservice
