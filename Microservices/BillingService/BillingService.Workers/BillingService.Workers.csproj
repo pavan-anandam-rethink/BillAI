@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.16" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.16" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BillingService.Application\BillingService.Application.csproj" />
+    <ProjectReference Include="..\BillingService.Persistence\BillingService.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,10 +2,12 @@ using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Application;
+using BillingService.Infrastructure;
 using BillingService.LegacyAdapters;
 using BillingService.Web.IoC;
 using BillingService.Web.Middlewares;
 using BillingService.Web.Servers;
+using BillingService.Workers;
 using HealthChecks.Azure.Storage.Blobs;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -46,14 +48,36 @@ namespace BillingService.Web
             IoCContainer.RegisterRedisCacheAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
 
             services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
+
             var enableCleanArchitectureAdapters = string.Equals(
                 Configuration["BillingService:Modernization:EnableCleanArchitectureAdapters"],
                 "true",
                 StringComparison.OrdinalIgnoreCase);
+
+            var enableDistributedCache = string.Equals(
+                Configuration["BillingService:Modernization:EnableDistributedCacheDecorators"],
+                "true",
+                StringComparison.OrdinalIgnoreCase);
+
+            var enableOutboxPublisher = string.Equals(
+                Configuration["BillingService:Modernization:EnableOutboxPublisher"],
+                "true",
+                StringComparison.OrdinalIgnoreCase);
+
+            var enableBlobStore = string.Equals(
+                Configuration["BillingService:Modernization:EnableBlobStore"],
+                "true",
+                StringComparison.OrdinalIgnoreCase);
+
             if (enableCleanArchitectureAdapters)
             {
                 services.AddBillingApplication(Configuration);
                 services.AddBillingLegacyAdapters();
+                services.AddBillingInfrastructure(
+                    Configuration,
+                    enableDistributedCache: enableDistributedCache,
+                    enableBlobStore: enableBlobStore);
+                services.AddBillingWorkers(enableOutboxPublisher: enableOutboxPublisher);
             }
             services.AddMemoryCache();
             services.AddControllers();
@@ -146,6 +170,7 @@ namespace BillingService.Web
             //app.UseDeveloperExceptionPage();
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            app.UseMiddleware<CorrelationIdMiddleware>();
             app.UseMiddleware<RequestLatencyLoggingMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
