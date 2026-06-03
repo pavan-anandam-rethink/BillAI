@@ -8,5 +8,8 @@ data:
   BillingService__Modernization__EnableCleanArchitectureAdapters: "true"
   BillingService__Modernization__EnableDistributedCacheDecorators: "false"
   BillingService__Modernization__EnableOutboxPublisher: "false"
+  BillingService__Modernization__EnableOutboxPersistence: "false"
   BillingService__Modernization__EnableReadModelQueries: "false"
+  BillingService__Modernization__EnableBlobFirstArchitecture: "false"
+  BillingService__Modernization__EnableOpenTelemetry: "true"
   BillingService__OpenTelemetry__ServiceName: "BillingService"

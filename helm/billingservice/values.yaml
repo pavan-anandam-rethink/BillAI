@@ -28,7 +28,10 @@ modernization:
   enableCleanArchitectureAdapters: true
   enableDistributedCacheDecorators: false
   enableOutboxPublisher: false
+  enableOutboxPersistence: false
   enableReadModelQueries: false
+  enableBlobFirstArchitecture: false
+  enableOpenTelemetry: true
 
 keyVaultUri: "https://replace-with-billing-keyvault.vault.azure.net/"
 workloadIdentityClientId: "<managed-identity-client-id>"

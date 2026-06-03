@@ -19,4 +19,7 @@ modernization:
   enableCleanArchitectureAdapters: true
   enableDistributedCacheDecorators: true
   enableOutboxPublisher: true
+  enableOutboxPersistence: true
   enableReadModelQueries: true
+  enableBlobFirstArchitecture: true
+  enableOpenTelemetry: true
