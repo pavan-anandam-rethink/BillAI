@@ -29,6 +29,7 @@ modernization:
   enableDistributedCacheDecorators: false
   enableOutboxPublisher: false
   enableReadModelQueries: false
+  enableBlobFirstStorage: false
 
 keyVaultUri: "https://replace-with-billing-keyvault.vault.azure.net/"
 workloadIdentityClientId: "<managed-identity-client-id>"

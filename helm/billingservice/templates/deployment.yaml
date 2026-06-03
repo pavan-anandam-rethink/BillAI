@@ -41,6 +41,8 @@ spec:
               value: {{ .Values.modernization.enableOutboxPublisher | quote }}
             - name: BillingService__Modernization__EnableReadModelQueries
               value: {{ .Values.modernization.enableReadModelQueries | quote }}
+            - name: BillingService__Modernization__EnableBlobFirstStorage
+              value: {{ .Values.modernization.enableBlobFirstStorage | quote }}
           readinessProbe:
             httpGet:
               path: /api/health
