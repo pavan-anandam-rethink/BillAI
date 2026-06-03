@@ -39,8 +39,14 @@ spec:
               value: {{ .Values.modernization.enableDistributedCacheDecorators | quote }}
             - name: BillingService__Modernization__EnableOutboxPublisher
               value: {{ .Values.modernization.enableOutboxPublisher | quote }}
+            - name: BillingService__Modernization__EnableOutboxPersistence
+              value: {{ .Values.modernization.enableOutboxPersistence | quote }}
             - name: BillingService__Modernization__EnableReadModelQueries
               value: {{ .Values.modernization.enableReadModelQueries | quote }}
+            - name: BillingService__Modernization__EnableBlobFirstArchitecture
+              value: {{ .Values.modernization.enableBlobFirstArchitecture | quote }}
+            - name: BillingService__Modernization__EnableOpenTelemetry
+              value: {{ .Values.modernization.enableOpenTelemetry | quote }}
           readinessProbe:
             httpGet:
               path: /api/health
