@@ -1,0 +1,311 @@
+{
+  "format": 1,
+  "restore": {
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/tests/UnitTests/BillingService.Application.Tests/BillingService.Application.Tests.csproj": {}
+  },
+  "projects": {
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Application/BillingService.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Application/BillingService.Application.csproj",
+        "projectName": "BillingService.Application",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Application/BillingService.Application.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/BillingService.Contracts.csproj": {
+                "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/BillingService.Contracts.csproj"
+              },
+              "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/BillingService.SharedKernel.csproj": {
+                "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/BillingService.SharedKernel.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[13.1.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.16, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.16, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.16, )"
+            },
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[9.0.16, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/BillingService.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/BillingService.Contracts.csproj",
+        "projectName": "BillingService.Contracts",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/BillingService.Contracts.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/BillingService.SharedKernel.csproj": {
+                "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/BillingService.SharedKernel.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/BillingService.SharedKernel.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/BillingService.SharedKernel.csproj",
+        "projectName": "BillingService.SharedKernel",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/BillingService.SharedKernel.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.SharedKernel/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/tests/UnitTests/BillingService.Application.Tests/BillingService.Application.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/tests/UnitTests/BillingService.Application.Tests/BillingService.Application.Tests.csproj",
+        "projectName": "BillingService.Application.Tests",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/tests/UnitTests/BillingService.Application.Tests/BillingService.Application.Tests.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/tests/UnitTests/BillingService.Application.Tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Application/BillingService.Application.csproj": {
+                "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Application/BillingService.Application.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.11.1, )"
+            },
+            "coverlet.collector": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.9.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.8.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
