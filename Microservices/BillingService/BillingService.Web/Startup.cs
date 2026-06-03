@@ -2,10 +2,13 @@ using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Application;
+using BillingService.Application.Abstractions.Correlation;
 using BillingService.LegacyAdapters;
+using BillingService.Web.Infrastructure;
 using BillingService.Web.IoC;
 using BillingService.Web.Middlewares;
 using BillingService.Web.Servers;
+using BillingService.Workers;
 using HealthChecks.Azure.Storage.Blobs;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -46,6 +49,8 @@ namespace BillingService.Web
             IoCContainer.RegisterRedisCacheAsync(services, Configuration, KeyVaultProviderService).GetAwaiter().GetResult();
 
             services.AddSingleton<IPusherNotificationServer, PusherNotificationServer>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICorrelationIdProvider, HttpContextCorrelationIdProvider>();
             var enableCleanArchitectureAdapters = string.Equals(
                 Configuration["BillingService:Modernization:EnableCleanArchitectureAdapters"],
                 "true",
@@ -55,6 +60,12 @@ namespace BillingService.Web
                 services.AddBillingApplication(Configuration);
                 services.AddBillingLegacyAdapters();
             }
+
+            var enableOutboxPublisher = string.Equals(
+                Configuration["BillingService:Modernization:EnableOutboxPublisher"],
+                "true",
+                StringComparison.OrdinalIgnoreCase);
+            services.AddBillingWorkers(enableOutboxPublisher: enableOutboxPublisher);
             services.AddMemoryCache();
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -146,6 +157,7 @@ namespace BillingService.Web
             //app.UseDeveloperExceptionPage();
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            app.UseMiddleware<CorrelationIdMiddleware>();
             app.UseMiddleware<RequestLatencyLoggingMiddleware>();
             app.UseRouting();
             app.UseAuthentication();

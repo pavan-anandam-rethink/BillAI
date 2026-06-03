@@ -56,5 +56,6 @@ variables:
 stages:
   - template: stage.build.yml  # Template reference
     parameters:
-      ContainerTestFolder: '/src/Microservices/Test/BillingServiceTests'      
+      ContainerTestFolder: '/src/Microservices/Test/BillingServiceTests'
+      env: ${{ parameters.env }}
       DependsOn: 
