@@ -1,7 +1,10 @@
 using Azure.Messaging.ServiceBus;
+using Azure.Storage.Blobs;
+using BillingService.Application.Abstractions.Blob;
 using BillingService.Application.Abstractions.Caching;
 using BillingService.Application.Abstractions.Clock;
 using BillingService.Application.Abstractions.Messaging;
+using BillingService.Infrastructure.Blob;
 using BillingService.Infrastructure.Caching;
 using BillingService.Infrastructure.Messaging;
 using BillingService.Infrastructure.Observability;
@@ -17,10 +20,12 @@ public static class DependencyInjection
         IConfiguration configuration,
         bool enableDistributedCache = false,
         bool enableEventBus = false,
+        bool enableBlobFirstStorage = false,
         bool enableOpenTelemetry = true)
     {
         services.Configure<RedisCacheOptions>(configuration.GetSection(RedisCacheOptions.SectionName));
         services.Configure<ServiceBusOptions>(configuration.GetSection(ServiceBusOptions.SectionName));
+        services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
 
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
 
@@ -61,6 +66,22 @@ public static class DependencyInjection
         if (enableOpenTelemetry)
         {
             services.AddBillingOpenTelemetry(configuration);
+        }
+
+        if (enableBlobFirstStorage)
+        {
+            var blobConnectionString = configuration.GetConnectionString("BlobStorage")
+                ?? configuration["ConnectionStrings:BlobStorage:ConnectionString"];
+
+            if (string.IsNullOrWhiteSpace(blobConnectionString))
+            {
+                throw new InvalidOperationException(
+                    "A blob storage connection string is required when blob-first storage is enabled. " +
+                    "Provide it via ConnectionStrings:BlobStorage or ConnectionStrings:BlobStorage:ConnectionString.");
+            }
+
+            services.AddSingleton(_ => new BlobServiceClient(blobConnectionString));
+            services.AddSingleton<IBlobStorageService, AzureBlobStorageService>();
         }
 
         return services;

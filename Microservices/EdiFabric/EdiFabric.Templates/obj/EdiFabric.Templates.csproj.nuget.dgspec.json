@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj": {}
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj": {}
   },
   "projects": {
-    "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj": {
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj",
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj",
         "projectName": "EdiFabric.Templates",
-        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/EdiFabric/EdiFabric.Templates/EdiFabric.Templates.csproj",
         "packagesPath": "/home/runner/.nuget/packages/",
-        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/EdiFabric/EdiFabric.Templates/obj/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/EdiFabric/EdiFabric.Templates/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/runner/.nuget/NuGet/NuGet.Config"
@@ -24,6 +24,7 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -38,10 +39,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "EdiFabric": {
@@ -65,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

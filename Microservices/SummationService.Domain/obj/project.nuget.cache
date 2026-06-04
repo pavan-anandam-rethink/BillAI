@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lYaZ8MTUbQo=",
+  "dgSpecHash": "67Y0XOrSPn0=",
   "success": true,
-  "projectFilePath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
+  "projectFilePath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
   "expectedPackageFiles": [
     "/home/runner/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/runner/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",

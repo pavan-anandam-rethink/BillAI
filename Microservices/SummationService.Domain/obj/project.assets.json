@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net8.0": {
       "AutoMapper/12.0.1": {
@@ -10372,11 +10372,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
+      "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
       "projectName": "SummationService.Domain",
-      "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
+      "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
       "packagesPath": "/home/runner/.nuget/packages/",
-      "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/obj/",
+      "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/runner/.nuget/NuGet/NuGet.Config"
@@ -10389,10 +10389,11 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
-              "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
+            "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+              "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
             }
           }
         }
@@ -10407,10 +10408,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "DocumentFormat.OpenXml": {
@@ -10438,7 +10440,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

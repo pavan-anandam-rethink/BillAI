@@ -20,3 +20,4 @@ modernization:
   enableDistributedCacheDecorators: true
   enableOutboxPublisher: true
   enableReadModelQueries: true
+  enableBlobFirstStorage: true

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {}
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {}
   },
   "projects": {
-    "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
         "projectName": "Rethink.Services.Common",
-        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj",
         "packagesPath": "/home/runner/.nuget/packages/",
-        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/obj/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/runner/.nuget/NuGet/NuGet.Config"
@@ -24,6 +24,7 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -38,10 +39,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "AutoMapper": {
@@ -117,18 +119,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
         "projectName": "Rethink.Services.Domain",
-        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Domain/Rethink.Services.Domain.csproj",
         "packagesPath": "/home/runner/.nuget/packages/",
-        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Domain/obj/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/runner/.nuget/NuGet/NuGet.Config"
@@ -141,13 +143,14 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
-                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
+              "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               },
-              "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
-                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj"
+              "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
+                "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj"
               }
             }
           }
@@ -162,10 +165,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Azure.Extensions.AspNetCore.Configuration.Secrets": {
@@ -221,18 +225,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
+    "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
+        "projectUniqueName": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
         "projectName": "SummationService.Domain",
-        "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
+        "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/SummationService.Domain.csproj",
         "packagesPath": "/home/runner/.nuget/packages/",
-        "outputPath": "/home/runner/work/BillAI/BillAI/Microservices/SummationService.Domain/obj/",
+        "outputPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/SummationService.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/runner/.nuget/NuGet/NuGet.Config"
@@ -245,10 +249,11 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
-                "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
+              "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj": {
+                "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Rethink.Services.Common/Rethink.Services.Common.csproj"
               }
             }
           }
@@ -263,10 +268,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "DocumentFormat.OpenXml": {
@@ -294,7 +300,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

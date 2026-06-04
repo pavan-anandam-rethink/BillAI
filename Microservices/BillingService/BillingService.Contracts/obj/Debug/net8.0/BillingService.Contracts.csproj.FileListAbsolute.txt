@@ -1,0 +1,16 @@
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/bin/Debug/net8.0/BillingService.Contracts.deps.json
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/bin/Debug/net8.0/BillingService.Contracts.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/bin/Debug/net8.0/BillingService.Contracts.pdb
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/bin/Debug/net8.0/BillingService.SharedKernel.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/bin/Debug/net8.0/BillingService.SharedKernel.pdb
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.csproj.AssemblyReference.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.AssemblyInfoInputs.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.AssemblyInfo.cs
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.csproj.CoreCompileInputs.cache
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.sourcelink.json
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingS.F8AF20AA.Up2Date
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/refint/BillingService.Contracts.dll
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/BillingService.Contracts.pdb
+/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/BillingService/BillingService.Contracts/obj/Debug/net8.0/ref/BillingService.Contracts.dll

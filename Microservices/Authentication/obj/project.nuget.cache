@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3Nk5EhVD1ag=",
+  "dgSpecHash": "i5KC3jgifPA=",
   "success": false,
-  "projectFilePath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
+  "projectFilePath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Authentication/Authentication.csproj",
   "expectedPackageFiles": [
     "/home/runner/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/runner/.nuget/packages/azure.core/1.46.1/azure.core.1.46.1.nupkg.sha512",
@@ -43,8 +43,8 @@
     "/home/runner/.nuget/packages/microsoft.entityframeworkcore.sqlserver/7.0.10/microsoft.entityframeworkcore.sqlserver.7.0.10.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.entityframeworkcore.sqlserver.nettopologysuite/7.0.10/microsoft.entityframeworkcore.sqlserver.nettopologysuite.7.0.10.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.ambientmetadata.application/9.0.0/microsoft.extensions.ambientmetadata.application.9.0.0.nupkg.sha512",
-    "/home/runner/.nuget/packages/microsoft.extensions.caching.abstractions/7.0.0/microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
-    "/home/runner/.nuget/packages/microsoft.extensions.caching.memory/7.0.0/microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
+    "/home/runner/.nuget/packages/microsoft.extensions.caching.abstractions/8.0.0/microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
+    "/home/runner/.nuget/packages/microsoft.extensions.caching.memory/8.0.1/microsoft.extensions.caching.memory.8.0.1.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.compliance.abstractions/9.0.0/microsoft.extensions.compliance.abstractions.9.0.0.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.configuration/9.0.3/microsoft.extensions.configuration.9.0.3.nupkg.sha512",
     "/home/runner/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.3/microsoft.extensions.configuration.abstractions.9.0.3.nupkg.sha512",
@@ -229,8 +229,8 @@
       "code": "NU1101",
       "level": "Error",
       "message": "Unable to find package RethinkCore.Messaging.Contracts. No packages exist with this id in source(s): nuget.org",
-      "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
-      "filePath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
+      "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Authentication/Authentication.csproj",
+      "filePath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Authentication/Authentication.csproj",
       "libraryId": "RethinkCore.Messaging.Contracts",
       "targetGraphs": [
         "net8.0"
@@ -240,8 +240,8 @@
       "code": "NU1605",
       "level": "Error",
       "message": "Warning As Error: Detected package downgrade: Microsoft.Extensions.Logging.Abstractions from 9.0.3 to 9.0.0. Reference the package directly from the project to select a different version. \n Authentication -> Rethink.Services.Domain -> Microsoft.Extensions.Http 9.0.3 -> Microsoft.Extensions.Logging.Abstractions (>= 9.0.3) \n Authentication -> Rethink.Services.Domain -> Microsoft.Extensions.Logging.Abstractions (>= 9.0.0)",
-      "projectPath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
-      "filePath": "/home/runner/work/BillAI/BillAI/Microservices/Authentication/Authentication.csproj",
+      "projectPath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Authentication/Authentication.csproj",
+      "filePath": "/tmp/workspace/pavan-anandam-rethink/BillAI/Microservices/Authentication/Authentication.csproj",
       "libraryId": "Microsoft.Extensions.Logging.Abstractions",
       "targetGraphs": [
         "net8.0"
