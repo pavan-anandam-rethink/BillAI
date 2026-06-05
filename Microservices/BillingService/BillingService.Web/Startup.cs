@@ -2,10 +2,16 @@ using Authentication.Middlewares;
 using Azure.Storage.Blobs;
 using Billing.FolderStructure.Core.Services;
 using BillingService.Application;
+using BillingService.Application.Abstractions.Correlation;
+using BillingService.Application.Common.Configuration;
+using BillingService.Infrastructure;
 using BillingService.LegacyAdapters;
+using BillingService.Persistence;
+using BillingService.Web.Infrastructure;
 using BillingService.Web.IoC;
 using BillingService.Web.Middlewares;
 using BillingService.Web.Servers;
+using BillingService.Workers;
 using HealthChecks.Azure.Storage.Blobs;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +21,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Rethink.Services.Common.Messaging;
 using Rethink.Services.Domain.Interfaces;
@@ -52,8 +59,31 @@ namespace BillingService.Web
                 StringComparison.OrdinalIgnoreCase);
             if (enableCleanArchitectureAdapters)
             {
+                var flags = Configuration
+                    .GetSection(ModernizationFeatureFlags.SectionName)
+                    .Get<ModernizationFeatureFlags>() ?? new ModernizationFeatureFlags();
+
                 services.AddBillingApplication(Configuration);
                 services.AddBillingLegacyAdapters();
+
+                services.AddBillingInfrastructure(
+                    Configuration,
+                    enableDistributedCache: flags.EnableDistributedCacheDecorators,
+                    enableEventBus: flags.EnableOutboxPublisher,
+                    enableBlobStorage: flags.EnableBlobFirstStorage,
+                    enableOpenTelemetry: true);
+
+                var billingConnectionString = IoCContainer.GetDBConnectionString(
+                    Configuration, "Database", KeyVaultProviderService);
+                services.AddBillingPersistenceCompatibility(
+                    billingConnectionString,
+                    enableOutbox: flags.EnableOutboxPublisher,
+                    enableBlobMetadata: flags.EnableBlobFirstStorage);
+
+                services.AddBillingWorkers(enableOutboxPublisher: flags.EnableOutboxPublisher);
+
+                services.AddHttpContextAccessor();
+                services.AddScoped<ICorrelationIdProvider, HttpContextCorrelationIdProvider>();
             }
             services.AddMemoryCache();
             services.AddControllers();
@@ -146,6 +176,7 @@ namespace BillingService.Web
             //app.UseDeveloperExceptionPage();
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+            app.UseMiddleware<CorrelationIdMiddleware>();
             app.UseMiddleware<RequestLatencyLoggingMiddleware>();
             app.UseRouting();
             app.UseAuthentication();

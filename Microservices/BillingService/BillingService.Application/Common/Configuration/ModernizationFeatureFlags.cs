@@ -11,4 +11,6 @@ public sealed class ModernizationFeatureFlags
     public bool EnableOutboxPublisher { get; init; }
 
     public bool EnableReadModelQueries { get; init; }
+
+    public bool EnableBlobFirstStorage { get; init; }
 }

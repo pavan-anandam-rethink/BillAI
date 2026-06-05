@@ -1,7 +1,10 @@
 using Azure.Messaging.ServiceBus;
+using Azure.Storage.Blobs;
+using BillingService.Application.Abstractions.Blob;
 using BillingService.Application.Abstractions.Caching;
 using BillingService.Application.Abstractions.Clock;
 using BillingService.Application.Abstractions.Messaging;
+using BillingService.Infrastructure.Blob;
 using BillingService.Infrastructure.Caching;
 using BillingService.Infrastructure.Messaging;
 using BillingService.Infrastructure.Observability;
@@ -17,10 +20,12 @@ public static class DependencyInjection
         IConfiguration configuration,
         bool enableDistributedCache = false,
         bool enableEventBus = false,
+        bool enableBlobStorage = false,
         bool enableOpenTelemetry = true)
     {
         services.Configure<RedisCacheOptions>(configuration.GetSection(RedisCacheOptions.SectionName));
         services.Configure<ServiceBusOptions>(configuration.GetSection(ServiceBusOptions.SectionName));
+        services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
 
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
 
@@ -56,6 +61,21 @@ public static class DependencyInjection
 
             services.AddSingleton<IEventBus, AzureServiceBusEventBus>();
             services.AddSingleton(_ => new ServiceBusClient(serviceBusOptions.ConnectionString));
+        }
+
+        if (enableBlobStorage)
+        {
+            var blobOptions = configuration.GetSection(BlobStorageOptions.SectionName).Get<BlobStorageOptions>()
+                ?? new BlobStorageOptions();
+
+            if (string.IsNullOrWhiteSpace(blobOptions.ConnectionString))
+            {
+                throw new InvalidOperationException(
+                    $"{BlobStorageOptions.SectionName}:ConnectionString is required when blob storage is enabled.");
+            }
+
+            services.AddSingleton(_ => new BlobServiceClient(blobOptions.ConnectionString));
+            services.AddSingleton<IBlobStorageService, AzureBlobStorageService>();
         }
 
         if (enableOpenTelemetry)
