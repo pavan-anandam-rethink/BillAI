@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/ClaimLifecycleMonitoring.API.props" />
-</Project>
