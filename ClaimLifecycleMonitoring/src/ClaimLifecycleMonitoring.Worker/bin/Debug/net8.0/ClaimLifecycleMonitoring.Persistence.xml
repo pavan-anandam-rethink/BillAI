@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClaimLifecycleMonitoring.Persistence</name>
+    </assembly>
+    <members>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext">
+            <summary>
+            EF Core <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> for the claim lifecycle monitoring platform.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.Schema">
+            <summary>Default schema for the monitoring tables.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext"/>.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.Claims">
+            <summary>Claims aggregate root.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.LifecycleEvents">
+            <summary>Claim lifecycle history events.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.Alerts">
+            <summary>Claim alerts.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.StageSlaConfigurations">
+            <summary>Per-stage SLA configuration.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext.ClaimLifecycleMonitoring#Application#Abstractions#Persistence#IUnitOfWork#SaveChangesAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Configurations.ClaimConfiguration">
+            <summary>EF Core configuration for <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.Claim"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Configurations.ClaimConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{ClaimLifecycleMonitoring.Domain.Entities.Claim})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Configurations.ClaimLifecycleEventConfiguration">
+            <summary>EF Core configuration for <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Configurations.ClaimLifecycleEventConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Configurations.ClaimAlertConfiguration">
+            <summary>EF Core configuration for <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Configurations.ClaimAlertConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Configurations.StageSlaConfigurationConfiguration">
+            <summary>EF Core configuration for <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Configurations.StageSlaConfigurationConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.DependencyInjection.PersistenceServiceCollectionExtensions">
+            <summary>DI helpers for the Persistence layer.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Persistence.DependencyInjection.PersistenceServiceCollectionExtensions.ConnectionStringName">
+            <summary>The default configuration key holding the SQL Server connection string.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.DependencyInjection.PersistenceServiceCollectionExtensions.AddClaimLifecyclePersistence(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers the EF Core <see cref="T:ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext"/>, repositories and unit of work.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository">
+            <summary>EF Core implementation of <see cref="T:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.#ctor(ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.AddAsync(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.GetByIdAsync(System.Int64,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.GetByClaimNumberAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.ExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.Query">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.GetPotentiallyStuckAsync(System.DateTime,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.ClaimRepository.GetAwaitingInboundAsync(ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,System.DateTime,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Repositories.AlertRepository">
+            <summary>EF Core implementation of <see cref="T:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IAlertRepository"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.AlertRepository.#ctor(ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Persistence.Repositories.AlertRepository"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.AlertRepository.AddAsync(ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.AlertRepository.GetByIdAsync(System.Int64,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.AlertRepository.Query">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Repositories.StageSlaConfigurationRepository">
+            <summary>EF Core implementation of <see cref="T:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IStageSlaConfigurationRepository"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.StageSlaConfigurationRepository.#ctor(ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Persistence.Repositories.StageSlaConfigurationRepository"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.StageSlaConfigurationRepository.GetForStageAsync(ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Repositories.StageSlaConfigurationRepository.GetAllAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Persistence.Seeding.ClaimLifecycleSeeder">
+            <summary>
+            Seeds baseline configuration (per-stage SLAs) and a small set of demo
+            claims when the database is empty.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Persistence.Seeding.ClaimLifecycleSeeder.SeedAsync(ClaimLifecycleMonitoring.Persistence.ClaimLifecycleDbContext,Microsoft.Extensions.Logging.ILogger,System.Threading.CancellationToken)">
+            <summary>Applies seed data to the database if it has not yet been seeded.</summary>
+        </member>
+    </members>
+</doc>

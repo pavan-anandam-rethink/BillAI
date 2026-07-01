@@ -1,0 +1,625 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClaimLifecycleMonitoring.Application</name>
+    </assembly>
+    <members>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher">
+            <summary>
+            Publishes claim lifecycle updates to interested downstream consumers
+            (dashboards, message brokers, etc.). Implementations are non-throwing:
+            failures must be logged and swallowed to avoid blocking business flow.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher.PublishClaimUpdatedAsync(ClaimLifecycleMonitoring.Contracts.Claims.ClaimDto,System.Threading.CancellationToken)">
+            <summary>Publishes a claim update.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher.PublishAlertRaisedAsync(ClaimLifecycleMonitoring.Contracts.Alerts.ClaimAlertDto,System.Threading.CancellationToken)">
+            <summary>Publishes a newly raised alert.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IAlertRepository">
+            <summary>
+            Repository abstraction for <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert"/> read/write operations.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IAlertRepository.AddAsync(ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert,System.Threading.CancellationToken)">
+            <summary>Adds a new alert.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IAlertRepository.GetByIdAsync(System.Int64,System.Threading.CancellationToken)">
+            <summary>Gets an alert by identifier.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IAlertRepository.Query">
+            <summary>Returns the queryable projection used by list / search queries.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IStageSlaConfigurationRepository">
+            <summary>
+            Repository abstraction for stage SLA configuration.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IStageSlaConfigurationRepository.GetForStageAsync(ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,System.Threading.CancellationToken)">
+            <summary>Returns the configured SLA for the given stage or a sensible default.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IStageSlaConfigurationRepository.GetAllAsync(System.Threading.CancellationToken)">
+            <summary>Returns all configured SLAs.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository">
+            <summary>
+            Repository abstraction for the <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.Claim"/> aggregate root.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository.AddAsync(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.Threading.CancellationToken)">
+            <summary>Adds a new claim.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository.GetByIdAsync(System.Int64,System.Threading.CancellationToken)">
+            <summary>Gets a claim by its persistent identifier including full history and alerts.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository.GetByClaimNumberAsync(System.String,System.Threading.CancellationToken)">
+            <summary>Gets a claim by claim number including full history and alerts.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository.ExistsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>Returns whether a claim exists with the given claim number.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository.Query">
+            <summary>Returns the queryable, tracking-disabled projection used by list / search queries.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository.GetPotentiallyStuckAsync(System.DateTime,System.Int32,System.Threading.CancellationToken)">
+            <summary>Returns claims that have been in their current stage longer than <paramref name="olderThanUtc"/> and are in progress or waiting.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository.GetAwaitingInboundAsync(ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,System.DateTime,System.Int32,System.Threading.CancellationToken)">
+            <summary>Returns claims whose stage is one of the stages awaiting an inbound message.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork">
+            <summary>
+            Encapsulates persistence transaction boundaries and change tracking commit.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>Persists all pending changes.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.RuleEvaluationResult">
+            <summary>
+            Represents a single evaluation result produced by the rule engine
+            against a specific claim.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.RuleEvaluationResult.RuleId">
+            <summary>Identifier of the rule that produced the result.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.RuleEvaluationResult.Category">
+            <summary>Failure category the rule detected.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.RuleEvaluationResult.Severity">
+            <summary>Severity of the alert.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.RuleEvaluationResult.Message">
+            <summary>Human readable message describing the rule breach.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.RuleEvaluationResult.MarkStuck">
+            <summary>Whether the claim should be flagged as stuck.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IMonitoringRule">
+            <summary>
+            Contract for individual monitoring rules. Each rule is evaluated per-claim by
+            the <see cref="T:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IRuleEngine"/> and returns zero or more <see cref="T:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.RuleEvaluationResult"/>s.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IMonitoringRule.RuleId">
+            <summary>Rule identifier used for logging and correlation.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IMonitoringRule.Evaluate(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.DateTime,System.Collections.Generic.IReadOnlyDictionary{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <summary>Evaluates the rule against a claim.</summary>
+            <returns>Zero or more results describing detected issues.</returns>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IRuleEngine">
+            <summary>
+            Composite rule engine that runs a set of <see cref="T:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IMonitoringRule"/> instances against a claim.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IRuleEngine.Evaluate(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.DateTime,System.Collections.Generic.IReadOnlyDictionary{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <summary>Evaluates all rules against the supplied claim.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider">
+            <summary>
+            Abstraction over the system clock used by application services so that
+            unit tests may deterministically control the flow of time.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider.UtcNow">
+            <summary>Gets the current UTC time.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Common.Behaviors.LoggingBehavior`2">
+            <summary>
+            MediatR pipeline behaviour that emits structured logs around every request,
+            including latency and success / failure information.
+            </summary>
+            <typeparam name="TRequest">The MediatR request type.</typeparam>
+            <typeparam name="TResponse">The MediatR response type.</typeparam>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Behaviors.LoggingBehavior`2.#ctor(Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Common.Behaviors.LoggingBehavior{`0,`1}})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Common.Behaviors.LoggingBehavior`2"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Behaviors.LoggingBehavior`2.Handle(`0,MediatR.RequestHandlerDelegate{`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Common.Behaviors.ValidationBehavior`2">
+            <summary>
+            MediatR pipeline behaviour that runs all registered FluentValidation validators
+            for the incoming request before it reaches its handler.
+            </summary>
+            <typeparam name="TRequest">The MediatR request type.</typeparam>
+            <typeparam name="TResponse">The MediatR response type.</typeparam>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Behaviors.ValidationBehavior`2.#ctor(System.Collections.Generic.IEnumerable{FluentValidation.IValidator{`0}})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Common.Behaviors.ValidationBehavior`2"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Behaviors.ValidationBehavior`2.Handle(`0,MediatR.RequestHandlerDelegate{`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Common.Exceptions.ApplicationValidationException">
+            <summary>
+            Thrown when application-level validation fails prior to invoking domain behaviour.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Common.Exceptions.ApplicationValidationException.Errors">
+            <summary>Per-property validation failures.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Exceptions.ApplicationValidationException.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,System.String[]})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Common.Exceptions.ApplicationValidationException"/>.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Common.Mapping.ClaimMappers">
+            <summary>
+            Static mappers from domain entities to <c>Contracts</c> DTOs. Kept as a plain
+            static class to avoid the overhead and configuration burden of a full mapping
+            library. Each method is a pure function safe to invoke from any thread.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Mapping.ClaimMappers.ToDto(ClaimLifecycleMonitoring.Domain.Entities.Claim,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider)">
+            <summary>Maps a <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.Claim"/> to a <see cref="T:ClaimLifecycleMonitoring.Contracts.Claims.ClaimDto"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Mapping.ClaimMappers.ToDto(ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent)">
+            <summary>Maps a <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent"/> to a <see cref="T:ClaimLifecycleMonitoring.Contracts.Claims.ClaimHistoryEntryDto"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Common.Mapping.ClaimMappers.ToDto(ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert,System.String)">
+            <summary>Maps a <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert"/> to a <see cref="T:ClaimLifecycleMonitoring.Contracts.Alerts.ClaimAlertDto"/>.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Common.SystemDateTimeProvider">
+            <summary>Default <see cref="T:ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider"/> that returns <see cref="P:System.DateTime.UtcNow"/>.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Common.SystemDateTimeProvider.UtcNow">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions">
+            <summary>
+            Configuration options for the claim lifecycle monitoring engine.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.SectionName">
+            <summary>Configuration section name.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.ScanIntervalSeconds">
+            <summary>Interval at which the background monitor scans for stuck claims (seconds).</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.BatchSize">
+            <summary>Maximum number of claims processed per scan iteration.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.DefaultStageSlaHours">
+            <summary>Default SLA (hours) applied when no stage-specific configuration exists.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.GlobalClaimTimeoutHours">
+            <summary>Maximum hours a claim may live before it is considered timed out.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.Expected999Hours">
+            <summary>Hours after 837 submission a 999 acknowledgement is expected.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.Expected277CaHours">
+            <summary>Hours after 999 receipt a 277CA acknowledgement is expected.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions.Expected835Hours">
+            <summary>Hours after 277CA a 835 remittance is expected.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.DependencyInjection.ApplicationServiceCollectionExtensions">
+            <summary>DI helpers for the Application layer.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.DependencyInjection.ApplicationServiceCollectionExtensions.AddClaimLifecycleApplication(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers Application services (MediatR, validators, rules, monitoring service).</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Alerts.SearchAlertsQuery">
+            <summary>Query returning a paged alert list.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Alerts.SearchAlertsQuery.#ctor(System.Nullable{System.Boolean},System.Int32,System.Int32)">
+            <summary>Query returning a paged alert list.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Alerts.AcknowledgeAlertCommand">
+            <summary>Command acknowledging an alert.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Alerts.AcknowledgeAlertCommand.#ctor(System.Int64,ClaimLifecycleMonitoring.Contracts.Claims.AcknowledgeAlertRequest)">
+            <summary>Command acknowledging an alert.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Alerts.SearchAlertsQueryHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Alerts.SearchAlertsQuery"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Alerts.SearchAlertsQueryHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IAlertRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository)">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Alerts.SearchAlertsQueryHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Alerts.SearchAlertsQuery,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Alerts.AcknowledgeAlertCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Alerts.AcknowledgeAlertCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Alerts.AcknowledgeAlertCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IAlertRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider)">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Alerts.AcknowledgeAlertCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Alerts.AcknowledgeAlertCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommand">
+            <summary>Command to advance a claim to the next lifecycle stage.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommand.#ctor(System.Int64,ClaimLifecycleMonitoring.Contracts.Claims.AdvanceClaimStageRequest)">
+            <summary>Command to advance a claim to the next lifecycle stage.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IStageSlaConfigurationRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommandHandler})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommandHandler"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommand">
+            <summary>Command to retry a failed claim.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommand.#ctor(System.Int64,ClaimLifecycleMonitoring.Contracts.Claims.RetryClaimRequest)">
+            <summary>Command to retry a failed claim.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommand">
+            <summary>Command to cancel a claim.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommand.#ctor(System.Int64,ClaimLifecycleMonitoring.Contracts.Claims.CancelClaimRequest)">
+            <summary>Command to cancel a claim.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommand">
+            <summary>Command to apply a payment to a claim.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommand.#ctor(System.Int64,ClaimLifecycleMonitoring.Contracts.Claims.ApplyPaymentRequest)">
+            <summary>Command to apply a payment to a claim.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommand">
+            <summary>Command to mark a claim as a duplicate of another.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommand.#ctor(System.Int64,System.String)">
+            <summary>Command to mark a claim as a duplicate of another.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommandHandler})">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommandHandler})">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommandHandler})">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommandHandler})">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Commands.MarkDuplicateCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommand">
+            <summary>
+            Command to register a new claim under monitoring.
+            </summary>
+            <param name="Request">The create-claim request payload.</param>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommand.#ctor(ClaimLifecycleMonitoring.Contracts.Claims.CreateClaimRequest)">
+            <summary>
+            Command to register a new claim under monitoring.
+            </summary>
+            <param name="Request">The create-claim request payload.</param>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommand.Request">
+            <summary>The create-claim request payload.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Options.IOptions{ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions},Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommandHandler})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommandHandler"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CreateClaimCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommand">
+            <summary>Command to record a failure on a claim.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommand.#ctor(System.Int64,ClaimLifecycleMonitoring.Contracts.Claims.RecordFailureRequest)">
+            <summary>Command to record a failure on a claim.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommandHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommandHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommandHandler})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommandHandler"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommandHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommand,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQuery">
+            <summary>Query returning a paged claim list matching search filters.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQuery.#ctor(ClaimLifecycleMonitoring.Contracts.Claims.ClaimSearchQuery)">
+            <summary>Query returning a paged claim list matching search filters.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByIdQuery">
+            <summary>Query returning a single claim by identifier.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByIdQuery.#ctor(System.Int64)">
+            <summary>Query returning a single claim by identifier.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByNumberQuery">
+            <summary>Query returning a single claim by claim number.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByNumberQuery.#ctor(System.String)">
+            <summary>Query returning a single claim by claim number.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimHistoryQuery">
+            <summary>Query returning the ordered history for a claim.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimHistoryQuery.#ctor(System.Int64)">
+            <summary>Query returning the ordered history for a claim.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQueryHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQuery"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQueryHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQueryHandler"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQueryHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Queries.SearchClaimsQuery,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByIdQueryHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByIdQuery"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByIdQueryHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider)">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByIdQueryHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByIdQuery,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByNumberQueryHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByNumberQuery"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByNumberQueryHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider)">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByNumberQueryHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimByNumberQuery,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimHistoryQueryHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimHistoryQuery"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimHistoryQueryHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository)">
+            <summary>Creates a new instance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimHistoryQueryHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Claims.Queries.GetClaimHistoryQuery,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Dashboard.Queries.GetDashboardSnapshotQuery">
+            <summary>
+            Query that returns a full <see cref="T:ClaimLifecycleMonitoring.Contracts.Dashboard.DashboardSnapshotDto"/> for the operations dashboard.
+            </summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Features.Dashboard.Queries.GetDashboardSnapshotQueryHandler">
+            <summary>Handles <see cref="T:ClaimLifecycleMonitoring.Application.Features.Dashboard.Queries.GetDashboardSnapshotQuery"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Dashboard.Queries.GetDashboardSnapshotQueryHandler.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Features.Dashboard.Queries.GetDashboardSnapshotQueryHandler"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Features.Dashboard.Queries.GetDashboardSnapshotQueryHandler.Handle(ClaimLifecycleMonitoring.Application.Features.Dashboard.Queries.GetDashboardSnapshotQuery,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringScanResult">
+            <summary>
+            Result summary from a single monitoring scan iteration.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringScanResult.ClaimsExamined">
+            <summary>Number of claims examined during the scan.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringScanResult.AlertsRaised">
+            <summary>Number of alerts raised during the scan.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringScanResult.ClaimsMarkedStuck">
+            <summary>Number of claims transitioned to a stuck state.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.IClaimMonitoringService">
+            <summary>
+            Encapsulates the algorithm used to detect stuck / timed out / SLA breached claims
+            and raise corresponding alerts. Reused by both the background worker and the API's
+            on-demand monitoring endpoint.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.IClaimMonitoringService.ScanAsync(System.Threading.CancellationToken)">
+            <summary>Executes a monitoring scan across all claims eligible for evaluation.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringService">
+            <inheritdoc cref="T:ClaimLifecycleMonitoring.Application.Monitoring.IClaimMonitoringService"/>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringService.#ctor(ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IClaimRepository,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IStageSlaConfigurationRepository,ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IRuleEngine,ClaimLifecycleMonitoring.Application.Abstractions.Persistence.IUnitOfWork,ClaimLifecycleMonitoring.Application.Abstractions.Time.IDateTimeProvider,ClaimLifecycleMonitoring.Application.Abstractions.Notifications.IClaimNotificationPublisher,Microsoft.Extensions.Options.IOptions{ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions},Microsoft.Extensions.Logging.ILogger{ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringService})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringService"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.ClaimMonitoringService.ScanAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.CompositeRuleEngine">
+            <summary>Composite rule engine that fans out to a set of registered rules.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.CompositeRuleEngine.#ctor(System.Collections.Generic.IEnumerable{ClaimLifecycleMonitoring.Application.Abstractions.RuleEngine.IMonitoringRule})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.CompositeRuleEngine"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.CompositeRuleEngine.Evaluate(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.DateTime,System.Collections.Generic.IReadOnlyDictionary{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.StageSlaBreachRule">
+            <summary>Rule that flags claims stuck at their current stage beyond the configured SLA.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.StageSlaBreachRule.RuleId">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.StageSlaBreachRule.Evaluate(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.DateTime,System.Collections.Generic.IReadOnlyDictionary{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.GlobalTimeoutRule">
+            <summary>Rule that flags claims whose global lifecycle age has exceeded the configured timeout.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.GlobalTimeoutRule.#ctor(Microsoft.Extensions.Options.IOptions{ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.GlobalTimeoutRule"/>.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.GlobalTimeoutRule.RuleId">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.GlobalTimeoutRule.Evaluate(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.DateTime,System.Collections.Generic.IReadOnlyDictionary{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.MissingInboundRuleBase">
+            <summary>Base helper for rules that watch for a missing inbound message.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.MissingInboundRuleBase.RuleId">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.MissingInboundRuleBase.AwaitingStage">
+            <summary>The stage the claim must have reached to be waiting on the inbound message.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.MissingInboundRuleBase.ThresholdHours">
+            <summary>How many hours may elapse before the missing message is escalated.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.MissingInboundRuleBase.Category">
+            <summary>Failure category to assign when the message is missing.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.MissingInboundRuleBase.Evaluate(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.DateTime,System.Collections.Generic.IReadOnlyDictionary{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing999Rule">
+            <summary>Rule detecting a missing 999 acknowledgement.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing999Rule.#ctor(Microsoft.Extensions.Options.IOptions{ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing999Rule"/>.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing999Rule.RuleId">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing999Rule.AwaitingStage">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing999Rule.ThresholdHours">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing999Rule.Category">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing277CaRule">
+            <summary>Rule detecting a missing 277CA acknowledgement.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing277CaRule.#ctor(Microsoft.Extensions.Options.IOptions{ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing277CaRule"/>.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing277CaRule.RuleId">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing277CaRule.AwaitingStage">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing277CaRule.ThresholdHours">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing277CaRule.Category">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing835Rule">
+            <summary>Rule detecting a missing 835 remittance.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing835Rule.#ctor(Microsoft.Extensions.Options.IOptions{ClaimLifecycleMonitoring.Application.Configuration.MonitoringOptions})">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing835Rule"/>.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing835Rule.RuleId">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing835Rule.AwaitingStage">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing835Rule.ThresholdHours">
+            <inheritdoc />
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.Missing835Rule.Category">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Monitoring.Rules.UnalertedFailureRule">
+            <summary>Rule that promotes an existing failure category to an alert if one has not yet been recorded.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Application.Monitoring.Rules.UnalertedFailureRule.RuleId">
+            <inheritdoc />
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Monitoring.Rules.UnalertedFailureRule.Evaluate(ClaimLifecycleMonitoring.Domain.Entities.Claim,System.DateTime,System.Collections.Generic.IReadOnlyDictionary{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration})">
+            <inheritdoc />
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Validators.CreateClaimRequestValidator">
+            <summary>Validator for <see cref="T:ClaimLifecycleMonitoring.Contracts.Claims.CreateClaimRequest"/> payloads.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Validators.CreateClaimRequestValidator.#ctor">
+            <summary>Configures validation rules.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Validators.AdvanceClaimStageCommandValidator">
+            <summary>Validator for <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.AdvanceClaimStageCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Validators.AdvanceClaimStageCommandValidator.#ctor">
+            <summary>Configures validation rules.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Validators.RecordFailureCommandValidator">
+            <summary>Validator for <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RecordFailureCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Validators.RecordFailureCommandValidator.#ctor">
+            <summary>Configures validation rules.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Validators.CancelClaimCommandValidator">
+            <summary>Validator for <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.CancelClaimCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Validators.CancelClaimCommandValidator.#ctor">
+            <summary>Configures validation rules.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Validators.ApplyPaymentCommandValidator">
+            <summary>Validator for <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.ApplyPaymentCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Validators.ApplyPaymentCommandValidator.#ctor">
+            <summary>Configures validation rules.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Application.Validators.RetryClaimCommandValidator">
+            <summary>Validator for <see cref="T:ClaimLifecycleMonitoring.Application.Features.Claims.Commands.RetryClaimCommand"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Application.Validators.RetryClaimCommandValidator.#ctor">
+            <summary>Configures validation rules.</summary>
+        </member>
+    </members>
+</doc>

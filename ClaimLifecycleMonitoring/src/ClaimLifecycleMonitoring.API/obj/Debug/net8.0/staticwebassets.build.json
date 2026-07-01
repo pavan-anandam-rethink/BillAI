@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "5b119O7ZOnpyB7R6DAoW45c8Fxr2VuGuTdFWz7+O7BI=",
+  "Source": "ClaimLifecycleMonitoring.API",
+  "BasePath": "_content/ClaimLifecycleMonitoring.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

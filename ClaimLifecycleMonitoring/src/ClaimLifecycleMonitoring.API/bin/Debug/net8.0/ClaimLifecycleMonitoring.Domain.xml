@@ -1,0 +1,486 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClaimLifecycleMonitoring.Domain</name>
+    </assembly>
+    <members>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Common.ClaimLifecyclePipeline">
+            <summary>
+            Helpers describing the ordering of claim lifecycle stages.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Common.ClaimLifecyclePipeline.OrderedStages">
+            <summary>Ordered pipeline of stages a healthy claim traverses.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Common.ClaimLifecyclePipeline.NextStage(ClaimLifecycleMonitoring.Domain.Enums.ClaimStage)">
+            <summary>
+            Returns the next stage that logically follows <paramref name="current"/>.
+            </summary>
+            <param name="current">The current stage.</param>
+            <returns>The next stage or <c>null</c> if <paramref name="current"/> is terminal.</returns>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Common.EntityBase">
+            <summary>
+            Base type for all persistent domain entities. Provides an identity property
+            and audit metadata that is populated by the persistence layer.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Common.EntityBase.Id">
+            <summary>Primary key. Populated by the persistence layer.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Common.EntityBase.CreatedUtc">
+            <summary>Timestamp (UTC) the entity was created.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Common.EntityBase.ModifiedUtc">
+            <summary>Timestamp (UTC) the entity was last modified.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Common.EntityBase.RowVersion">
+            <summary>Optimistic concurrency token.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Entities.Claim">
+            <summary>
+            Aggregate root representing a single healthcare claim under monitoring.
+            A <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.Claim"/> owns its lifecycle history, alerts and computed status.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.ClaimNumber">
+            <summary>Unique claim number assigned by the source billing system.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.CustomerCode">
+            <summary>Customer (tenant) that owns the claim.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.CustomerName">
+            <summary>Human readable customer name.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.AccountCode">
+            <summary>Account (payer / plan) associated with the claim.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.AccountName">
+            <summary>Human readable account name.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.PatientId">
+            <summary>Patient identifier as known to the source system.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.PatientName">
+            <summary>Patient display name (de-identified when possible).</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.ProviderId">
+            <summary>Provider (rendering / billing) identifier.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.ProviderName">
+            <summary>Provider display name.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.CurrentStage">
+            <summary>The stage the claim is currently in.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.CurrentStatus">
+            <summary>The status of the claim within its current stage.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.LastSuccessfulStage">
+            <summary>The last stage that completed successfully.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.NextExpectedStage">
+            <summary>The next stage the claim is expected to advance to.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.StageEnteredUtc">
+            <summary>UTC timestamp when the claim entered the current stage.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.SubmissionDateUtc">
+            <summary>UTC timestamp when the claim was submitted to the payer/clearinghouse.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.HasFailure">
+            <summary>Whether the most recent step failed.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.FailureCategory">
+            <summary>Category of failure detected, if any.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.ExceptionMessage">
+            <summary>The exception message associated with the most recent failure.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.RetryAvailable">
+            <summary>Whether the claim can be retried automatically.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.RetryCount">
+            <summary>How many times the claim has been retried.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.ManualInterventionRequired">
+            <summary>Whether the claim requires manual intervention.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.BilledAmount">
+            <summary>Total monetary amount billed on the claim.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.PaidAmount">
+            <summary>Amount paid to date.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.CurrentStageSlaHours">
+            <summary>SLA (in hours) permitted for the current stage before the claim is flagged stuck.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.History">
+            <summary>Full ordered history of lifecycle events for this claim.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.Claim.Alerts">
+            <summary>Alerts raised by the monitoring engine against this claim.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.Age(System.DateTime)">
+            <summary>
+            The age of the claim from creation to now.
+            </summary>
+            <param name="nowUtc">The current UTC time used for the calculation.</param>
+            <returns>The claim age as a <see cref="T:System.TimeSpan"/>.</returns>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.#ctor">
+            <summary>EF Core / persistence constructor.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.Create(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Decimal,System.Int32,System.DateTime)">
+            <summary>
+            Creates a new <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.Claim"/> in the initial <see cref="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.AppointmentCreated"/> stage.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.AdvanceToStage(ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,System.Nullable{ClaimLifecycleMonitoring.Domain.Enums.ClaimStage},System.Int32,System.String,System.DateTime)">
+            <summary>
+            Advances the claim to the given <paramref name="stage"/> and records a successful history event.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.RecordFailure(ClaimLifecycleMonitoring.Domain.Enums.FailureCategory,System.String,System.Boolean,System.Boolean,System.DateTime)">
+            <summary>
+            Records a failure at the current stage.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.MarkStuck(ClaimLifecycleMonitoring.Domain.Enums.FailureCategory,System.String,System.DateTime)">
+            <summary>
+            Marks the claim as stuck due to an SLA breach at the current stage.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.MarkWaiting(System.String,System.DateTime)">
+            <summary>
+            Marks the claim as waiting for an external event (e.g. payer response).
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.RecordRetry(System.String,System.DateTime)">
+            <summary>
+            Records a successful retry attempt and returns the claim to the in-progress state.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.Cancel(System.String,System.DateTime)">
+            <summary>
+            Cancels the claim; no further processing will occur.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.MarkDuplicate(System.String,System.DateTime)">
+            <summary>
+            Marks the claim as a duplicate of another claim.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.ApplyPayment(System.Decimal,System.DateTime)">
+            <summary>
+            Applies a payment to the claim and updates the outstanding balance.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.Claim.RaiseAlert(ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert)">
+            <summary>
+            Attaches a monitoring alert to the claim.
+            </summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert">
+            <summary>
+            Represents a monitoring alert raised against a claim by the rule engine.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.ClaimId">
+            <summary>Foreign key back to the owning claim.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.Category">
+            <summary>Failure category which triggered the alert.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.Severity">
+            <summary>Severity of the alert.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.Message">
+            <summary>Human readable description of the alert.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.StageAtAlert">
+            <summary>Stage the claim was in when the alert was raised.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.RaisedUtc">
+            <summary>UTC timestamp the alert was raised.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.Acknowledged">
+            <summary>Whether the alert has been acknowledged by an operator.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.AcknowledgedUtc">
+            <summary>UTC timestamp the alert was acknowledged.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.AcknowledgedBy">
+            <summary>Operator user id that acknowledged the alert.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.#ctor">
+            <summary>EF constructor.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.Create(ClaimLifecycleMonitoring.Domain.Enums.FailureCategory,ClaimLifecycleMonitoring.Domain.Enums.AlertSeverity,System.String,ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,System.DateTime)">
+            <summary>
+            Creates a new <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert"/>.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.ClaimAlert.Acknowledge(System.String,System.DateTime)">
+            <summary>
+            Acknowledges the alert on behalf of the given user.
+            </summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent">
+            <summary>
+            Immutable audit record of a single event within the claim lifecycle.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.ClaimId">
+            <summary>Foreign key back to the owning claim.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.Stage">
+            <summary>Stage the event occurred in.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.Outcome">
+            <summary>Outcome of the step.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.Message">
+            <summary>Human readable event message.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.ExceptionDetail">
+            <summary>Optional exception details captured when the step failed.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.OccurredUtc">
+            <summary>UTC timestamp the event occurred.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.#ctor">
+            <summary>EF constructor.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent.Create(ClaimLifecycleMonitoring.Domain.Enums.ClaimStage,ClaimLifecycleMonitoring.Domain.Enums.StepOutcome,System.String,System.String,System.DateTime)">
+            <summary>
+            Creates a new immutable <see cref="T:ClaimLifecycleMonitoring.Domain.Entities.ClaimLifecycleEvent"/>.
+            </summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration">
+            <summary>
+            Configurable per-stage SLA (in hours) after which a claim is considered stuck.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration.Stage">
+            <summary>The stage this SLA applies to.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration.SlaHours">
+            <summary>Maximum permitted duration in the stage in hours before an alert is raised.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration.ExpectsInboundMessage">
+            <summary>Whether missing an inbound message (999/277CA/835) at this stage is a failure.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Entities.StageSlaConfiguration.BreachCategory">
+            <summary>Failure category to apply when the SLA is breached at this stage.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Enums.AlertSeverity">
+            <summary>
+            Represents the severity of a monitoring alert raised by the rule engine.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.AlertSeverity.Info">
+            <summary>Informational alert; no action required.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.AlertSeverity.Warning">
+            <summary>Warning; action may be required soon.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.AlertSeverity.Error">
+            <summary>Error; immediate action is required.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.AlertSeverity.Critical">
+            <summary>Critical; a business SLA has been breached.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage">
+            <summary>
+            Represents the ordered stages a healthcare claim moves through during its lifecycle.
+            The numeric values are intentionally sparse to allow additional intermediate stages
+            to be introduced without disturbing persisted data.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.AppointmentCreated">
+            <summary>An appointment has been created for the patient.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.EligibilityVerification">
+            <summary>Insurance eligibility verification is being performed.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.Authorization">
+            <summary>Prior authorization is being obtained from the payer.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.ClaimCreated">
+            <summary>A claim record has been created in the billing system.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.ClaimValidation">
+            <summary>The claim is being validated against business and payer rules.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.EdiGenerated837">
+            <summary>The 837 EDI transaction has been generated.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.EdiSubmitted837">
+            <summary>The 837 EDI transaction has been submitted to the clearinghouse or payer.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.Received999">
+            <summary>A 999 functional acknowledgement has been received.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.Received277CA">
+            <summary>A 277CA claim acknowledgement has been received.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.PayerProcessing">
+            <summary>The payer is adjudicating the claim.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.Received835">
+            <summary>An 835 remittance advice has been received.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.PaymentPosting">
+            <summary>Payment has been posted to the account.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.PatientInvoice">
+            <summary>A patient invoice has been generated for any remaining responsibility.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStage.Completed">
+            <summary>The claim lifecycle is complete.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus">
+            <summary>
+            Represents the current processing status of a claim within its lifecycle stage.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.InProgress">
+            <summary>The claim is progressing normally.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Waiting">
+            <summary>The claim is waiting on an external event (e.g. payer response).</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Completed">
+            <summary>The claim has completed the full lifecycle successfully.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Failed">
+            <summary>The claim failed and cannot proceed without intervention.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Rejected">
+            <summary>The claim was rejected by a validator, clearinghouse or payer.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Stuck">
+            <summary>The claim has stopped progressing beyond an SLA threshold.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.ManualActionRequired">
+            <summary>The claim requires manual action by an operator.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Cancelled">
+            <summary>The claim has been cancelled and will not be processed further.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Duplicate">
+            <summary>The claim is a duplicate of an existing claim.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.Reprocessed">
+            <summary>The claim has been reprocessed after a failure.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.ClaimStatus.PendingPayment">
+            <summary>Payment has not yet been received or posted.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory">
+            <summary>
+            Enumerates the failure categories the monitoring engine can automatically detect.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.None">
+            <summary>No failure detected.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.Stuck">
+            <summary>The claim stopped progressing within its SLA window.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.Timeout">
+            <summary>The claim exceeded a maximum lifecycle age.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.ValidationFailure">
+            <summary>Claim-level validation failed.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.EligibilityFailure">
+            <summary>Payer eligibility check failed.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.AuthorizationFailure">
+            <summary>Authorization was denied or could not be obtained.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.EdiGenerationFailure">
+            <summary>The 837 EDI file could not be generated.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.EdiSubmissionFailure">
+            <summary>The 837 EDI file could not be submitted.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.Missing999">
+            <summary>A 999 acknowledgement was not received in time.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.Missing277CA">
+            <summary>A 277CA acknowledgement was not received in time.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.Missing835">
+            <summary>An 835 remittance advice was not received in time.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.PaymentPostingFailure">
+            <summary>Payment posting failed on the general ledger side.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.InvoiceGenerationFailure">
+            <summary>A patient invoice could not be generated.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.DuplicateClaim">
+            <summary>The claim is a duplicate of another claim.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.CancelledClaim">
+            <summary>The claim was cancelled by an operator or upstream system.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.ReprocessedClaim">
+            <summary>The claim was reprocessed after a failure.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.FailureCategory.SlaBreach">
+            <summary>The claim breached the configured SLA.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Enums.StepOutcome">
+            <summary>
+            Represents the outcome of an individual step in the claim lifecycle history.
+            </summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.StepOutcome.InProgress">
+            <summary>The step is currently in progress.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.StepOutcome.Success">
+            <summary>The step completed successfully.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.StepOutcome.Failure">
+            <summary>The step failed with an exception or business error.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.StepOutcome.Skipped">
+            <summary>The step was skipped intentionally.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.StepOutcome.Timeout">
+            <summary>The step timed out waiting for an external event.</summary>
+        </member>
+        <member name="F:ClaimLifecycleMonitoring.Domain.Enums.StepOutcome.Retried">
+            <summary>The step was retried after a failure.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Exceptions.DomainValidationException">
+            <summary>
+            Thrown when a domain invariant or validation rule is violated.
+            </summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Exceptions.DomainValidationException.#ctor(System.String)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Domain.Exceptions.DomainValidationException"/>.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Exceptions.DomainValidationException.#ctor(System.String,System.Exception)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Domain.Exceptions.DomainValidationException"/> with an inner exception.</summary>
+        </member>
+        <member name="T:ClaimLifecycleMonitoring.Domain.Exceptions.EntityNotFoundException">
+            <summary>
+            Thrown when an entity requested by identity cannot be found.
+            </summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Exceptions.EntityNotFoundException.EntityType">
+            <summary>The entity type that could not be located.</summary>
+        </member>
+        <member name="P:ClaimLifecycleMonitoring.Domain.Exceptions.EntityNotFoundException.Identifier">
+            <summary>The identifier used in the lookup.</summary>
+        </member>
+        <member name="M:ClaimLifecycleMonitoring.Domain.Exceptions.EntityNotFoundException.#ctor(System.String,System.String)">
+            <summary>Creates a new <see cref="T:ClaimLifecycleMonitoring.Domain.Exceptions.EntityNotFoundException"/>.</summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClaimLifecycleMonitoring.Worker</name>
+    </assembly>
+    <members>
+        <member name="T:ClaimLifecycleMonitoring.Worker.ClaimMonitoringWorker">
+            <summary>
+            Long-running background service that periodically executes the
+            claim monitoring scan and rule engine.
+            </summary>
+        </member>
+    </members>
+</doc>

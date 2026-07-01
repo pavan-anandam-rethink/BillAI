@@ -1,0 +1,14 @@
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/bin/Debug/net8.0/ClaimLifecycleMonitoring.Domain.deps.json
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/bin/Debug/net8.0/ClaimLifecycleMonitoring.Domain.dll
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/bin/Debug/net8.0/ClaimLifecycleMonitoring.Domain.pdb
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/bin/Debug/net8.0/ClaimLifecycleMonitoring.Domain.xml
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.AssemblyInfoInputs.cache
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.AssemblyInfo.cs
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.csproj.CoreCompileInputs.cache
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.sourcelink.json
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.dll
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/refint/ClaimLifecycleMonitoring.Domain.dll
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.xml
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ClaimLifecycleMonitoring.Domain.pdb
+/home/runner/work/BillAI/BillAI/ClaimLifecycleMonitoring/src/ClaimLifecycleMonitoring.Domain/obj/Debug/net8.0/ref/ClaimLifecycleMonitoring.Domain.dll

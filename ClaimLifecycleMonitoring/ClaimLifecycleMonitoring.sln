@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F8DB9451-4930-46F4-8372-6B98709799D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.Domain", "src\ClaimLifecycleMonitoring.Domain\ClaimLifecycleMonitoring.Domain.csproj", "{DE4B9C8D-1FD8-4845-B004-87388B6F4707}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.Contracts", "src\ClaimLifecycleMonitoring.Contracts\ClaimLifecycleMonitoring.Contracts.csproj", "{A530D17C-300D-4043-A949-6E285B550843}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.Application", "src\ClaimLifecycleMonitoring.Application\ClaimLifecycleMonitoring.Application.csproj", "{8966629A-7D57-4D2B-8B83-EABA483C57D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.Persistence", "src\ClaimLifecycleMonitoring.Persistence\ClaimLifecycleMonitoring.Persistence.csproj", "{92BFA5D3-D506-4063-9487-8CFB9F19E85C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.Infrastructure", "src\ClaimLifecycleMonitoring.Infrastructure\ClaimLifecycleMonitoring.Infrastructure.csproj", "{991BC298-AC75-435C-A293-4CCAE5999641}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.API", "src\ClaimLifecycleMonitoring.API\ClaimLifecycleMonitoring.API.csproj", "{213CECB8-2E25-4CA4-8C55-A77794F777DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.Worker", "src\ClaimLifecycleMonitoring.Worker\ClaimLifecycleMonitoring.Worker.csproj", "{36FE13AA-EFA4-4006-9DD7-4BE0001D654D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7765ACB7-4D43-4F6C-9A60-FD2B3EB14344}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimLifecycleMonitoring.Tests", "tests\ClaimLifecycleMonitoring.Tests\ClaimLifecycleMonitoring.Tests.csproj", "{7530A62C-160F-4021-996A-D87C1F53D088}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE4B9C8D-1FD8-4845-B004-87388B6F4707}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE4B9C8D-1FD8-4845-B004-87388B6F4707}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE4B9C8D-1FD8-4845-B004-87388B6F4707}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE4B9C8D-1FD8-4845-B004-87388B6F4707}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A530D17C-300D-4043-A949-6E285B550843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A530D17C-300D-4043-A949-6E285B550843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A530D17C-300D-4043-A949-6E285B550843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A530D17C-300D-4043-A949-6E285B550843}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8966629A-7D57-4D2B-8B83-EABA483C57D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8966629A-7D57-4D2B-8B83-EABA483C57D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8966629A-7D57-4D2B-8B83-EABA483C57D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8966629A-7D57-4D2B-8B83-EABA483C57D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92BFA5D3-D506-4063-9487-8CFB9F19E85C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92BFA5D3-D506-4063-9487-8CFB9F19E85C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92BFA5D3-D506-4063-9487-8CFB9F19E85C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92BFA5D3-D506-4063-9487-8CFB9F19E85C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{991BC298-AC75-435C-A293-4CCAE5999641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{991BC298-AC75-435C-A293-4CCAE5999641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{991BC298-AC75-435C-A293-4CCAE5999641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{991BC298-AC75-435C-A293-4CCAE5999641}.Release|Any CPU.Build.0 = Release|Any CPU
+		{213CECB8-2E25-4CA4-8C55-A77794F777DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{213CECB8-2E25-4CA4-8C55-A77794F777DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{213CECB8-2E25-4CA4-8C55-A77794F777DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{213CECB8-2E25-4CA4-8C55-A77794F777DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36FE13AA-EFA4-4006-9DD7-4BE0001D654D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36FE13AA-EFA4-4006-9DD7-4BE0001D654D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36FE13AA-EFA4-4006-9DD7-4BE0001D654D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36FE13AA-EFA4-4006-9DD7-4BE0001D654D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7530A62C-160F-4021-996A-D87C1F53D088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7530A62C-160F-4021-996A-D87C1F53D088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7530A62C-160F-4021-996A-D87C1F53D088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7530A62C-160F-4021-996A-D87C1F53D088}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DE4B9C8D-1FD8-4845-B004-87388B6F4707} = {F8DB9451-4930-46F4-8372-6B98709799D5}
+		{A530D17C-300D-4043-A949-6E285B550843} = {F8DB9451-4930-46F4-8372-6B98709799D5}
+		{8966629A-7D57-4D2B-8B83-EABA483C57D1} = {F8DB9451-4930-46F4-8372-6B98709799D5}
+		{92BFA5D3-D506-4063-9487-8CFB9F19E85C} = {F8DB9451-4930-46F4-8372-6B98709799D5}
+		{991BC298-AC75-435C-A293-4CCAE5999641} = {F8DB9451-4930-46F4-8372-6B98709799D5}
+		{213CECB8-2E25-4CA4-8C55-A77794F777DB} = {F8DB9451-4930-46F4-8372-6B98709799D5}
+		{36FE13AA-EFA4-4006-9DD7-4BE0001D654D} = {F8DB9451-4930-46F4-8372-6B98709799D5}
+		{7530A62C-160F-4021-996A-D87C1F53D088} = {7765ACB7-4D43-4F6C-9A60-FD2B3EB14344}
+	EndGlobalSection
+EndGlobal
