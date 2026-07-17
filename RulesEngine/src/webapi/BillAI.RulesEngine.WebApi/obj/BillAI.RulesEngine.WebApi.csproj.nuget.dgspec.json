@@ -1,0 +1,604 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/webapi/BillAI.RulesEngine.WebApi/BillAI.RulesEngine.WebApi.csproj": {}
+  },
+  "projects": {
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj",
+        "projectName": "BillAI.RulesEngine.Application",
+        "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.11.0, )"
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.11.0, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.4.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj",
+        "projectName": "BillAI.RulesEngine.Domain",
+        "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "System.Text.Json": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/infrastructure/BillAI.RulesEngine.Infrastructure/BillAI.RulesEngine.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/RulesEngine/src/infrastructure/BillAI.RulesEngine.Infrastructure/BillAI.RulesEngine.Infrastructure.csproj",
+        "projectName": "BillAI.RulesEngine.Infrastructure",
+        "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/infrastructure/BillAI.RulesEngine.Infrastructure/BillAI.RulesEngine.Infrastructure.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/infrastructure/BillAI.RulesEngine.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.24.0, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.WebUtilities": {
+              "target": "Package",
+              "version": "[8.0.17, )"
+            },
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[16.3.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/rule-engine/BillAI.RulesEngine.Engine/BillAI.RulesEngine.Engine.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/RulesEngine/src/rule-engine/BillAI.RulesEngine.Engine/BillAI.RulesEngine.Engine.csproj",
+        "projectName": "BillAI.RulesEngine.Engine",
+        "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/rule-engine/BillAI.RulesEngine.Engine/BillAI.RulesEngine.Engine.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/rule-engine/BillAI.RulesEngine.Engine/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Caching.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj",
+        "projectName": "BillAI.RulesEngine.Shared",
+        "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/webapi/BillAI.RulesEngine.WebApi/BillAI.RulesEngine.WebApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/RulesEngine/src/webapi/BillAI.RulesEngine.WebApi/BillAI.RulesEngine.WebApi.csproj",
+        "projectName": "BillAI.RulesEngine.WebApi",
+        "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/webapi/BillAI.RulesEngine.WebApi/BillAI.RulesEngine.WebApi.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/webapi/BillAI.RulesEngine.WebApi/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/infrastructure/BillAI.RulesEngine.Infrastructure/BillAI.RulesEngine.Infrastructure.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/infrastructure/BillAI.RulesEngine.Infrastructure/BillAI.RulesEngine.Infrastructure.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/rule-engine/BillAI.RulesEngine.Engine/BillAI.RulesEngine.Engine.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/rule-engine/BillAI.RulesEngine.Engine/BillAI.RulesEngine.Engine.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/workflow-engine/BillAI.WorkflowEngine.Engine/BillAI.WorkflowEngine.Engine.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/workflow-engine/BillAI.WorkflowEngine.Engine/BillAI.WorkflowEngine.Engine.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.0, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.4.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.17, )"
+            },
+            "Microsoft.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.9.0, )"
+            },
+            "OpenTelemetry.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "OpenTelemetry.Instrumentation.AspNetCore": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[7.3.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/BillAI/BillAI/RulesEngine/src/workflow-engine/BillAI.WorkflowEngine.Engine/BillAI.WorkflowEngine.Engine.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/BillAI/BillAI/RulesEngine/src/workflow-engine/BillAI.WorkflowEngine.Engine/BillAI.WorkflowEngine.Engine.csproj",
+        "projectName": "BillAI.WorkflowEngine.Engine",
+        "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/workflow-engine/BillAI.WorkflowEngine.Engine/BillAI.WorkflowEngine.Engine.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/workflow-engine/BillAI.WorkflowEngine.Engine/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj"
+              },
+              "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj": {
+                "projectPath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

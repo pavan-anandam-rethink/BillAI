@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "BillAI.RulesEngine.Domain/1.0.0": {
+        "dependencies": {
+          "BillAI.RulesEngine.Shared": "1.0.0"
+        },
+        "runtime": {
+          "BillAI.RulesEngine.Domain.dll": {}
+        }
+      },
+      "BillAI.RulesEngine.Shared/1.0.0": {
+        "runtime": {
+          "BillAI.RulesEngine.Shared.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BillAI.RulesEngine.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BillAI.RulesEngine.Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
