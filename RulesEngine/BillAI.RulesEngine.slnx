@@ -1,0 +1,29 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/application/">
+    <Project Path="src/application/BillAI.RulesEngine.Application/BillAI.RulesEngine.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/domain/">
+    <Project Path="src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/infrastructure/">
+    <Project Path="src/infrastructure/BillAI.RulesEngine.Infrastructure/BillAI.RulesEngine.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/rule-engine/">
+    <Project Path="src/rule-engine/BillAI.RulesEngine.Engine/BillAI.RulesEngine.Engine.csproj" />
+  </Folder>
+  <Folder Name="/src/shared/">
+    <Project Path="src/shared/BillAI.RulesEngine.Shared/BillAI.RulesEngine.Shared.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/">
+    <Project Path="src/webapi/BillAI.RulesEngine.WebApi/BillAI.RulesEngine.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/workflow-engine/">
+    <Project Path="src/workflow-engine/BillAI.WorkflowEngine.Engine/BillAI.WorkflowEngine.Engine.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BillAI.RulesEngine.Application.Tests/BillAI.RulesEngine.Application.Tests.csproj" />
+    <Project Path="tests/BillAI.RulesEngine.Domain.Tests/BillAI.RulesEngine.Domain.Tests.csproj" />
+    <Project Path="tests/BillAI.RulesEngine.Engine.Tests/BillAI.RulesEngine.Engine.Tests.csproj" />
+  </Folder>
+</Solution>

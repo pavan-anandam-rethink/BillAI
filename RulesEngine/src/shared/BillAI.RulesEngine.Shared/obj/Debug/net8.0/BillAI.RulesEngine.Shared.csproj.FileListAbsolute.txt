@@ -1,0 +1,11 @@
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/bin/Debug/net8.0/BillAI.RulesEngine.Shared.deps.json
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/bin/Debug/net8.0/BillAI.RulesEngine.Shared.dll
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/bin/Debug/net8.0/BillAI.RulesEngine.Shared.pdb
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/BillAI.RulesEngine.Shared.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/BillAI.RulesEngine.Shared.AssemblyInfoInputs.cache
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/BillAI.RulesEngine.Shared.AssemblyInfo.cs
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/BillAI.RulesEngine.Shared.csproj.CoreCompileInputs.cache
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/BillAI.RulesEngine.Shared.dll
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/refint/BillAI.RulesEngine.Shared.dll
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/BillAI.RulesEngine.Shared.pdb
+/home/runner/work/BillAI/BillAI/RulesEngine/src/shared/BillAI.RulesEngine.Shared/obj/Debug/net8.0/ref/BillAI.RulesEngine.Shared.dll

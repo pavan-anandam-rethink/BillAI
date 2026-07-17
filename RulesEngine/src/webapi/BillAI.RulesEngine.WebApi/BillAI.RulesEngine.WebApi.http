@@ -1,0 +1,6 @@
+@BillAI.RulesEngine.WebApi_HostAddress = http://localhost:5143
+
+GET {{BillAI.RulesEngine.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "yOf6zt/GAJA=",
+  "success": true,
+  "projectFilePath": "/home/runner/work/BillAI/BillAI/RulesEngine/src/domain/BillAI.RulesEngine.Domain/BillAI.RulesEngine.Domain.csproj",
+  "expectedPackageFiles": [
+    "/home/runner/.nuget/packages/system.text.json/8.0.5/system.text.json.8.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
